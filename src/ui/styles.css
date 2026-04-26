@@ -1,0 +1,120 @@
+:root {
+  /* Colors */
+  --clr-primary: hsl(123, 68%, 48%);
+  --clr-secondary: hsl(27, 79%, 74%);
+  --clr-accent: hsl(97, 76%, 61%);
+  --clr-text: hsl(243, 76%, 5%);
+  --clr-bg: hsl(240, 60%, 99%);
+
+  /* Font Family */
+  --ff-system-ui:
+    system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --ff-one: var(--ff-system-ui);
+
+  /* Font Sizes */
+  --font-scale: 1.25;
+  --fs-x-small: calc(var(--fs-small) / var(--font-scale));
+  --fs-small: calc(var(--fs-p) / var(--font-scale));
+  --fs-p: 1rem;
+  --fs-h6: calc(var(--fs-p) * var(--font-scale));
+  --fs-h5: calc(var(--fs-h6) * var(--font-scale));
+  --fs-h4: calc(var(--fs-h5) * var(--font-scale));
+  --fs-h3: calc(var(--fs-h4) * var(--font-scale));
+  --fs-h2: calc(var(--fs-h3) * var(--font-scale));
+  --fs-h1: calc(var(--fs-h2) * var(--font-scale));
+
+  /* Spacing */
+  --spacing-unit: 1rem;
+  --spacing-growth: 1.5;
+  --sp-3xsm: calc(var(--sp-md) * 0.125);
+  --sp-2xsm: calc(var(--sp-md) * 0.25);
+  --sp-xsm: calc(var(--sp-md) * 0.5);
+  --sp-sm: calc(var(--sp-md) * 0.75);
+  --sp-md: var(--spacing-unit);
+  --sp-lg: calc(var(--sp-md) * var(--spacing-growth));
+  --sp-xlg: calc(var(--sp-lg) * var(--spacing-growth));
+  --sp-2xlg: calc(var(--sp-xlg) * var(--spacing-growth));
+  --sp-3xlg: calc(var(--sp-2xlg) * var(--spacing-growth));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+*:not(dialog) {
+  margin: 0;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--clr-bg);
+  color: var(--clr-text);
+  font: var(--fs-p) / 1.6 var(--ff-one);
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+}
+h2 {
+  font-size: var(--fs-h2);
+}
+h3 {
+  font-size: var(--fs-h3);
+}
+h4 {
+  font-size: var(--fs-h4);
+}
+h5 {
+  font-size: var(--fs-h5);
+}
+h6 {
+  font-size: var(--fs-h6);
+}
+
+button {
+  cursor: pointer;
+}
+
+/* 
+============================================
+Custom Styles 
+============================================
+*/
