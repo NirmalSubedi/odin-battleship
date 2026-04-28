@@ -8,13 +8,7 @@ class GameBoard {
   #rows;
   #cols;
   #board;
-  #fleet = [
-    { name: "carrier", vessel: new Ship().setLength(5) },
-    { name: "battleship", vessel: new Ship().setLength(4) },
-    { name: "cruiser", vessel: new Ship().setLength(3) },
-    { name: "submarine", vessel: new Ship().setLength(3) },
-    { name: "destroyer", vessel: new Ship().setLength(2) },
-  ];
+  #fleet = [];
 
   constructor(rows = ROWS, cols = COLS) {
     this.#rows = rows;
@@ -30,7 +24,7 @@ class GameBoard {
     return this.#cols;
   }
 
-  get board() {
+  get peak() {
     return this.#board;
   }
 
@@ -38,8 +32,18 @@ class GameBoard {
     return this.#fleet;
   }
 
+  useDefaultFleet() {
+    this.#fleet = [
+      { name: "carrier", vessel: new Ship().setLength(5) },
+      { name: "battleship", vessel: new Ship().setLength(4) },
+      { name: "cruiser", vessel: new Ship().setLength(3) },
+      { name: "submarine", vessel: new Ship().setLength(3) },
+      { name: "destroyer", vessel: new Ship().setLength(2) },
+    ];
+  }
+
   #isOccupiedSquare(row, col) {
-    return this.board[row]?.[col] !== WATER;
+    return this.peak[row]?.[col] !== WATER;
   }
 
   #getDirectionToPositionShip(row, col, ship) {
@@ -50,7 +54,7 @@ class GameBoard {
       [-1, 0],
       [0, -1],
     ];
-    let direction = null;
+    let positionDirection = null;
 
     for (const [dr, dc] of directions) {
       let shipIsPlacable = true;
@@ -67,12 +71,12 @@ class GameBoard {
       }
 
       if (shipIsPlacable) {
-        direction = [dr, dc];
+        positionDirection = [dr, dc];
         break;
       }
     }
 
-    return direction;
+    return positionDirection;
   }
 
   #getRandomCoordinate() {
@@ -91,7 +95,7 @@ class GameBoard {
     let currCol = col;
 
     for (let i = 0; i < shipLength; ++i) {
-      this.board[currRow][currCol] = token;
+      this.peak[currRow][currCol] = token;
 
       currRow += dirRow;
       currCol += dirCol;
