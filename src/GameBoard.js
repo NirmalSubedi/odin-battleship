@@ -8,12 +8,15 @@ class GameBoard {
   #rows;
   #cols;
   #board;
+  #water = WATER;
   #fleet = [];
 
   constructor(rows = ROWS, cols = COLS) {
     this.#rows = rows;
     this.#cols = cols;
-    this.#board = Array.from({ length: rows }, () => Array(cols).fill(WATER));
+    this.#board = Array.from({ length: rows }, () =>
+      Array.from({ length: cols }, () => WATER)
+    );
   }
 
   get rows() {
@@ -26,6 +29,10 @@ class GameBoard {
 
   get peak() {
     return this.#board;
+  }
+
+  get water() {
+    return this.#water;
   }
 
   get fleet() {
@@ -49,13 +56,30 @@ class GameBoard {
     defaultFleet.forEach(([shipName, shipLength]) => {
       this.#addShipToFleet(shipLength, shipName);
     });
+
+    return this;
   }
 
   #isOccupiedSquare(row, col) {
     return this.peak[row]?.[col] !== WATER;
   }
 
-  #getDirectionToPositionShip(row, col, ship) {
+  #isDeploymentZoneAvailable(row, col, shipLength, direction) {
+    const [dr, dc] = direction;
+    let currRow = row;
+    let currCol = col;
+
+    for (let i = 0; i < shipLength; ++i) {
+      if (this.#isOccupiedSquare(currRow, currCol)) return false;
+
+      currRow += dr;
+      currCol += dc;
+    }
+
+    return true;
+  }
+
+  #getDirectionToDeployShip(row, col, ship) {
     const shipLength = ship.vessel.length;
     const directions = [
       [0, 1],
@@ -65,22 +89,9 @@ class GameBoard {
     ];
     let positionDirection = null;
 
-    for (const [dr, dc] of directions) {
-      let shipIsPlacable = true;
-      let currRow = row;
-      let currCol = col;
-
-      for (let i = 0; i < shipLength; ++i) {
-        if (this.#isOccupiedSquare(currRow, currCol)) {
-          shipIsPlacable = false;
-          break;
-        }
-        currRow += dr;
-        currCol += dc;
-      }
-
-      if (shipIsPlacable) {
-        positionDirection = [dr, dc];
+    for (const direction of directions) {
+      if (this.#isDeploymentZoneAvailable(row, col, shipLength, direction)) {
+        positionDirection = direction;
         break;
       }
     }
@@ -141,7 +152,7 @@ class GameBoard {
         const [row, col] = coordinates;
         if (this.#isOccupiedSquare(row, col)) continue;
 
-        const direction = this.#getDirectionToPositionShip(row, col, ship);
+        const direction = this.#getDirectionToDeployShip(row, col, ship);
         const missingDirection = direction === null;
         if (missingDirection) continue;
 

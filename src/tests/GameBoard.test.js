@@ -7,8 +7,68 @@ describe("GameBoard constructor", () => {
   });
 
   it("creates instance", () => {
-    const board = new GameBoard();
+    const board = new GameBoard(1, 1);
     expect(board instanceof GameBoard).toBe(true);
+  });
+
+  it("represents water as 0", () => {
+    const board = new GameBoard(1, 1);
+    expect(board.water).toBe(0);
+    expect(board.peak[0][0]).toBe(0);
+  });
+
+  it("creates 10 x 10 board by default", () => {
+    const board = new GameBoard();
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("creates 1 x 1 board", () => {
+    const board = new GameBoard(1, 1);
+    expect(board.peak).toEqual([[0]]);
+  });
+
+  it("creates 2 x 1 board", () => {
+    const board = new GameBoard(2, 1);
+    expect(board.peak).toEqual([[0], [0]]);
+  });
+
+  it("creates 1 x 2 board", () => {
+    const board = new GameBoard(1, 2);
+    expect(board.peak).toEqual([[0, 0]]);
+  });
+
+  it("creates 2 x 2 board", () => {
+    const board = new GameBoard(2, 2);
+    expect(board.peak).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+  });
+
+  it("creates empty board", () => {
+    const board = new GameBoard(0, 0);
+    expect(board.peak).toEqual([]);
+  });
+
+  it("creates empty board for negative values", () => {
+    const board = new GameBoard(-5, -4);
+    expect(board.peak).toEqual([]);
+  });
+
+  it("floors float dimensions and creates board from them", () => {
+    const board = new GameBoard(1.2, 2.9);
+    expect(board.peak).toEqual([[0, 0]]);
   });
 });
 
@@ -19,11 +79,16 @@ describe("useDefaultFleet method", () => {
   });
 
   it("adds ships to fleet", () => {
-    const board = new GameBoard();
+    const board = new GameBoard(1, 1);
     expect(board.fleet.length).toBe(0);
 
     board.useDefaultFleet();
     expect(board.fleet.length).toBeGreaterThan(0);
+  });
+
+  it("returns the GameBoard instance", () => {
+    const board = new GameBoard(1, 1);
+    expect(board.useDefaultFleet()).toBe(board);
   });
 });
 
@@ -34,7 +99,7 @@ describe("clearFleet method", () => {
   });
 
   it("clears the fleet", () => {
-    const board = new GameBoard();
+    const board = new GameBoard(1, 1);
     board.useDefaultFleet();
     expect(board.fleet.length).toBeGreaterThan(0);
 
@@ -43,7 +108,7 @@ describe("clearFleet method", () => {
   });
 
   it("returns the GameBoard instance", () => {
-    const board = new GameBoard();
+    const board = new GameBoard(1, 1);
     expect(board.clearFleet()).toBe(board);
   });
 });
