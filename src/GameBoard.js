@@ -5,10 +5,9 @@ const COLS = 10;
 const WATER = 0;
 
 class GameBoard {
-  #rows = ROWS;
-  #cols = COLS;
-  #board = Array.from({ length: ROWS }, () => Array(COLS).fill(WATER));
-
+  #rows;
+  #cols;
+  #board;
   #fleet = [
     { name: "carrier", vessel: new Ship().setLength(5) },
     { name: "battleship", vessel: new Ship().setLength(4) },
@@ -16,6 +15,12 @@ class GameBoard {
     { name: "submarine", vessel: new Ship().setLength(3) },
     { name: "destroyer", vessel: new Ship().setLength(2) },
   ];
+
+  constructor(rows = ROWS, cols = COLS) {
+    this.#rows = rows;
+    this.#cols = cols;
+    this.#board = Array.from({ length: rows }, () => Array(cols).fill(WATER));
+  }
 
   get rows() {
     return this.#rows;
@@ -93,7 +98,27 @@ class GameBoard {
     }
   }
 
+  #scoutBoard() {
+    const LONGEST_SHIP = 0;
+    const longestShipLength = this.#fleet
+      .toSorted((shipA, shipB) => shipB.vessel.length - shipA.vessel.length)
+      .at(LONGEST_SHIP).length;
+    if (longestShipLength > this.rows || longestShipLength > this.cols)
+      throw new Error("Board is too small for the longest ship.");
+
+    const boardSpace = this.rows * this.cols;
+    const numberOfShips = this.#fleet.length;
+    const fleetSpace = longestShipLength * numberOfShips;
+    const WATER_RATIO = 1;
+    const waterSpace = fleetSpace * WATER_RATIO;
+    if (boardSpace < fleetSpace + waterSpace)
+      throw new Error("Board is too small for the fleet.");
+  }
+
   deployTheFleet() {
+    if (this.#fleet.length === 0) throw new Error("Fleet is empty.");
+    this.#scoutBoard();
+
     this.#fleet.forEach((ship, index) => {
       const shipId = index + 1;
       let shipHasNotBeenDeployed = true;
