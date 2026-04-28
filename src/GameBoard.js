@@ -32,14 +32,23 @@ class GameBoard {
     return this.#fleet;
   }
 
+  #addShipToFleet(length, name) {
+    const ship = { name, vessel: new Ship().setLength(length) };
+    this.#fleet.push(ship);
+    return ship;
+  }
+
   useDefaultFleet() {
-    this.#fleet = [
-      { name: "carrier", vessel: new Ship().setLength(5) },
-      { name: "battleship", vessel: new Ship().setLength(4) },
-      { name: "cruiser", vessel: new Ship().setLength(3) },
-      { name: "submarine", vessel: new Ship().setLength(3) },
-      { name: "destroyer", vessel: new Ship().setLength(2) },
+    const defaultFleet = [
+      ["carrier", 5],
+      ["battleship", 4],
+      ["cruiser", 3],
+      ["submarine", 3],
+      ["destroyer", 2],
     ];
+    defaultFleet.forEach(([shipName, shipLength]) => {
+      this.#addShipToFleet(shipLength, shipName);
+    });
   }
 
   #isOccupiedSquare(row, col) {
