@@ -94,6 +94,11 @@ class GameBoard {
       }
     });
   }
+
+  clearFleet() {
+    this.fleet.length = 0;
+    return this;
+  }
 }
 
 export { GameBoard };
