@@ -5,15 +5,33 @@ const COLS = 10;
 const WATER = 0;
 
 class GameBoard {
-  board = Array.from({ length: ROWS }, () => Array(COLS).fill(WATER));
+  #rows = ROWS;
+  #cols = COLS;
+  #board = Array.from({ length: ROWS }, () => Array(COLS).fill(WATER));
 
-  fleet = [
+  #fleet = [
     { name: "carrier", vessel: new Ship().setLength(5) },
     { name: "battleship", vessel: new Ship().setLength(4) },
     { name: "cruiser", vessel: new Ship().setLength(3) },
     { name: "submarine", vessel: new Ship().setLength(3) },
     { name: "destroyer", vessel: new Ship().setLength(2) },
   ];
+
+  get rows() {
+    return this.#rows;
+  }
+
+  get cols() {
+    return this.#cols;
+  }
+
+  get board() {
+    return this.#board;
+  }
+
+  get fleet() {
+    return this.#fleet;
+  }
 
   #isOccupiedSquare(row, col) {
     return this.board[row]?.[col] !== WATER;
@@ -76,7 +94,7 @@ class GameBoard {
   }
 
   deployTheFleet() {
-    this.fleet.forEach((ship, index) => {
+    this.#fleet.forEach((ship, index) => {
       const shipId = index + 1;
       let shipHasNotBeenDeployed = true;
 
@@ -96,7 +114,7 @@ class GameBoard {
   }
 
   clearFleet() {
-    this.fleet.length = 0;
+    this.#fleet.length = 0;
     return this;
   }
 }
