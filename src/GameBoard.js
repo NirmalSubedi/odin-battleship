@@ -166,6 +166,43 @@ class GameBoard {
     this.#fleet.length = 0;
     return this;
   }
+
+  #decodeDirection(direction = "") {
+    switch (direction) {
+      case "R":
+        return [0, 1];
+      case "L":
+        return [0, -1];
+      case "U":
+        return [-1, 0];
+      default:
+        return [1, 0];
+    }
+  }
+
+  placeShip(coordinates, length = 1, direction = "", name = "") {
+    if (coordinates == null) throw new ReferenceError("Coordinates missing.");
+    if (coordinates.length === 1) throw new ReferenceError("Column missing.");
+
+    const [row, col] = coordinates;
+    if (!Number.isInteger(row) || !Number.isInteger(col))
+      throw new TypeError(`Coordinates must be integers.`);
+    if (row < 0 || col < 0 || row >= this.rows || col >= this.cols)
+      throw new RangeError("Coordinates are out of bound.");
+
+    const ship = this.#addShipToFleet(length, name);
+    const shipId = this.#fleet.length;
+    const placementDirection = this.#decodeDirection(direction);
+
+    let placed = false;
+
+    if (this.#isDeploymentZoneAvailable(row, col, length, placementDirection)) {
+      this.#deployShip(row, col, ship, shipId, placementDirection);
+      placed = true;
+    }
+
+    return placed;
+  }
 }
 
 export { GameBoard };
