@@ -104,7 +104,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/*.{test,spec}.js"],
+    files: ["**/*.{spec,test}.{mjs,cjs,js}", "**/tests/**/*.js"],
     languageOptions: {
       globals: {
         ...globals.jest,

@@ -1,8 +1,7 @@
 import { Ship } from "../Ship.js";
+import { isNumeric, hasMethod } from "./utils/testUtils.js";
 
 describe("Ship Constructor", () => {
-  const isNumeric = (n) => typeof n === "number" || typeof n === "bigint";
-
   it("exists", () => {
     expect(typeof Ship).toBe("function");
   });
@@ -38,10 +37,7 @@ describe("Ship Constructor", () => {
 });
 
 describe("setLength method", () => {
-  it("exists", () => {
-    expect(Object.hasOwn(Ship.prototype, "setLength")).toBe(true);
-    expect(typeof Ship.prototype.setLength).toBe("function");
-  });
+  it("exists", () => hasMethod(Ship, "setLength"));
 
   let ship;
   beforeEach(() => {
@@ -86,10 +82,7 @@ describe("setLength method", () => {
 });
 
 describe("hit method", () => {
-  it("exists", () => {
-    expect(Object.hasOwn(Ship.prototype, "hit")).toBe(true);
-    expect(typeof Ship.prototype.hit).toBe("function");
-  });
+  it("exists", () => hasMethod(Ship, "hit"));
 
   let ship;
   beforeEach(() => {
@@ -123,10 +116,7 @@ describe("hit method", () => {
 });
 
 describe("isSunk method", () => {
-  it("exists", () => {
-    expect(Object.hasOwn(Ship.prototype, "isSunk")).toBe(true);
-    expect(typeof Ship.prototype.isSunk).toBe("function");
-  });
+  it("exists", () => hasMethod(Ship, "isSunk"));
 
   let ship;
   beforeEach(() => {

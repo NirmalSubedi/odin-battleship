@@ -1,4 +1,5 @@
 import { GameBoard } from "../GameBoard.js";
+import { hasMethod } from "./utils/testUtils.js";
 
 describe("GameBoard constructor", () => {
   it("exists", () => {
@@ -73,10 +74,7 @@ describe("GameBoard constructor", () => {
 });
 
 describe("useDefaultFleet method", () => {
-  it("exists", () => {
-    expect(Object.hasOwn(GameBoard.prototype, "useDefaultFleet")).toBe(true);
-    expect(typeof GameBoard.prototype.useDefaultFleet).toBe("function");
-  });
+  it("exists", () => hasMethod(GameBoard, "useDefaultFleet"));
 
   it("adds ships to fleet", () => {
     const board = new GameBoard(1, 1);
@@ -93,10 +91,7 @@ describe("useDefaultFleet method", () => {
 });
 
 describe("clearFleet method", () => {
-  it("exists", () => {
-    expect(Object.hasOwn(GameBoard.prototype, "clearFleet")).toBe(true);
-    expect(typeof GameBoard.prototype.clearFleet).toBe("function");
-  });
+  it("exists", () => hasMethod(GameBoard, "clearFleet"));
 
   it("clears the fleet", () => {
     const board = new GameBoard(1, 1);
