@@ -320,3 +320,50 @@ describe("receiveAttack method", () => {
     expect(board.receiveAttack([0, 0])).toBeNull();
   });
 });
+
+describe("isFleetSunk method", () => {
+  it("exists", () => hasMethod(GameBoard, "isFleetSunk"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(3, 3);
+  });
+
+  it("return true for no fleet", () => {
+    expect(board.isFleetSunk()).toBe(true);
+  });
+
+  it("returns false for alive fleet", () => {
+    board.placeShip([0, 0]);
+    expect(board.isFleetSunk()).toBe(false);
+  });
+
+  it("returns true when all ships are sunk", () => {
+    board.placeShip([0, 0]);
+    board.receiveAttack([0, 0]);
+
+    expect(board.isFleetSunk()).toBe(true);
+  });
+
+  it("switches return value to false when ship is added", () => {
+    board.placeShip([0, 0]);
+    board.receiveAttack([0, 0]);
+    expect(board.isFleetSunk()).toBe(true);
+
+    board.placeShip([1, 1]);
+    expect(board.isFleetSunk()).toBe(false);
+  });
+
+  it("switches return value to false when clearing fleet and adding a ship", () => {
+    board = new GameBoard(3, 3);
+    board.placeShip([0, 0]);
+    expect(board.isFleetSunk()).toBe(false);
+
+    board.receiveAttack([0, 0]);
+    expect(board.isFleetSunk()).toBe(true);
+
+    board.clearFleet();
+    board.placeShip([1, 1]);
+    expect(board.isFleetSunk()).toBe(false);
+  });
+});

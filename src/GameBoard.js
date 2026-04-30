@@ -219,6 +219,32 @@ class GameBoard {
     return this.#fleet[shipPosition];
   }
 
+  isFleetSunk() {
+    return this.fleet.every((ship) => ship.vessel.isSunk());
+  }
+
+  #hitShip(row, col, ship = {}) {
+    const HIT = -1;
+
+    this.#board[row][col] = HIT;
+    ship.vessel.hit();
+
+    const sunk = ship.vessel.isSunk();
+
+    return {
+      hit: true,
+      sunk,
+      ship,
+    };
+  }
+
+  #missShip(row, col) {
+    const MISS = -2;
+    this.#board[row][col] = MISS;
+
+    return { hit: false };
+  }
+
   receiveAttack(coordinates) {
     const [row, col] = this.#validateCoordinates(coordinates);
 
@@ -230,17 +256,9 @@ class GameBoard {
     if (isDuplicateAttack) {
       result = null;
     } else if (ship) {
-      const HIT = -1;
-
-      this.#board[row][col] = HIT;
-      ship.vessel.hit();
-
-      result = { hit: true, sunk: ship.vessel.isSunk(), ship };
+      result = this.#hitShip(row, col, ship);
     } else {
-      const MISS = -2;
-
-      this.#board[row][col] = MISS;
-      result = { hit: false };
+      result = this.#missShip(row, col);
     }
 
     return result;
