@@ -211,6 +211,40 @@ class GameBoard {
 
     return placed;
   }
+
+  #getShip(shipId) {
+    if (shipId <= 0) return null;
+
+    const shipPosition = shipId - 1;
+    return this.#fleet[shipPosition];
+  }
+
+  receiveAttack(coordinates) {
+    const [row, col] = this.#validateCoordinates(coordinates);
+
+    const shipId = this.peak[row][col];
+    const ship = this.#getShip(shipId);
+
+    let result;
+    const isDuplicateAttack = shipId < 0;
+    if (isDuplicateAttack) {
+      result = null;
+    } else if (ship) {
+      const HIT = -1;
+
+      this.#board[row][col] = HIT;
+      ship.vessel.hit();
+
+      result = { hit: true, sunk: ship.vessel.isSunk(), ship };
+    } else {
+      const MISS = -2;
+
+      this.#board[row][col] = MISS;
+      result = { hit: false };
+    }
+
+    return result;
+  }
 }
 
 export { GameBoard };

@@ -228,3 +228,95 @@ describe("placeShip method", () => {
     expect(board.placeShip([1, 1])).toBe(false);
   });
 });
+
+describe("receiveAttack method", () => {
+  it("exists", () => hasMethod(GameBoard, "receiveAttack"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(3, 3);
+  });
+
+  it("validates coordinates", () => {
+    expect(() => isValidCoordinates(board, "receiveAttack"));
+  });
+
+  it("call hit method on ship", () => {
+    board.placeShip([1, 1]);
+
+    const SHIP_POSITION = 0;
+    const ship = board.fleet.at(SHIP_POSITION).vessel;
+    const hitMethod = jest.spyOn(ship, "hit");
+
+    board.receiveAttack([1, 1]);
+    expect(hitMethod).toHaveBeenCalled();
+  });
+
+  it("calls hit method on correct ship", () => {
+    board.placeShip([1, 1]);
+    board.placeShip([0, 0]);
+
+    const FIRST_SHIP_POSITION = 0;
+    const SECOND_SHIP_POSITION = 1;
+    const firstShip = board.fleet.at(FIRST_SHIP_POSITION).vessel;
+    const secondShip = board.fleet.at(SECOND_SHIP_POSITION).vessel;
+
+    const firstShipHitMethod = jest.spyOn(firstShip, "hit");
+    const secondShipHitMethod = jest.spyOn(secondShip, "hit");
+
+    board.receiveAttack([0, 0]);
+    expect(firstShipHitMethod).not.toHaveBeenCalled();
+    expect(secondShipHitMethod).toHaveBeenCalled();
+  });
+
+  it("updates coordinates of hit with '-1'", () => {
+    board.placeShip([0, 0]);
+    board.receiveAttack([0, 0]);
+
+    expect(board.peak[0][0]).toBe(-1);
+  });
+
+  it("updates coordinates of miss with '-2'", () => {
+    board.placeShip([0, 0]);
+    board.receiveAttack([2, 2]);
+
+    expect(board.peak[2][2]).toBe(-2);
+  });
+
+  it("returns correct object for shot that hits and sinks ship", () => {
+    board.placeShip([0, 0]);
+    const SHIP_POSITION = 0;
+    const ship = board.fleet.at(SHIP_POSITION);
+
+    expect(board.receiveAttack([0, 0])).toEqual({
+      hit: true,
+      sunk: true,
+      ship,
+    });
+  });
+
+  it("returns correct object for shot that only hits ship", () => {
+    board.placeShip([0, 0], 2);
+    const SHIP_POSITION = 0;
+    const ship = board.fleet.at(SHIP_POSITION);
+
+    expect(board.receiveAttack([0, 0])).toEqual({
+      hit: true,
+      sunk: false,
+      ship,
+    });
+  });
+
+  it("returns correct object for missed shot", () => {
+    board.placeShip([0, 0]);
+
+    expect(board.receiveAttack([1, 1])).toEqual({ hit: false });
+  });
+
+  it("returns null for duplicate shot", () => {
+    board.placeShip([0, 0]);
+
+    board.receiveAttack([0, 0]);
+    expect(board.receiveAttack([0, 0])).toBeNull();
+  });
+});
