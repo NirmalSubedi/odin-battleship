@@ -42,6 +42,7 @@ class GameBoard {
   #addShipToFleet(length, name) {
     const ship = { name, vessel: new Ship().setLength(length) };
     this.#fleet.push(ship);
+
     return ship;
   }
 
@@ -164,7 +165,21 @@ class GameBoard {
 
   clearFleet() {
     this.#fleet.length = 0;
+
     return this;
+  }
+
+  #validateCoordinates(coordinates) {
+    if (coordinates == null) throw new ReferenceError("Coordinates missing.");
+    if (coordinates.length === 1) throw new ReferenceError("Column missing.");
+
+    const [row, col] = coordinates;
+    if (!Number.isInteger(row) || !Number.isInteger(col))
+      throw new TypeError(`Coordinates must be integers.`);
+    if (row < 0 || col < 0 || row >= this.rows || col >= this.cols)
+      throw new RangeError("Coordinates are out of bound.");
+
+    return coordinates;
   }
 
   #decodeDirection(direction = "") {
@@ -181,14 +196,7 @@ class GameBoard {
   }
 
   placeShip(coordinates, length = 1, direction = "", name = "") {
-    if (coordinates == null) throw new ReferenceError("Coordinates missing.");
-    if (coordinates.length === 1) throw new ReferenceError("Column missing.");
-
-    const [row, col] = coordinates;
-    if (!Number.isInteger(row) || !Number.isInteger(col))
-      throw new TypeError(`Coordinates must be integers.`);
-    if (row < 0 || col < 0 || row >= this.rows || col >= this.cols)
-      throw new RangeError("Coordinates are out of bound.");
+    const [row, col] = this.#validateCoordinates(coordinates);
 
     const ship = this.#addShipToFleet(length, name);
     const shipId = this.#fleet.length;

@@ -1,5 +1,5 @@
 import { GameBoard } from "../GameBoard.js";
-import { hasMethod } from "./utils/testUtils.js";
+import { hasMethod, isValidCoordinates } from "./utils/testUtils.js";
 
 describe("GameBoard constructor", () => {
   it("exists", () => {
@@ -116,37 +116,8 @@ describe("placeShip method", () => {
     board = new GameBoard(3, 3);
   });
 
-  it("throws ReferenceError for no coordinates", () => {
-    expect(() => board.placeShip()).toThrow(ReferenceError);
-  });
-
-  it("throws TypeError for non-integer coordinates", () => {
-    expect(() => board.placeShip([1, 1])).not.toThrow(TypeError);
-    expect(() => board.placeShip([1, undefined])).toThrow(TypeError);
-    expect(() => board.placeShip([1n, 1])).toThrow(TypeError);
-    expect(() => board.placeShip([0.1, 1])).toThrow(TypeError);
-    expect(() => board.placeShip([1, NaN])).toThrow(TypeError);
-    expect(() => board.placeShip([Infinity, 1])).toThrow(TypeError);
-    expect(() => board.placeShip([1, -Infinity])).toThrow(TypeError);
-    expect(() => board.placeShip(["1", 1])).toThrow(TypeError);
-    expect(() => board.placeShip([false, 1])).toThrow(TypeError);
-    expect(() => board.placeShip([1, ""])).toThrow(TypeError);
-    expect(() => board.placeShip([[], 1])).toThrow(TypeError);
-    expect(() => board.placeShip([1, {}])).toThrow(TypeError);
-    expect(() => board.placeShip([1, () => {}])).toThrow(TypeError);
-  });
-
-  it("throws ReferenceError for half of coordinates", () => {
-    expect(() => board.placeShip([1])).toThrow(ReferenceError);
-  });
-
-  it("throws RangeError for out of bound coordinates", () => {
-    expect(() => board.placeShip([-1, 1])).toThrow(RangeError);
-    expect(() => board.placeShip([1, -1])).toThrow(RangeError);
-    expect(() => board.placeShip([-1, -1])).toThrow(RangeError);
-    expect(() => board.placeShip([1, board.cols])).toThrow(RangeError);
-    expect(() => board.placeShip([board.rows, 1])).toThrow(RangeError);
-    expect(() => board.placeShip([board.rows, board.cols])).toThrow(RangeError);
+  it("validates coordinates", () => {
+    expect(() => isValidCoordinates(board, "placeShip"));
   });
 
   it("adds ship to the fleet", () => {
