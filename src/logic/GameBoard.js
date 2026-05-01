@@ -1,4 +1,4 @@
-import { Ship } from "./Ship.js";
+import { Ship } from "./index.js";
 
 const ROWS = 10;
 const COLS = 10;

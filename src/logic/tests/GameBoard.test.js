@@ -1,5 +1,5 @@
-import { GameBoard } from "../GameBoard.js";
-import { hasMethod, isValidCoordinates } from "./utils/testUtils.js";
+import { GameBoard } from "../index.js";
+import { hasMethod, isValidCoordinates } from "./utils/index.js";
 
 describe("GameBoard constructor", () => {
   it("exists", () => {

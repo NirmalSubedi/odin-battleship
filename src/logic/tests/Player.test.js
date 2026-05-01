@@ -1,5 +1,4 @@
-import { GameBoard } from "../GameBoard.js";
-import { Player } from "../Player.js";
+import { GameBoard, Player } from "../index.js";
 
 describe("Player Constructor", () => {
   it("exists", () => {

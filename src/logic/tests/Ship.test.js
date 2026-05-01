@@ -1,5 +1,5 @@
-import { Ship } from "../Ship.js";
-import { isNumeric, hasMethod } from "./utils/testUtils.js";
+import { Ship } from "../index.js";
+import { isNumeric, hasMethod } from "./utils/index.js";
 
 describe("Ship Constructor", () => {
   it("exists", () => {
