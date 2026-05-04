@@ -6,5 +6,290 @@
     <title>Template</title>
   </head>
 
-  <body></body>
+  <body>
+    <div class="screen-overlay" data-screen="mode"></div>
+    <!-- screens: mode, name, fleet, pass, over, player1, player2 -->
+    <header>
+      <h1 class="game-name">BattleShip</h1>
+      <div class="announce"><span class="message"></span></div>
+    </header>
+
+    <div class="instructions">
+      <p class="message" data-hint="attack"></p>
+    </div>
+
+    <div class="game-modes">
+      <div class="single-player">
+        <div class="icon"></div>
+        <p class="title">Single Player</p>
+      </div>
+      <div class="double-player">
+        <div class="icon"></div>
+        <p class="title">Double Player</p>
+      </div>
+    </div>
+
+    <div class="name-selection">
+      <div class="player1">
+        <div class="icon"></div>
+        <label for="player1-name">Player 1 Name:</label>
+        <input
+          type="text"
+          name="player1-name"
+          id="player1-name"
+          placeholder="Player 1"
+          maxlength="15"
+        />
+      </div>
+      <div class="player2">
+        <div class="icon"></div>
+        <label for="player1-name">Player 1 Name:</label>
+        <input
+          type="text"
+          name="player1-name"
+          id="player1-name"
+          placeholder="Player 1"
+          maxlength="15"
+        />
+      </div>
+    </div>
+
+    <div class="boards">
+      <div class="column-numbers"></div>
+      <div class="row-numbers"></div>
+      <div class="player1-board">
+        <button class="cell" data-x="1" data-y="1"></button>
+        <button class="cell" data-x="2" data-y="1"></button>
+        <button class="cell" data-x="3" data-y="1"></button>
+        <button class="cell" data-x="4" data-y="1"></button>
+        <button class="cell" data-x="5" data-y="1"></button>
+        <button class="cell" data-x="6" data-y="1"></button>
+        <button class="cell" data-x="7" data-y="1"></button>
+        <button class="cell" data-x="8" data-y="1"></button>
+        <button class="cell" data-x="9" data-y="1"></button>
+        <button class="cell" data-x="10" data-y="1"></button>
+        <button class="cell" data-x="1" data-y="2"></button>
+        <button class="cell" data-x="2" data-y="2"></button>
+        <button class="cell" data-x="3" data-y="2"></button>
+        <button class="cell" data-x="4" data-y="2"></button>
+        <button class="cell" data-x="5" data-y="2"></button>
+        <button class="cell" data-x="6" data-y="2"></button>
+        <button class="cell" data-x="7" data-y="2"></button>
+        <button class="cell" data-x="8" data-y="2"></button>
+        <button class="cell" data-x="9" data-y="2"></button>
+        <button class="cell" data-x="10" data-y="2"></button>
+        <button class="cell" data-x="1" data-y="3"></button>
+        <button class="cell" data-x="2" data-y="3"></button>
+        <button class="cell" data-x="3" data-y="3"></button>
+        <button class="cell" data-x="4" data-y="3"></button>
+        <button class="cell" data-x="5" data-y="3"></button>
+        <button class="cell" data-x="6" data-y="3"></button>
+        <button class="cell" data-x="7" data-y="3"></button>
+        <button class="cell" data-x="8" data-y="3"></button>
+        <button class="cell" data-x="9" data-y="3"></button>
+        <button class="cell" data-x="10" data-y="3"></button>
+        <button class="cell" data-x="1" data-y="4"></button>
+        <button class="cell" data-x="2" data-y="4"></button>
+        <button class="cell" data-x="3" data-y="4"></button>
+        <button class="cell" data-x="4" data-y="4"></button>
+        <button class="cell" data-x="5" data-y="4"></button>
+        <button class="cell" data-x="6" data-y="4"></button>
+        <button class="cell" data-x="7" data-y="4"></button>
+        <button class="cell" data-x="8" data-y="4"></button>
+        <button class="cell" data-x="9" data-y="4"></button>
+        <button class="cell" data-x="10" data-y="4"></button>
+        <button class="cell" data-x="1" data-y="5"></button>
+        <button class="cell" data-x="2" data-y="5"></button>
+        <button class="cell" data-x="3" data-y="5"></button>
+        <button class="cell" data-x="4" data-y="5"></button>
+        <button class="cell" data-x="5" data-y="5"></button>
+        <button class="cell" data-x="6" data-y="5"></button>
+        <button class="cell" data-x="7" data-y="5"></button>
+        <button class="cell" data-x="8" data-y="5"></button>
+        <button class="cell" data-x="9" data-y="5"></button>
+        <button class="cell" data-x="10" data-y="5"></button>
+        <button class="cell" data-x="1" data-y="6"></button>
+        <button class="cell" data-x="2" data-y="6"></button>
+        <button class="cell" data-x="3" data-y="6"></button>
+        <button class="cell" data-x="4" data-y="6"></button>
+        <button class="cell" data-x="5" data-y="6"></button>
+        <button class="cell" data-x="6" data-y="6"></button>
+        <button class="cell" data-x="7" data-y="6"></button>
+        <button class="cell" data-x="8" data-y="6"></button>
+        <button class="cell" data-x="9" data-y="6"></button>
+        <button class="cell" data-x="10" data-y="6"></button>
+        <button class="cell" data-x="1" data-y="7"></button>
+        <button class="cell" data-x="2" data-y="7"></button>
+        <button class="cell" data-x="3" data-y="7"></button>
+        <button class="cell" data-x="4" data-y="7"></button>
+        <button class="cell" data-x="5" data-y="7"></button>
+        <button class="cell" data-x="6" data-y="7"></button>
+        <button class="cell" data-x="7" data-y="7"></button>
+        <button class="cell" data-x="8" data-y="7"></button>
+        <button class="cell" data-x="9" data-y="7"></button>
+        <button class="cell" data-x="10" data-y="7"></button>
+        <button class="cell" data-x="1" data-y="8"></button>
+        <button class="cell" data-x="2" data-y="8"></button>
+        <button class="cell" data-x="3" data-y="8"></button>
+        <button class="cell" data-x="4" data-y="8"></button>
+        <button class="cell" data-x="5" data-y="8"></button>
+        <button class="cell" data-x="6" data-y="8"></button>
+        <button class="cell" data-x="7" data-y="8"></button>
+        <button class="cell" data-x="8" data-y="8"></button>
+        <button class="cell" data-x="9" data-y="8"></button>
+        <button class="cell" data-x="10" data-y="8"></button>
+        <button class="cell" data-x="1" data-y="9"></button>
+        <button class="cell" data-x="2" data-y="9"></button>
+        <button class="cell" data-x="3" data-y="9"></button>
+        <button class="cell" data-x="4" data-y="9"></button>
+        <button class="cell" data-x="5" data-y="9"></button>
+        <button class="cell" data-x="6" data-y="9"></button>
+        <button class="cell" data-x="7" data-y="9"></button>
+        <button class="cell" data-x="8" data-y="9"></button>
+        <button class="cell" data-x="9" data-y="9"></button>
+        <button class="cell" data-x="10" data-y="9"></button>
+        <button class="cell" data-x="1" data-y="10"></button>
+        <button class="cell" data-x="2" data-y="10"></button>
+        <button class="cell" data-x="3" data-y="10"></button>
+        <button class="cell" data-x="4" data-y="10"></button>
+        <button class="cell" data-x="5" data-y="10"></button>
+        <button class="cell" data-x="6" data-y="10"></button>
+        <button class="cell" data-x="7" data-y="10"></button>
+        <button class="cell" data-x="8" data-y="10"></button>
+        <button class="cell" data-x="9" data-y="10"></button>
+        <button class="cell" data-x="10" data-y="10"></button>
+      </div>
+      <div class="player2-board">
+        <button class="cell" data-x="1" data-y="1"></button>
+        <button class="cell" data-x="2" data-y="1"></button>
+        <button class="cell" data-x="3" data-y="1"></button>
+        <button class="cell" data-x="4" data-y="1"></button>
+        <button class="cell" data-x="5" data-y="1"></button>
+        <button class="cell" data-x="6" data-y="1"></button>
+        <button class="cell" data-x="7" data-y="1"></button>
+        <button class="cell" data-x="8" data-y="1"></button>
+        <button class="cell" data-x="9" data-y="1"></button>
+        <button class="cell" data-x="10" data-y="1"></button>
+        <button class="cell" data-x="1" data-y="2"></button>
+        <button class="cell" data-x="2" data-y="2"></button>
+        <button class="cell" data-x="3" data-y="2"></button>
+        <button class="cell" data-x="4" data-y="2"></button>
+        <button class="cell" data-x="5" data-y="2"></button>
+        <button class="cell" data-x="6" data-y="2"></button>
+        <button class="cell" data-x="7" data-y="2"></button>
+        <button class="cell" data-x="8" data-y="2"></button>
+        <button class="cell" data-x="9" data-y="2"></button>
+        <button class="cell" data-x="10" data-y="2"></button>
+        <button class="cell" data-x="1" data-y="3"></button>
+        <button class="cell" data-x="2" data-y="3"></button>
+        <button class="cell" data-x="3" data-y="3"></button>
+        <button class="cell" data-x="4" data-y="3"></button>
+        <button class="cell" data-x="5" data-y="3"></button>
+        <button class="cell" data-x="6" data-y="3"></button>
+        <button class="cell" data-x="7" data-y="3"></button>
+        <button class="cell" data-x="8" data-y="3"></button>
+        <button class="cell" data-x="9" data-y="3"></button>
+        <button class="cell" data-x="10" data-y="3"></button>
+        <button class="cell" data-x="1" data-y="4"></button>
+        <button class="cell" data-x="2" data-y="4"></button>
+        <button class="cell" data-x="3" data-y="4"></button>
+        <button class="cell" data-x="4" data-y="4"></button>
+        <button class="cell" data-x="5" data-y="4"></button>
+        <button class="cell" data-x="6" data-y="4"></button>
+        <button class="cell" data-x="7" data-y="4"></button>
+        <button class="cell" data-x="8" data-y="4"></button>
+        <button class="cell" data-x="9" data-y="4"></button>
+        <button class="cell" data-x="10" data-y="4"></button>
+        <button class="cell" data-x="1" data-y="5"></button>
+        <button class="cell" data-x="2" data-y="5"></button>
+        <button class="cell" data-x="3" data-y="5"></button>
+        <button class="cell" data-x="4" data-y="5"></button>
+        <button class="cell" data-x="5" data-y="5"></button>
+        <button class="cell" data-x="6" data-y="5"></button>
+        <button class="cell" data-x="7" data-y="5"></button>
+        <button class="cell" data-x="8" data-y="5"></button>
+        <button class="cell" data-x="9" data-y="5"></button>
+        <button class="cell" data-x="10" data-y="5"></button>
+        <button class="cell" data-x="1" data-y="6"></button>
+        <button class="cell" data-x="2" data-y="6"></button>
+        <button class="cell" data-x="3" data-y="6"></button>
+        <button class="cell" data-x="4" data-y="6"></button>
+        <button class="cell" data-x="5" data-y="6"></button>
+        <button class="cell" data-x="6" data-y="6"></button>
+        <button class="cell" data-x="7" data-y="6"></button>
+        <button class="cell" data-x="8" data-y="6"></button>
+        <button class="cell" data-x="9" data-y="6"></button>
+        <button class="cell" data-x="10" data-y="6"></button>
+        <button class="cell" data-x="1" data-y="7"></button>
+        <button class="cell" data-x="2" data-y="7"></button>
+        <button class="cell" data-x="3" data-y="7"></button>
+        <button class="cell" data-x="4" data-y="7"></button>
+        <button class="cell" data-x="5" data-y="7"></button>
+        <button class="cell" data-x="6" data-y="7"></button>
+        <button class="cell" data-x="7" data-y="7"></button>
+        <button class="cell" data-x="8" data-y="7"></button>
+        <button class="cell" data-x="9" data-y="7"></button>
+        <button class="cell" data-x="10" data-y="7"></button>
+        <button class="cell" data-x="1" data-y="8"></button>
+        <button class="cell" data-x="2" data-y="8"></button>
+        <button class="cell" data-x="3" data-y="8"></button>
+        <button class="cell" data-x="4" data-y="8"></button>
+        <button class="cell" data-x="5" data-y="8"></button>
+        <button class="cell" data-x="6" data-y="8"></button>
+        <button class="cell" data-x="7" data-y="8"></button>
+        <button class="cell" data-x="8" data-y="8"></button>
+        <button class="cell" data-x="9" data-y="8"></button>
+        <button class="cell" data-x="10" data-y="8"></button>
+        <button class="cell" data-x="1" data-y="9"></button>
+        <button class="cell" data-x="2" data-y="9"></button>
+        <button class="cell" data-x="3" data-y="9"></button>
+        <button class="cell" data-x="4" data-y="9"></button>
+        <button class="cell" data-x="5" data-y="9"></button>
+        <button class="cell" data-x="6" data-y="9"></button>
+        <button class="cell" data-x="7" data-y="9"></button>
+        <button class="cell" data-x="8" data-y="9"></button>
+        <button class="cell" data-x="9" data-y="9"></button>
+        <button class="cell" data-x="10" data-y="9"></button>
+        <button class="cell" data-x="1" data-y="10"></button>
+        <button class="cell" data-x="2" data-y="10"></button>
+        <button class="cell" data-x="3" data-y="10"></button>
+        <button class="cell" data-x="4" data-y="10"></button>
+        <button class="cell" data-x="5" data-y="10"></button>
+        <button class="cell" data-x="6" data-y="10"></button>
+        <button class="cell" data-x="7" data-y="10"></button>
+        <button class="cell" data-x="8" data-y="10"></button>
+        <button class="cell" data-x="9" data-y="10"></button>
+        <button class="cell" data-x="10" data-y="10"></button>
+      </div>
+      <div class="ship-count">Ships Left:<span class="ships"></span></div>
+      <span class="board-label"></span>
+    </div>
+
+    <aside class="fleet">
+      <span class="label"></span>
+    </aside>
+
+    <dialog class="stats">
+      <button class="close-stats">X</button>
+      <h2 class="title">Stats</h2>
+      <div class="player1-stats">
+        <p class="ships-sunk">Ships sunk: <span class="stat"></span></p>
+        <p class="hit-accuracy">Hits Accuracy: <span class="stat"></span></p>
+        <p class="shots-fired">Shots Fired: <span class="stat"></span></p>
+      </div>
+      <div class="player2-stats">
+        <p class="ships-sunk">Ships sunk: <span class="stat"></span></p>
+        <p class="hit-accuracy">Hits Accuracy: <span class="stat"></span></p>
+        <p class="shots-fired">Shots Fired: <span class="stat"></span></p>
+      </div>
+    </dialog>
+
+    <div class="buttons">
+      <button class="randomize-board">Randomize</button>
+      <button class="rematch">Rematch</button>
+      <button class="continue">Continue</button>
+      <button class="stats">Stats</button>
+      <button class="home-screen">Home</button>
+    </div>
+  </body>
 </html>
