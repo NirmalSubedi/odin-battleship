@@ -1,10 +1,19 @@
 :root {
   /* Colors */
-  --clr-primary: hsl(123, 68%, 48%);
-  --clr-secondary: hsl(27, 79%, 74%);
-  --clr-accent: hsl(97, 76%, 61%);
-  --clr-text: hsl(243, 76%, 5%);
-  --clr-bg: hsl(240, 60%, 99%);
+  --clr-bg: #ffffff;
+  --clr-text: #000000;
+  --clr-gray-800: #d9d9d9;
+  --clr-gray-600: #9c9c9c;
+  --clr-gray-400: #646262;
+
+  --clr-sunk-ship: #fd6c6c;
+  --clr-ship: #2e90d6;
+
+  --clr-hit-fill: #cc0003;
+  --clr-hit-stroke: #ff3539;
+
+  --clr-success: #00c728;
+  --clr-success-lite: #00c72880;
 
   /* Font Family */
   --ff-system-ui:
@@ -52,7 +61,8 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--clr-bg);
   color: var(--clr-text);
-  font: var(--fs-p) / 1.6 var(--ff-one);
+  font-family: var(--ff-one);
+  font-size: var(--fs-p);
 }
 
 img,
@@ -79,15 +89,6 @@ h4,
 h5,
 h6 {
   overflow-wrap: break-word;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.2;
 }
 
 h1 {
@@ -118,3 +119,203 @@ button {
 Custom Styles 
 ============================================
 */
+
+.hide {
+  visibility: hidden;
+}
+
+.remove {
+  display: none;
+}
+
+.screen-overlay {
+  --_announce-width: 580px;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background: var(--clr-bg);
+  color: var(--clr-text);
+}
+
+header {
+  --_fs-game-name: var(--fs-h3);
+
+  display: flex;
+  padding: var(--sp-lg);
+  padding-bottom: 0;
+}
+
+.game-name::before {
+  position: absolute;
+  width: 100vw;
+  left: -50vw;
+  bottom: calc(var(--_fs-game-name) * 0.15);
+
+  content: "";
+  border-bottom: 1px solid var(--clr-text);
+  content-visibility: hidden;
+}
+
+.game-name {
+  position: absolute;
+  font-size: var(--_fs-game-name);
+}
+
+.announce {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(min(var(--_announce-width), 80vw), 1fr);
+  justify-items: center;
+  position: relative;
+  right: var(--sp-lg);
+  z-index: 1;
+
+  background: var(--clr-text);
+  color: var(--clr-bg);
+}
+
+.announce .message {
+  font-size: calc(var(--_fs-game-name) * 0.96);
+  font-weight: 800;
+  line-height: 1.6;
+}
+
+[data-screen="mode"] .announce::after {
+  display: block;
+  width: calc(100% / 2);
+  height: 100%;
+  position: absolute;
+  bottom: -75%;
+  right: 50%;
+  z-index: -1;
+
+  content: "";
+  border-right: 1px solid var(--clr-text);
+  opacity: 0;
+}
+
+[data-screen="mode"] header:has(~ .game-modes > *:hover) .announce::after {
+  opacity: 1;
+}
+
+.game-modes {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0 var(--sp-lg);
+  margin-top: 15vh;
+}
+
+.game-modes > * {
+  position: relative;
+}
+
+[data-screen="mode"] .game-modes > *::before {
+  --_line-decor-width: calc(100% * 0.75);
+
+  display: block;
+  width: var(--_line-decor-width);
+  height: 65px;
+  position: absolute;
+  left: 50%;
+  top: -13.5%;
+
+  content: "";
+  border-left: 1px solid var(--clr-text);
+  border-top: 1px solid var(--clr-text);
+  opacity: 0;
+}
+
+[data-screen="mode"] .game-modes > :last-child::before {
+  left: calc(var(--_line-decor-width) / 2 * -1);
+
+  border-left: none;
+  border-right: 1px solid var(--clr-text);
+}
+
+[data-screen="mode"] .game-modes > *:hover::before {
+  opacity: 1;
+}
+
+.game-modes .icon {
+  background: var(--clr-bg);
+  width: 25vw;
+  height: 55vh;
+  border: 8px solid var(--clr-text);
+}
+
+.game-modes .title {
+  font-size: var(--fs-h4);
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.game-modes > *:has(:hover) .icon {
+  background: var(--clr-gray-600);
+}
+
+.game-modes > *:focus {
+  outline-offset: 8px;
+}
+
+.game-modes > *:active .icon {
+  background: var(--clr-success-lite);
+}
+
+.game-modes .icon {
+  position: relative;
+}
+
+.player {
+  --_gap: 18%;
+
+  width: 100%;
+  height: 100%;
+  align-content: end;
+  padding: var(--sp-md);
+  position: relative;
+}
+
+.player::before {
+  --_size: calc(var(--sp-3xlg) * 1.2);
+
+  display: block;
+  border-radius: 50%;
+  width: var(--_size);
+  height: var(--_size);
+  margin: 0 auto;
+  position: relative;
+  top: 6%;
+
+  content: "";
+  background: var(--clr-gray-800);
+  border: 10px solid var(--clr-text);
+}
+
+.player::after {
+  display: block;
+  width: 60%;
+  height: 60%;
+  margin: 0 auto;
+  border-radius: 100px 100px 0 0;
+
+  content: "";
+  background: var(--clr-text);
+}
+
+.player.alternative::after {
+  background: var(--clr-bg);
+  border: 10px solid var(--clr-text);
+}
+
+.double-player .player:first-child {
+  position: absolute;
+  right: var(--_gap);
+}
+
+.double-player .player:last-child {
+  position: absolute;
+  left: var(--_gap);
+}
