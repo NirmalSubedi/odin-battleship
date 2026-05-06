@@ -121,11 +121,11 @@ Custom Styles
 */
 
 .hide {
-  visibility: hidden;
+  visibility: hidden !important;
 }
 
 .remove {
-  display: none;
+  display: none !important;
 }
 
 .screen-overlay {
@@ -169,7 +169,6 @@ header {
   grid-template-columns: minmax(min(var(--_announce-width), 80vw), 1fr);
   justify-items: center;
   position: relative;
-  right: var(--sp-lg);
   z-index: 1;
 
   background: var(--clr-text);
@@ -187,7 +186,7 @@ header {
   width: calc(100% / 2);
   height: 100%;
   position: absolute;
-  bottom: -75%;
+  bottom: -7.5vh;
   right: 50%;
   z-index: -1;
 
@@ -212,14 +211,14 @@ header {
 }
 
 [data-screen="mode"] .game-modes > *::before {
-  --_line-decor-width: calc(100% * 0.75);
+  --_line-decor-width: calc(50vw - 119%);
 
   display: block;
   width: var(--_line-decor-width);
   height: 65px;
   position: absolute;
   left: 50%;
-  top: -13.5%;
+  top: -7.5vh;
 
   content: "";
   border-left: 1px solid var(--clr-text);
@@ -228,7 +227,7 @@ header {
 }
 
 [data-screen="mode"] .game-modes > :last-child::before {
-  left: calc(var(--_line-decor-width) / 2 * -1);
+  left: calc(31% * -1);
 
   border-left: none;
   border-right: 1px solid var(--clr-text);
@@ -279,12 +278,12 @@ header {
 }
 
 .player::before {
-  --_size: calc(var(--sp-3xlg) * 1.2);
+  --_head-size: 30%;
 
   display: block;
   border-radius: 50%;
-  width: var(--_size);
-  height: var(--_size);
+  width: var(--_head-size);
+  height: var(--_head-size);
   margin: 0 auto;
   position: relative;
   top: 6%;
