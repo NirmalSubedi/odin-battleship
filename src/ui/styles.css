@@ -4,7 +4,7 @@
   --clr-text: #000000;
   --clr-gray-800: #d9d9d9;
   --clr-gray-600: #9c9c9c;
-  --clr-gray-400: #646262;
+  --clr-gray-400: #636262;
 
   --clr-sunk-ship: #fd6c6c;
   --clr-ship: #2e90d6;
@@ -278,7 +278,7 @@ header {
 }
 
 .player::before {
-  --_head-size: 30%;
+  --_head-size: 32%;
 
   display: block;
   border-radius: 50%;
@@ -317,4 +317,73 @@ header {
 .double-player .player:last-child {
   position: absolute;
   left: var(--_gap);
+}
+
+.name-selection {
+  display: flex;
+  justify-content: space-evenly;
+  margin: 0 10ch;
+
+  font-size: var(--fs-h6);
+}
+
+.name-selection > * {
+  display: grid;
+  justify-items: center;
+}
+
+.name-selection .player {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.name-selection > [class*="player"] > .icon {
+  width: 20vw;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+}
+
+.name-selection label {
+  justify-self: start;
+  display: block;
+  margin-top: 1ch;
+  font-weight: 700;
+}
+
+.name-selection input {
+  width: 100%;
+  padding: 1ch;
+}
+
+.name-selection input::placeholder {
+  font-weight: 700;
+}
+
+.buttons {
+  margin: 8ch auto 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 17ch;
+  justify-content: center;
+  gap: 2ch;
+}
+
+.buttons > * {
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  border-radius: 0;
+  border: 1px solid var(--clr-text);
+}
+
+.buttons > *:focus {
+  background: var(--clr-gray-400);
+  color: var(--clr-bg);
+  outline: 1px solid var(--clr-text);
+  outline-offset: 3px;
+}
+
+.buttons > *:hover {
+  background: var(--clr-text);
+  color: var(--clr-bg);
 }
