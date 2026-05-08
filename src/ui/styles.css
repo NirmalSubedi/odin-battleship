@@ -45,6 +45,11 @@
   --sp-xlg: calc(var(--sp-lg) * var(--spacing-growth));
   --sp-2xlg: calc(var(--sp-xlg) * var(--spacing-growth));
   --sp-3xlg: calc(var(--sp-2xlg) * var(--spacing-growth));
+
+  /* Border Widths*/
+  --bd-sm: 1px;
+  --bd-md: 8px;
+  --bd-lg: 10px;
 }
 
 *,
@@ -156,7 +161,7 @@ header {
   bottom: calc(var(--_fs-game-name) * 0.15);
 
   content: "";
-  border-bottom: 1px solid var(--clr-text);
+  border-bottom: var(--bd-sm) solid var(--clr-text);
   content-visibility: hidden;
 }
 
@@ -193,7 +198,7 @@ header {
   z-index: -1;
 
   content: "";
-  border-right: 1px solid var(--clr-text);
+  border-right: var(--bd-sm) solid var(--clr-text);
   opacity: 0;
 }
 
@@ -202,10 +207,14 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 .game-modes {
-  display: flex;
+  display: none;
   justify-content: space-evenly;
   margin: 0 var(--sp-lg);
   margin-top: 15vh;
+}
+
+[data-screen="mode"] .game-modes {
+  display: flex;
 }
 
 .game-modes > * {
@@ -223,8 +232,8 @@ header:has(~ .game-modes > *:hover) .announce::after {
   top: -7.5vh;
 
   content: "";
-  border-left: 1px solid var(--clr-text);
-  border-top: 1px solid var(--clr-text);
+  border-left: var(--bd-sm) solid var(--clr-text);
+  border-top: var(--bd-sm) solid var(--clr-text);
   opacity: 0;
 }
 
@@ -232,7 +241,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   left: calc(31% * -1);
 
   border-left: none;
-  border-right: 1px solid var(--clr-text);
+  border-right: var(--bd-sm) solid var(--clr-text);
 }
 
 .game-modes > *:hover::before {
@@ -243,7 +252,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   background: var(--clr-bg);
   width: 25vw;
   height: 55vh;
-  border: 8px solid var(--clr-text);
+  border: var(--bd-md) solid var(--clr-text);
 }
 
 .game-modes .title {
@@ -291,7 +300,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
 
   content: "";
   background: var(--clr-gray-800);
-  border: 10px solid var(--clr-text);
+  border: var(--bd-lg) solid var(--clr-text);
 }
 
 .player::after {
@@ -321,7 +330,14 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 .name-selection {
+  display: none;
+}
+
+[data-screen="name"] .name-selection {
   display: flex;
+}
+
+.name-selection {
   justify-content: space-evenly;
   margin: 0 10ch;
 
@@ -348,7 +364,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
 .name-selection label {
   justify-self: start;
   display: block;
-  margin-top: 1ch;
+  margin-top: var(--sp-sm);
 }
 
 .name-selection input {
@@ -357,9 +373,16 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 main {
+  display: none;
+}
+
+[data-screen="fleet"] main {
+  display: grid;
+}
+
+main {
   --board-columns: 10;
 
-  display: grid;
   justify-items: center;
   position: relative;
   margin-top: calc(var(--sp-2xlg) * 0.8);
@@ -394,51 +417,53 @@ main .board .cells {
   grid-template-columns: repeat(var(--board-columns), var(--board-cell-size));
   grid-auto-rows: var(--board-cell-size);
 
-  border: 1px solid var(--clr-text);
+  border: var(--bd-sm) solid var(--clr-text);
 }
 
 .cells > * {
   background: var(--clr-bg);
-  border: 1px solid var(--clr-text);
+  border: var(--bd-sm) solid var(--clr-text);
 }
 
 .board .ship-count {
+  visibility: hidden;
   text-align: right;
-  padding-top: 0.75ch;
+  padding-top: calc(var(--sp-2xsm) * 1.5);
   font-size: calc(var(--fs-p) * 0.9);
 }
 
 .board .board-label {
+  visibility: hidden;
   text-align: center;
   color: var(--clr-gray-600);
   font-size: var(--fs-h6);
 }
 
 .buttons {
-  margin: 8ch auto 0;
+  margin: var(--sp-lg) auto 0;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 17ch;
   justify-content: center;
-  gap: 2ch;
+  gap: var(--sp-md);
 }
 
-[data-screen="fleet"] .buttons {
-  margin-top: 2.5ch;
+[data-screen="name"] .buttons {
+  margin-top: var(--sp-3xlg);
 }
 
 .buttons > * {
   background: var(--clr-bg);
   color: var(--clr-text);
   border-radius: 0;
-  border: 1px solid var(--clr-text);
+  border: var(--bd-sm) solid var(--clr-text);
   display: none;
 }
 
 .buttons > *:focus {
   background: var(--clr-gray-400);
   color: var(--clr-bg);
-  outline: 1px solid var(--clr-text);
+  outline: var(--bd-sm) solid var(--clr-text);
   outline-offset: 3px;
 }
 
