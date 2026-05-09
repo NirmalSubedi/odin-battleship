@@ -374,6 +374,21 @@ header:has(~ .game-modes > *:hover) .announce::after {
   padding: 1ch;
 }
 
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--sp-sm);
+  text-decoration: none;
+  padding: var(--sp-md);
+
+  background-color: var(--clr-gray-400);
+  color: var(--clr-bg);
+}
+
+.skip-link:focus {
+  top: var(--sp-sm);
+}
+
 main {
   display: none;
 }
@@ -519,12 +534,17 @@ aside .fleet-label {
 }
 
 .buttons {
-  margin: var(--sp-lg) auto 0;
+  padding: var(--sp-lg) auto 0;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 17ch;
   justify-content: center;
   gap: var(--sp-md);
+}
+
+.buttons:focus {
+  outline: var(--bd-xsm) solid var(--clr-gray-400);
+  outline-offset: calc(var(--bd-xsm) * -1);
 }
 
 [data-screen="name"] .buttons {
