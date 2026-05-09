@@ -14,7 +14,7 @@
         <div class="announce"><span class="message">Place Fleet</span></div>
       </header>
 
-      <div class="instructions remove">
+      <div class="instructions">
         <p class="message" data-hint="attack"></p>
       </div>
 
@@ -202,34 +202,45 @@
         </div>
 
         <aside>
-          <span class="fleet-label">Fleet</span>
+          <div class="controls">
+            <p class="message" data-hint="place">
+              <span class="control">Place: </span>Click empty square
+            </p>
+            <p class="message" data-hint="rotate">
+              <span class="control">Rotate: </span>Click placed ship
+            </p>
+          </div>
+
           <div class="fleet">
-            <div class="ship">
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-            </div>
-            <div class="ship">
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-            </div>
-            <div class="ship">
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-            </div>
-            <div class="ship">
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-            </div>
-            <div class="ship">
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
-              <div class="ship-part"></div>
+            <p class="fleet-label">Fleet</p>
+            <div class="dock">
+              <div class="ship">
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+              </div>
+              <div class="ship">
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+              </div>
+              <div class="ship">
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+              </div>
+              <div class="ship">
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+              </div>
+              <div class="ship">
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+                <div class="ship-part"></div>
+              </div>
             </div>
           </div>
         </aside>
@@ -256,6 +267,7 @@
         <button class="continue">Continue</button>
         <button class="stats">Stats</button>
         <button class="home-screen">Home</button>
+        <button class="reset-board">Reset</button>
       </div>
     </div>
   </body>

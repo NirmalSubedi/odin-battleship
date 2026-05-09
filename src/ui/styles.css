@@ -8,6 +8,7 @@
 
   --clr-sunk-ship: #fd6c6c;
   --clr-ship: #2e90d6;
+  --clr-ship-lite: #aed4ef;
 
   --clr-hit-fill: #cc0003;
   --clr-hit-stroke: #ff3539;
@@ -47,7 +48,8 @@
   --sp-3xlg: calc(var(--sp-2xlg) * var(--spacing-growth));
 
   /* Border Widths*/
-  --bd-sm: 1px;
+  --bd-xsm: 1px;
+  --bd-sm: 3px;
   --bd-md: 8px;
   --bd-lg: 10px;
 }
@@ -161,7 +163,7 @@ header {
   bottom: calc(var(--_fs-game-name) * 0.15);
 
   content: "";
-  border-bottom: var(--bd-sm) solid var(--clr-text);
+  border-bottom: var(--bd-xsm) solid var(--clr-text);
   content-visibility: hidden;
 }
 
@@ -198,7 +200,7 @@ header {
   z-index: -1;
 
   content: "";
-  border-right: var(--bd-sm) solid var(--clr-text);
+  border-right: var(--bd-xsm) solid var(--clr-text);
   opacity: 0;
 }
 
@@ -232,8 +234,8 @@ header:has(~ .game-modes > *:hover) .announce::after {
   top: -7.5vh;
 
   content: "";
-  border-left: var(--bd-sm) solid var(--clr-text);
-  border-top: var(--bd-sm) solid var(--clr-text);
+  border-left: var(--bd-xsm) solid var(--clr-text);
+  border-top: var(--bd-xsm) solid var(--clr-text);
   opacity: 0;
 }
 
@@ -241,7 +243,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   left: calc(31% * -1);
 
   border-left: none;
-  border-right: var(--bd-sm) solid var(--clr-text);
+  border-right: var(--bd-xsm) solid var(--clr-text);
 }
 
 .game-modes > *:hover::before {
@@ -316,7 +318,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
 
 .player.alternative::after {
   background: var(--clr-bg);
-  border: 10px solid var(--clr-text);
+  border: var(--bd-lg) solid var(--clr-text);
 }
 
 .double-player .player:first-child {
@@ -417,12 +419,27 @@ main .board .cells {
   grid-template-columns: repeat(var(--board-columns), var(--board-cell-size));
   grid-auto-rows: var(--board-cell-size);
 
-  border: var(--bd-sm) solid var(--clr-text);
+  border: var(--bd-xsm) solid var(--clr-text);
 }
 
 .cells > * {
   background: var(--clr-bg);
-  border: var(--bd-sm) solid var(--clr-text);
+  border: var(--bd-xsm) solid var(--clr-text);
+}
+
+[data-screen="fleet"] .cells > *:focus {
+  position: relative;
+  z-index: 0;
+  outline: none;
+  box-shadow: inset 0 0 0 3px var(--clr-ship);
+}
+
+[data-screen="fleet"] .cells > *:hover {
+  background: var(--clr-ship-lite);
+}
+
+[data-screen="fleet"] .cells > *:active {
+  background: var(--clr-ship);
 }
 
 .board .ship-count {
@@ -433,10 +450,72 @@ main .board .cells {
 }
 
 .board .board-label {
-  visibility: hidden;
   text-align: center;
   color: var(--clr-gray-600);
   font-size: var(--fs-h6);
+}
+
+.aside {
+  display: none;
+}
+
+[data-screen="fleet"] aside {
+  display: block;
+}
+
+aside {
+  --_half-board-width: calc(var(--board-cell-size) * var(--board-columns) / 2);
+
+  position: absolute;
+  left: calc(50vw + var(--_half-board-width));
+  margin: 0 var(--sp-lg) 0 var(--sp-3xlg);
+}
+
+aside .controls {
+  margin-bottom: var(--sp-sm);
+}
+
+aside .controls .message {
+  font-weight: 400;
+}
+
+aside .controls .control {
+  font-weight: 700;
+  font-size: var(--fs-p);
+}
+
+aside .fleet {
+  background: var(--clr-gray-800);
+  align-items: start;
+  padding: var(--sp-md) 2ch var(--sp-xlg);
+}
+
+.fleet .dock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(var(--board-cell-size) * 0.75);
+}
+
+aside .fleet-label {
+  padding: 1em 0;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.fleet .ship {
+  border: var(--bd-xsm) solid var(--clr-text);
+}
+
+.ship .ship-part {
+  width: var(--board-cell-size);
+  height: var(--board-cell-size);
+  background: var(--clr-ship);
+}
+
+.ship .ship-part:not(:last-child) {
+  border-bottom: var(--bd-xsm) solid var(--clr-text);
 }
 
 .buttons {
@@ -456,14 +535,14 @@ main .board .cells {
   background: var(--clr-bg);
   color: var(--clr-text);
   border-radius: 0;
-  border: var(--bd-sm) solid var(--clr-text);
+  border: var(--bd-xsm) solid var(--clr-text);
   display: none;
 }
 
 .buttons > *:focus {
   background: var(--clr-gray-400);
   color: var(--clr-bg);
-  outline: var(--bd-sm) solid var(--clr-text);
+  outline: var(--bd-xsm) solid var(--clr-text);
   outline-offset: 3px;
 }
 
@@ -478,7 +557,7 @@ main .board .cells {
 
 [data-screen="fleet"] .buttons .continue,
 [data-screen="fleet"] .buttons .randomize-board,
-[data-screen="fleet"] .buttons .home-screen {
+[data-screen="fleet"] .buttons .reset-board {
   display: block;
 }
 
