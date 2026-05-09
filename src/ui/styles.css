@@ -532,18 +532,20 @@ aside .fleet-label {
 }
 
 .buttons > * {
-  background: var(--clr-bg);
-  color: var(--clr-text);
+  display: none;
   border-radius: 0;
   border: var(--bd-xsm) solid var(--clr-text);
-  display: none;
+
+  background: var(--clr-bg);
+  color: var(--clr-text);
 }
 
 .buttons > *:focus {
-  background: var(--clr-gray-400);
-  color: var(--clr-bg);
   outline: var(--bd-xsm) solid var(--clr-text);
   outline-offset: 3px;
+
+  background: var(--clr-gray-400);
+  color: var(--clr-bg);
 }
 
 .buttons > *:hover {
@@ -569,4 +571,8 @@ aside .fleet-label {
 [data-screen="over"] .buttons .stats,
 [data-screen="over"] .buttons .rematch {
   display: block;
+}
+
+[data-screen="pass"] .buttons {
+  margin-top: 40vh;
 }
