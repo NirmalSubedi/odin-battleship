@@ -7,16 +7,21 @@
   </head>
 
   <body>
-    <!-- screens: mode, name, fleet, pass, over, player1, player2 -->
-    <div class="screen-overlay" data-screen="pass">
+    <!-- screens: mode, name, fleet, pass, attack, sunk, over -->
+    <div class="screen-overlay" data-screen="attack">
       <header>
         <h1 class="game-name">BattleShip</h1>
-        <div class="announce"><span class="message">Pass The Device</span></div>
-      </header>
+        <div class="announce alternative">
+          <span class="message">Tommy Mommy's Turn</span>
+        </div>
 
-      <div class="instructions">
-        <p class="message" data-hint="attack"></p>
-      </div>
+        <div class="instructions hide">
+          <p class="message">
+            <span class="icon"></span>
+            <span class="action"></span>Ship has been destroyed!
+          </p>
+        </div>
+      </header>
 
       <div class="game-modes">
         <div class="single-player" tabindex="0">
@@ -94,6 +99,7 @@
               <span>9</span>
               <span>10</span>
             </div>
+            <!-- Cell state: hit, miss, sunk, hover -->
             <div class="cells">
               <button class="cell" data-x="1" data-y="1"></button>
               <button class="cell" data-x="2" data-y="1"></button>
@@ -265,6 +271,7 @@
 
       <div id="buttons" class="buttons" tabindex="0">
         <button class="randomize-board">Randomize</button>
+        <button class="random-attack">Random</button>
         <button class="rematch">Rematch</button>
         <button class="continue">Continue</button>
         <button class="stats">Stats</button>
