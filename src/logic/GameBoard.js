@@ -107,9 +107,17 @@ class GameBoard {
     return [row, col];
   }
 
+  #storePlacement(coordinates, shipId, placementDirection) {
+    const shipPosition = shipId - 1;
+    const ship = this.fleet[shipPosition];
+    ship.head = coordinates;
+    ship.placementDirection = placementDirection;
+  }
+
   #deployShip(row, col, ship, shipId, direction) {
     const [dirRow, dirCol] = direction;
     const shipLength = ship.vessel.length;
+    this.#storePlacement([row, col], shipId, direction);
 
     const token = shipId;
     let currRow = row;

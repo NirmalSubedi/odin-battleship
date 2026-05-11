@@ -199,7 +199,7 @@ describe("placeShip method", () => {
     ]);
   });
 
-  it("places multiple ships", () => {
+  it("places consecutive ships", () => {
     board.placeShip([1, 1]);
     board.placeShip([0, 0], 2);
     expect(board.peak).toEqual([
