@@ -11,15 +11,20 @@
     <div class="screen-overlay" data-screen="attack">
       <header>
         <h1 class="game-name">BattleShip</h1>
-        <div class="announce alternative">
-          <span class="message">Tommy Mommy's Turn</span>
+        <div class="announce">
+          <span class="message">Bob WINS!</span>
         </div>
 
-        <div class="instructions hide">
+        <div class="instructions">
           <p class="message">
             <span class="icon"></span>
-            <span class="action"></span>Ship has been destroyed!
+            <span class="action">Attack: </span>Select a square!
           </p>
+          <p class="report">
+            <span class="ship-name">Carrier</span>
+            <span class="text"> has been destroyed!</span>
+          </p>
+          <p class="feedback"><span>Game Over!</span></p>
         </div>
       </header>
 
@@ -102,11 +107,11 @@
             <!-- Cell state: hit, miss, sunk, hover -->
             <div class="cells">
               <button class="cell" data-x="1" data-y="1"></button>
-              <button class="cell" data-x="2" data-y="1"></button>
-              <button class="cell" data-x="3" data-y="1"></button>
-              <button class="cell" data-x="4" data-y="1"></button>
-              <button class="cell" data-x="5" data-y="1"></button>
-              <button class="cell" data-x="6" data-y="1"></button>
+              <button class="cell miss" data-x="2" data-y="1"></button>
+              <button class="cell sunk" data-x="3" data-y="1"></button>
+              <button class="cell sunk" data-x="4" data-y="1"></button>
+              <button class="cell sunk" data-x="5" data-y="1"></button>
+              <button class="cell sunk" data-x="6" data-y="1"></button>
               <button class="cell" data-x="7" data-y="1"></button>
               <button class="cell" data-x="8" data-y="1"></button>
               <button class="cell" data-x="9" data-y="1"></button>
@@ -121,7 +126,7 @@
               <button class="cell" data-x="8" data-y="2"></button>
               <button class="cell" data-x="9" data-y="2"></button>
               <button class="cell" data-x="10" data-y="2"></button>
-              <button class="cell" data-x="1" data-y="3"></button>
+              <button class="cell sunk" data-x="1" data-y="3"></button>
               <button class="cell" data-x="2" data-y="3"></button>
               <button class="cell" data-x="3" data-y="3"></button>
               <button class="cell" data-x="4" data-y="3"></button>
@@ -131,23 +136,23 @@
               <button class="cell" data-x="8" data-y="3"></button>
               <button class="cell" data-x="9" data-y="3"></button>
               <button class="cell" data-x="10" data-y="3"></button>
-              <button class="cell" data-x="1" data-y="4"></button>
-              <button class="cell" data-x="2" data-y="4"></button>
+              <button class="cell sunk" data-x="1" data-y="4"></button>
+              <button class="cell miss" data-x="2" data-y="4"></button>
               <button class="cell" data-x="3" data-y="4"></button>
-              <button class="cell" data-x="4" data-y="4"></button>
+              <button class="cell sunk" data-x="4" data-y="4"></button>
               <button class="cell" data-x="5" data-y="4"></button>
               <button class="cell" data-x="6" data-y="4"></button>
               <button class="cell" data-x="7" data-y="4"></button>
               <button class="cell" data-x="8" data-y="4"></button>
               <button class="cell" data-x="9" data-y="4"></button>
               <button class="cell" data-x="10" data-y="4"></button>
-              <button class="cell" data-x="1" data-y="5"></button>
-              <button class="cell" data-x="2" data-y="5"></button>
+              <button class="cell sunk" data-x="1" data-y="5"></button>
+              <button class="cell miss" data-x="2" data-y="5"></button>
               <button class="cell" data-x="3" data-y="5"></button>
-              <button class="cell" data-x="4" data-y="5"></button>
+              <button class="cell sunk" data-x="4" data-y="5"></button>
               <button class="cell" data-x="5" data-y="5"></button>
               <button class="cell" data-x="6" data-y="5"></button>
-              <button class="cell" data-x="7" data-y="5"></button>
+              <button class="cell sunk" data-x="7" data-y="5"></button>
               <button class="cell" data-x="8" data-y="5"></button>
               <button class="cell" data-x="9" data-y="5"></button>
               <button class="cell" data-x="10" data-y="5"></button>
@@ -157,7 +162,7 @@
               <button class="cell" data-x="4" data-y="6"></button>
               <button class="cell" data-x="5" data-y="6"></button>
               <button class="cell" data-x="6" data-y="6"></button>
-              <button class="cell" data-x="7" data-y="6"></button>
+              <button class="cell sunk" data-x="7" data-y="6"></button>
               <button class="cell" data-x="8" data-y="6"></button>
               <button class="cell" data-x="9" data-y="6"></button>
               <button class="cell" data-x="10" data-y="6"></button>
@@ -167,7 +172,7 @@
               <button class="cell" data-x="4" data-y="7"></button>
               <button class="cell" data-x="5" data-y="7"></button>
               <button class="cell" data-x="6" data-y="7"></button>
-              <button class="cell" data-x="7" data-y="7"></button>
+              <button class="cell sunk" data-x="7" data-y="7"></button>
               <button class="cell" data-x="8" data-y="7"></button>
               <button class="cell" data-x="9" data-y="7"></button>
               <button class="cell" data-x="10" data-y="7"></button>
@@ -183,11 +188,11 @@
               <button class="cell" data-x="10" data-y="8"></button>
               <button class="cell" data-x="1" data-y="9"></button>
               <button class="cell" data-x="2" data-y="9"></button>
-              <button class="cell" data-x="3" data-y="9"></button>
-              <button class="cell" data-x="4" data-y="9"></button>
-              <button class="cell" data-x="5" data-y="9"></button>
-              <button class="cell" data-x="6" data-y="9"></button>
-              <button class="cell" data-x="7" data-y="9"></button>
+              <button class="cell sunk" data-x="3" data-y="9"></button>
+              <button class="cell sunk" data-x="4" data-y="9"></button>
+              <button class="cell sunk" data-x="5" data-y="9"></button>
+              <button class="cell sunk" data-x="6" data-y="9"></button>
+              <button class="cell sunk" data-x="7" data-y="9"></button>
               <button class="cell" data-x="8" data-y="9"></button>
               <button class="cell" data-x="9" data-y="9"></button>
               <button class="cell" data-x="10" data-y="9"></button>
@@ -202,10 +207,8 @@
               <button class="cell" data-x="9" data-y="10"></button>
               <button class="cell" data-x="10" data-y="10"></button>
             </div>
-            <div class="ship-count">
-              Ships Left: <span class="ships"></span>
-            </div>
-            <div class="board-label">Player John's Board</div>
+            <p class="ship-count">Ships Left: <span class="ships">0</span></p>
+            <p class="board-label">Player John's Board</p>
           </div>
         </div>
 
@@ -254,21 +257,6 @@
         </aside>
       </main>
 
-      <dialog class="stats">
-        <button class="close-stats">X</button>
-        <h2 class="title">Stats</h2>
-        <div class="player1-stats">
-          <p class="ships-sunk">Ships sunk: <span class="stat"></span></p>
-          <p class="hit-accuracy">Hits Accuracy: <span class="stat"></span></p>
-          <p class="shots-fired">Shots Fired: <span class="stat"></span></p>
-        </div>
-        <div class="player2-stats">
-          <p class="ships-sunk">Ships sunk: <span class="stat"></span></p>
-          <p class="hit-accuracy">Hits Accuracy: <span class="stat"></span></p>
-          <p class="shots-fired">Shots Fired: <span class="stat"></span></p>
-        </div>
-      </dialog>
-
       <div id="buttons" class="buttons" tabindex="0">
         <button class="randomize-board">Randomize</button>
         <button class="random-attack">Random</button>
@@ -278,6 +266,30 @@
         <button class="home-screen">Home</button>
         <button class="reset-board">Reset</button>
       </div>
+
+      <dialog class="stats" closedby="any">
+        <form method="dialog">
+          <h2 class="title">Stats</h2>
+          <button class="close-stats" autofocus></button>
+
+          <div class="player1-stats">
+            <p class="player-name">Bob</p>
+            <p class="ships-sunk">Ships Sunk: <span class="stat">5</span></p>
+            <p class="hit-accuracy">
+              Hits Accuracy: <span class="stat">90%</span>
+            </p>
+            <p class="shots-fired">Shots Fired: <span class="stat">20</span></p>
+          </div>
+          <div class="player2-stats">
+            <p class="player-name">Tommy Mommy</p>
+            <p class="ships-sunk">Ships Sunk: <span class="stat">1</span></p>
+            <p class="hit-accuracy">
+              Hits Accuracy: <span class="stat">27%</span>
+            </p>
+            <p class="shots-fired">Shots Fired: <span class="stat">19</span></p>
+          </div>
+        </form>
+      </dialog>
     </div>
   </body>
 </html>

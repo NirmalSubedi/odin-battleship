@@ -18,11 +18,14 @@
 
   --clr-disabled-button: #0000001a;
 
+  --clr-dialog-bg: #fff3b7;
+
   /* Font Family */
   --ff-system-ui:
     system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --ff-one: var(--ff-system-ui);
+  --ff-mono: monospace;
+  --ff-primary: var(--ff-system-ui);
 
   /* Font Sizes */
   --font-scale: 1.25;
@@ -72,7 +75,7 @@ body {
   -webkit-font-smoothing: antialiased;
   background-color: var(--clr-bg);
   color: var(--clr-text);
-  font-family: var(--ff-one);
+  font-family: var(--ff-primary);
   font-size: var(--fs-p);
 }
 
@@ -139,6 +142,17 @@ Custom Styles
   display: none !important;
 }
 
+.game-modes,
+.main,
+aside .controls,
+.buttons,
+.ship-count,
+.instructions,
+.row-numbers,
+.column-numbers {
+  font-family: var(--ff-mono, --ff-primary);
+}
+
 .screen-overlay {
   --board-cell-size: 40px;
   --_announce-width: 580px;
@@ -196,6 +210,10 @@ header {
   color: var(--clr-text);
 }
 
+[data-screen="over"] .announce {
+  background: var(--clr-success);
+}
+
 .announce .message {
   font-size: calc(var(--_fs-game-name) * 0.96);
   font-weight: 800;
@@ -225,7 +243,8 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 [data-screen="attack"] .instructions,
-[data-screen="sunk"] .instructions {
+[data-screen="sunk"] .instructions,
+[data-screen="over"] .instructions {
   display: flex;
 }
 
@@ -237,8 +256,20 @@ header:has(~ .game-modes > *:hover) .announce::after {
   z-index: 1;
 }
 
-[data-screen="sunk"] .instructions .message {
-  color: var(--clr-success);
+.instructions > * {
+  display: none;
+}
+
+[data-screen="attack"] .instructions .message {
+  display: block;
+}
+
+[data-screen="sunk"] .instructions .report {
+  display: block;
+}
+
+[data-screen="over"] .instructions .feedback {
+  display: block;
 }
 
 .instructions .icon {
@@ -254,7 +285,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 [data-screen="attack"] .instructions .icon::before {
-  --_target-circle-size: var(--sp-2xsm);
+  --_target-circle-size: calc(var(--sp-xsm) * 0.8);
 
   content: "";
   grid-area: stack;
@@ -268,7 +299,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   border-radius: 50%;
   background: var(--clr-text);
   border: var(--bd-md) solid var(--clr-bg);
-  outline: var(--bd-xsm) solid var(--clr-gray-400);
+  outline: var(--bd-2xsm) solid var(--clr-gray-400);
 }
 
 [data-screen="attack"] .instructions .icon::after {
@@ -277,7 +308,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   content: "⤫";
   font-size: var(--fs-h4);
   height: 110%;
-  line-height: 1;
+  line-height: 1.2;
   font-weight: 100;
 }
 
@@ -287,6 +318,10 @@ header:has(~ .game-modes > *:hover) .announce::after {
 
 .message .action {
   font-weight: 700;
+}
+
+[data-screen="sunk"] .instructions .report {
+  color: var(--clr-success);
 }
 
 .game-modes {
@@ -476,7 +511,8 @@ main {
 
 [data-screen="fleet"] main,
 [data-screen="attack"] main,
-[data-screen="sunk"] main {
+[data-screen="sunk"] main,
+[data-screen="over"] main {
   display: grid;
 }
 
@@ -552,13 +588,13 @@ main .board .cells {
   border-color: var(--clr-success);
 }
 
-[data-screen="attack"] .cells .sunk {
+.cells .sunk {
   background: var(--clr-sunk-ship);
 }
 
 /* Hit/Miss Cell Styles */
-[data-screen="attack"] .cells .hit::after,
-[data-screen="attack"] .cells .miss::after {
+.cells .hit::after,
+.cells .miss::after {
   --_marker-size: 72%;
 
   display: block;
@@ -571,7 +607,7 @@ main .board .cells {
   content: "";
 }
 
-[data-screen="attack"] .cells .miss::after {
+.cells .miss::after {
   background: var(--clr-gray-600);
   border-color: var(--clr-gray-400);
 }
@@ -618,7 +654,8 @@ main .board .cells {
   font-size: calc(var(--fs-p) * 0.9);
 }
 
-[data-screen="attack"] .board .ship-count {
+[data-screen="attack"] .board .ship-count,
+[data-screen="over"] .board .ship-count {
   visibility: visible;
 }
 
@@ -691,13 +728,119 @@ aside .fleet-label {
   border-bottom: var(--bd-2xsm) solid var(--clr-text);
 }
 
+dialog.stats {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  padding: 0;
+  padding-bottom: 3em;
+  border: calc(var(--bd-xsm) * 2) solid var(--clr-text);
+  background: var(--clr-dialog-bg);
+}
+
+dialog.stats form {
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  grid-template-areas:
+    "head head"
+    "player1 player2";
+  gap: var(--sp-lg) var(--sp-2xlg);
+}
+
+dialog .title {
+  grid-area: head;
+  line-height: 2;
+  font-size: var(--fs-h5);
+}
+
+dialog .close-stats {
+  grid-area: head;
+  position: absolute;
+  top: -1px;
+  right: 0;
+
+  box-sizing: content-box;
+  width: 5%;
+  height: 9%;
+  padding: var(--sp-3xsm) var(--sp-xsm) var(--sp-3xsm) var(--sp-xsm);
+  border: calc(var(--bd-2xsm) * 2) solid var(--clr-text);
+  border-top: 0;
+  border-right: 0;
+
+  background: var(--clr-text);
+  color: var(--clr-dialog-bg);
+}
+
+dialog .close-stats::before,
+dialog .close-stats::after {
+  --_height: 100%;
+
+  content: "";
+  position: absolute;
+  top: 0;
+  height: var(--_height);
+  border-left: var(--bd-xsm) solid;
+  transform: rotateZ(45deg);
+}
+
+dialog .close-stats::after {
+  transform: rotateZ(-45deg);
+}
+
+dialog .close-stats:hover {
+  background: var(--clr-dialog-bg);
+  color: var(--clr-text);
+}
+
+dialog .close-stats:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--clr-bg);
+  border-radius: 4px;
+}
+
+dialog .close-stats:active {
+  background: var(--clr-ship-lite);
+}
+
+dialog [class*="player"][class$="stats"] {
+  display: grid;
+  gap: var(--sp-lg);
+
+  font-weight: 400;
+}
+
+dialog .player1-stats {
+  grid-area: player1;
+  padding-left: calc(var(--sp-lg) * 2);
+}
+
+dialog .player2-stats {
+  grid-area: player2;
+  padding-right: calc(var(--sp-lg) * 2);
+}
+
+dialog .player-name {
+  text-align: center;
+  border-bottom: var(--bd-2xsm) solid var(--clr-text);
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+dialog .stat {
+  font-weight: 700;
+}
+
 .buttons {
   padding: var(--sp-lg) auto 0;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 17ch;
+  grid-auto-columns: 14ch;
   justify-content: center;
   gap: var(--sp-md);
+
+  font-size: calc(var(--fs-p) * 0.9);
 }
 
 .buttons:focus {
@@ -713,8 +856,10 @@ aside .fleet-label {
   margin-top: 40vh;
 }
 
+[data-screen="fleet"] .buttons,
 [data-screen="attack"] .buttons,
-[data-screen="sunk"] .buttons {
+[data-screen="sunk"] .buttons,
+[data-screen="over"] .buttons {
   margin-top: var(--sp-md);
 }
 
