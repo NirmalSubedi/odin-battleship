@@ -181,7 +181,7 @@ header {
   font-size: var(--_fs-game-name);
 }
 
-.game-name::before {
+.game-name::after {
   position: absolute;
   width: 100vw;
   left: -50vw;
@@ -224,10 +224,12 @@ header {
   display: block;
   width: calc(100% / 2);
   height: 100%;
+
   position: absolute;
   bottom: -7.5vh;
   right: 50%;
   z-index: -1;
+  pointer-events: none;
 
   content: "";
   border-right: var(--bd-2xsm) solid var(--clr-text);
@@ -348,6 +350,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   position: absolute;
   left: 50%;
   top: -7.5vh;
+  pointer-events: none;
 
   content: "";
   border-left: var(--bd-2xsm) solid var(--clr-text);
