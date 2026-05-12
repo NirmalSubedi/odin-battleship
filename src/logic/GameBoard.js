@@ -221,6 +221,8 @@ class GameBoard {
   }
 
   #getShip(shipId) {
+    if (!Number.isInteger(shipId))
+      throw new TypeError("Ship Id should be a integer.");
     if (shipId <= 0) return null;
 
     const shipPosition = shipId - 1;
@@ -231,13 +233,15 @@ class GameBoard {
     return this.fleet.every((ship) => ship.vessel.isSunk());
   }
 
-  #hitShip(row, col, ship = {}) {
-    const HIT = -1;
+  #hitShip(row, col, shipId) {
+    const HIT = -2;
 
     this.#board[row][col] = HIT;
+    const ship = this.#getShip(shipId);
     ship.vessel.hit();
 
     const sunk = ship.vessel.isSunk();
+    if (sunk) this.#sinkShip(shipId);
 
     return {
       hit: true,
@@ -246,8 +250,27 @@ class GameBoard {
     };
   }
 
+  #sinkShip(shipId) {
+    const SINK = -3;
+
+    const ship = this.#getShip(shipId);
+    const coordinates = ship.head;
+    const placedDirection = ship.placementDirection;
+    const shipLength = ship.vessel.length;
+
+    let [currRow, currCol] = coordinates;
+    const [dirRow, dirCol] = placedDirection;
+
+    for (let i = 0; i < shipLength; ++i) {
+      this.#board[currRow][currCol] = SINK;
+
+      currRow += dirRow;
+      currCol += dirCol;
+    }
+  }
+
   #missShip(row, col) {
-    const MISS = -2;
+    const MISS = -1;
     this.#board[row][col] = MISS;
 
     return { hit: false };
@@ -264,7 +287,7 @@ class GameBoard {
     if (isDuplicateAttack) {
       result = null;
     } else if (ship) {
-      result = this.#hitShip(row, col, ship);
+      result = this.#hitShip(row, col, shipId);
     } else {
       result = this.#missShip(row, col);
     }

@@ -269,18 +269,37 @@ describe("receiveAttack method", () => {
     expect(secondShipHitMethod).toHaveBeenCalled();
   });
 
-  it("updates coordinates of hit with '-1'", () => {
-    board.placeShip([0, 0]);
-    board.receiveAttack([0, 0]);
-
-    expect(board.peak[0][0]).toBe(-1);
-  });
-
-  it("updates coordinates of miss with '-2'", () => {
+  it("updates coordinates of miss with '-1'", () => {
     board.placeShip([0, 0]);
     board.receiveAttack([2, 2]);
 
-    expect(board.peak[2][2]).toBe(-2);
+    expect(board.peak[2][2]).toBe(-1);
+  });
+
+  it("updates coordinates of hit with '-2'", () => {
+    board.placeShip([0, 0], 2);
+    board.receiveAttack([0, 0]);
+
+    expect(board.peak[0][0]).toBe(-2);
+  });
+
+  it("updates coordinates of sunk ship with -3", () => {
+    board.placeShip([0, 0]);
+    board.receiveAttack([0, 0]);
+
+    expect(board.peak[0][0]).toBe(-3);
+  });
+
+  it("updates all coordinates of sunk ship with -3", () => {
+    board.placeShip([0, 0], 2);
+    board.receiveAttack([0, 0]);
+    board.receiveAttack([1, 0]);
+
+    expect(board.peak).toEqual([
+      [-3, 0, 0],
+      [-3, 0, 0],
+      [0, 0, 0],
+    ]);
   });
 
   it("returns correct object for shot that hits and sinks ship", () => {
