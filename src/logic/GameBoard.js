@@ -81,7 +81,7 @@ class GameBoard {
   }
 
   #addShipToFleet(length, name) {
-    const ship = { name, vessel: new Ship().setLength(length) };
+    const ship = new Ship().setLength(length).setName(name);
     this.#fleet.push(ship);
 
     return ship;
@@ -106,11 +106,11 @@ class GameBoard {
     return this.peak[row]?.[col] !== WATER;
   }
 
-  #isDeploymentZoneAvailable(coordinates, shipLength, direction) {
+  #isDeploymentZoneAvailable(coordinates, ship, direction) {
     const [dr, dc] = this.#validateDirection(direction);
     let [currRow, currCol] = this.#validateCoordinates(coordinates);
 
-    for (let i = 0; i < shipLength; ++i) {
+    for (let i = 0; i < ship.length; ++i) {
       if (this.#isOccupiedSquare(currRow, currCol)) return false;
 
       currRow += dr;
@@ -122,7 +122,6 @@ class GameBoard {
 
   #getDirectionToDeployShip(coordinates, shipId) {
     const ship = this.#getShip(shipId);
-    const shipLength = ship.vessel.length;
     const directions = [
       [0, 1],
       [1, 0],
@@ -132,7 +131,7 @@ class GameBoard {
     let positionDirection = null;
 
     for (const direction of directions) {
-      if (this.#isDeploymentZoneAvailable(coordinates, shipLength, direction)) {
+      if (this.#isDeploymentZoneAvailable(coordinates, ship, direction)) {
         positionDirection = direction;
         break;
       }
@@ -158,14 +157,13 @@ class GameBoard {
 
   #deployShip(coordinates, shipId, direction) {
     const ship = this.#getShip(shipId);
-    const shipLength = ship.vessel.length;
     this.#storePlacement(coordinates, shipId, direction);
 
     const token = shipId;
     const [dirRow, dirCol] = direction;
     let [currRow, currCol] = this.#validateCoordinates(coordinates);
 
-    for (let i = 0; i < shipLength; ++i) {
+    for (let i = 0; i < ship.length; ++i) {
       this.peak[currRow][currCol] = token;
 
       currRow += dirRow;
@@ -176,7 +174,7 @@ class GameBoard {
   #scoutBoard() {
     const LONGEST_SHIP = 0;
     const longestShipLength = this.#fleet
-      .toSorted((shipA, shipB) => shipB.vessel.length - shipA.vessel.length)
+      .toSorted((shipA, shipB) => shipB.length - shipA.length)
       .at(LONGEST_SHIP).length;
 
     if (longestShipLength > this.rows || longestShipLength > this.cols)
@@ -213,6 +211,8 @@ class GameBoard {
         shipHasNotBeenDeployed = false;
       }
     });
+
+    return this;
   }
 
   clearFleet() {
@@ -239,12 +239,13 @@ class GameBoard {
 
     this.#addShipToFleet(length, name);
     const shipId = this.#fleet.length;
+    const ship = this.#getShip(shipId);
     const placementDirection = this.#decodeDirection(direction);
 
     let placed = false;
 
     if (
-      this.#isDeploymentZoneAvailable(coordinates, length, placementDirection)
+      this.#isDeploymentZoneAvailable(coordinates, ship, placementDirection)
     ) {
       this.#deployShip(coordinates, shipId, placementDirection);
       placed = true;
@@ -254,7 +255,7 @@ class GameBoard {
   }
 
   isFleetSunk() {
-    return this.fleet.every((ship) => ship.vessel.isSunk());
+    return this.fleet.every((ship) => ship.isSunk());
   }
 
   #hitShip(row, col, shipId) {
@@ -262,10 +263,10 @@ class GameBoard {
 
     this.#board[row][col] = HIT;
     const ship = this.#getShip(shipId);
-    ship.vessel.hit();
+    ship.hit();
 
-    const sunk = ship.vessel.isSunk();
-    if (sunk) this.#sinkShip(shipId);
+    const sunk = ship.isSunk();
+    if (sunk) this.#sinkAllShipParts(shipId);
 
     return {
       hit: true,
@@ -274,18 +275,17 @@ class GameBoard {
     };
   }
 
-  #sinkShip(shipId) {
+  #sinkAllShipParts(shipId) {
     const SINK = -3;
 
     const ship = this.#getShip(shipId);
     const coordinates = ship.head;
     const placedDirection = ship.placementDirection;
-    const shipLength = ship.vessel.length;
 
     let [currRow, currCol] = coordinates;
     const [dirRow, dirCol] = placedDirection;
 
-    for (let i = 0; i < shipLength; ++i) {
+    for (let i = 0; i < ship.length; ++i) {
       this.#board[currRow][currCol] = SINK;
 
       currRow += dirRow;

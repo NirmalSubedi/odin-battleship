@@ -1,6 +1,7 @@
 class Ship {
   #length = 0;
   #hits = 0;
+  #name;
 
   get hits() {
     return this.#hits;
@@ -8,6 +9,10 @@ class Ship {
 
   get length() {
     return this.#length;
+  }
+
+  get name() {
+    return this.#name;
   }
 
   setLength(n) {
@@ -26,6 +31,13 @@ class Ship {
 
   isSunk() {
     return this.hits >= this.length;
+  }
+
+  setName(name = "Ship") {
+    if (typeof name !== "string") throw new TypeError("Name must be a string");
+    this.#name = name;
+
+    return this;
   }
 }
 

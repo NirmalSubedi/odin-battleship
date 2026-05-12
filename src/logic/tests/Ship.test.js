@@ -138,3 +138,60 @@ describe("isSunk method", () => {
     expect(ship.isSunk()).toBe(false);
   });
 });
+
+describe("name property", () => {
+  it("exists", () => {
+    const ship = new Ship().setName();
+    expect("name" in ship).toBe(true);
+  });
+
+  it("throws Error when writing to it", () => {
+    const ship = new Ship().setName();
+    expect(ship.name).toBe("Ship");
+
+    expect(() => {
+      ship.name = "Whatever";
+    }).toThrow(Error);
+  });
+});
+
+describe("setName method", () => {
+  it("exists", () => hasMethod(Ship, "setName"));
+
+  it("returns ship instance", () => {
+    const ship = new Ship();
+
+    expect(ship.setName()).toBe(ship);
+  });
+
+  it('sets name to "Ship" by default', () => {
+    const ship = new Ship().setName();
+    expect(ship.name).toBe("Ship");
+  });
+
+  it("sets name to specified name", () => {
+    const ship = new Ship().setName("raft");
+    expect(ship.name).toBe("raft");
+  });
+
+  it("sets name consecutively", () => {
+    const ship = new Ship().setName();
+    expect(ship.name).toBe("Ship");
+    ship.setName("marine");
+    expect(ship.name).toBe("marine");
+    ship.setName("captain");
+    expect(ship.name).toBe("captain");
+  });
+
+  it("throws TypeError for non-string types", () => {
+    const ship = new Ship();
+
+    expect(() => ship.setName(null)).toThrow(TypeError);
+    expect(() => ship.setName(1)).toThrow(TypeError);
+    expect(() => ship.setName(1n)).toThrow(TypeError);
+    expect(() => ship.setName(() => {})).toThrow(TypeError);
+    expect(() => ship.setName([])).toThrow(TypeError);
+    expect(() => ship.setName({})).toThrow(TypeError);
+    expect(() => ship.setName(true)).toThrow(TypeError);
+  });
+});

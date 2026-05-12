@@ -131,7 +131,7 @@ describe("placeShip method", () => {
 
     const RECENT_SHIP = -1;
     const ship = board.fleet.at(RECENT_SHIP);
-    const recentShipLength = ship.vessel.length;
+    const recentShipLength = ship.length;
     expect(recentShipLength).toBe(1);
   });
 
@@ -141,7 +141,7 @@ describe("placeShip method", () => {
 
     const RECENT_SHIP = -1;
     const ship = board.fleet.at(RECENT_SHIP);
-    const recentShipLength = ship.vessel.length;
+    const recentShipLength = ship.length;
     expect(recentShipLength).toBe(createdShipLength);
   });
 
@@ -254,7 +254,7 @@ describe("receiveAttack method", () => {
     board.placeShip([1, 1]);
 
     const SHIP_POSITION = 0;
-    const ship = board.fleet.at(SHIP_POSITION).vessel;
+    const ship = board.fleet.at(SHIP_POSITION);
     const hitMethod = jest.spyOn(ship, "hit");
 
     board.receiveAttack([1, 1]);
@@ -267,8 +267,8 @@ describe("receiveAttack method", () => {
 
     const FIRST_SHIP_POSITION = 0;
     const SECOND_SHIP_POSITION = 1;
-    const firstShip = board.fleet.at(FIRST_SHIP_POSITION).vessel;
-    const secondShip = board.fleet.at(SECOND_SHIP_POSITION).vessel;
+    const firstShip = board.fleet.at(FIRST_SHIP_POSITION);
+    const secondShip = board.fleet.at(SECOND_SHIP_POSITION);
 
     const firstShipHitMethod = jest.spyOn(firstShip, "hit");
     const secondShipHitMethod = jest.spyOn(secondShip, "hit");
