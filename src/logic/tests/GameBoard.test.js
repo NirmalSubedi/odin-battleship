@@ -219,6 +219,15 @@ describe("placeShip method", () => {
     ]);
   });
 
+  it("does not place ship bigger than the board", () => {
+    board.placeShip([0, 0], 4);
+    expect(board.peak).toEqual([
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ]);
+  });
+
   it("returns true if ship is placed", () => {
     expect(board.placeShip([0, 0])).toBe(true);
   });

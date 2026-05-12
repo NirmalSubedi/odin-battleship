@@ -39,6 +39,47 @@ class GameBoard {
     return this.#fleet;
   }
 
+  #getShip(shipId) {
+    if (shipId === undefined) throw new Error("Ship Id is missing.");
+    if (!Number.isInteger(shipId))
+      throw new TypeError("Ship Id should be a integer.");
+    if (shipId <= 0) return null;
+
+    const shipPosition = shipId - 1;
+    return this.#fleet[shipPosition];
+  }
+
+  #validateCoordinates(coordinates) {
+    if (coordinates == null) throw new ReferenceError("Coordinates missing.");
+    if (coordinates.length === 1) throw new ReferenceError("Column missing.");
+
+    const [row, col] = coordinates;
+    if (!Number.isInteger(row) || !Number.isInteger(col))
+      throw new TypeError(`Coordinates must be integers.`);
+    if (row < 0 || col < 0 || row >= this.rows || col >= this.cols)
+      throw new RangeError("Coordinates are out of bound.");
+
+    return coordinates;
+  }
+
+  #validateDirection(direction = []) {
+    if (!Array.isArray(direction))
+      throw new TypeError("Direction must be an array.");
+    if (direction.length < 2)
+      throw new ReferenceError("Direction row and column are missing");
+
+    const [dirRow, dirCol] = direction;
+    if (!Number.isInteger(dirRow) || !Number.isInteger(dirCol))
+      throw new TypeError(`Direction row and column must be integers.`);
+
+    if (!(Math.abs(dirRow) === 1 || dirRow === 0))
+      throw new Error("Row direction should be -1, 0, or 1.");
+    if (!(Math.abs(dirCol) === 1 || dirCol === 0))
+      throw new Error("Column direction should be -1, 0, or 1.");
+
+    return direction;
+  }
+
   #addShipToFleet(length, name) {
     const ship = { name, vessel: new Ship().setLength(length) };
     this.#fleet.push(ship);
@@ -65,10 +106,9 @@ class GameBoard {
     return this.peak[row]?.[col] !== WATER;
   }
 
-  #isDeploymentZoneAvailable(row, col, shipLength, direction) {
-    const [dr, dc] = direction;
-    let currRow = row;
-    let currCol = col;
+  #isDeploymentZoneAvailable(coordinates, shipLength, direction) {
+    const [dr, dc] = this.#validateDirection(direction);
+    let [currRow, currCol] = this.#validateCoordinates(coordinates);
 
     for (let i = 0; i < shipLength; ++i) {
       if (this.#isOccupiedSquare(currRow, currCol)) return false;
@@ -80,7 +120,8 @@ class GameBoard {
     return true;
   }
 
-  #getDirectionToDeployShip(row, col, ship) {
+  #getDirectionToDeployShip(coordinates, shipId) {
+    const ship = this.#getShip(shipId);
     const shipLength = ship.vessel.length;
     const directions = [
       [0, 1],
@@ -91,7 +132,7 @@ class GameBoard {
     let positionDirection = null;
 
     for (const direction of directions) {
-      if (this.#isDeploymentZoneAvailable(row, col, shipLength, direction)) {
+      if (this.#isDeploymentZoneAvailable(coordinates, shipLength, direction)) {
         positionDirection = direction;
         break;
       }
@@ -108,20 +149,21 @@ class GameBoard {
   }
 
   #storePlacement(coordinates, shipId, placementDirection) {
-    const shipPosition = shipId - 1;
-    const ship = this.fleet[shipPosition];
+    this.#validateCoordinates(coordinates);
+    const ship = this.#getShip(shipId);
+
     ship.head = coordinates;
-    ship.placementDirection = placementDirection;
+    ship.placementDirection = this.#validateDirection(placementDirection);
   }
 
-  #deployShip(row, col, ship, shipId, direction) {
-    const [dirRow, dirCol] = direction;
+  #deployShip(coordinates, shipId, direction) {
+    const ship = this.#getShip(shipId);
     const shipLength = ship.vessel.length;
-    this.#storePlacement([row, col], shipId, direction);
+    this.#storePlacement(coordinates, shipId, direction);
 
     const token = shipId;
-    let currRow = row;
-    let currCol = col;
+    const [dirRow, dirCol] = direction;
+    let [currRow, currCol] = this.#validateCoordinates(coordinates);
 
     for (let i = 0; i < shipLength; ++i) {
       this.peak[currRow][currCol] = token;
@@ -136,6 +178,7 @@ class GameBoard {
     const longestShipLength = this.#fleet
       .toSorted((shipA, shipB) => shipB.vessel.length - shipA.vessel.length)
       .at(LONGEST_SHIP).length;
+
     if (longestShipLength > this.rows || longestShipLength > this.cols)
       throw new Error("Board is too small for the longest ship.");
 
@@ -144,6 +187,7 @@ class GameBoard {
     const fleetSpace = longestShipLength * numberOfShips;
     const WATER_RATIO = 1;
     const waterSpace = fleetSpace * WATER_RATIO;
+
     if (boardSpace < fleetSpace + waterSpace)
       throw new Error("Board is too small for the fleet.");
   }
@@ -152,7 +196,7 @@ class GameBoard {
     if (this.#fleet.length === 0) throw new Error("Fleet is empty.");
     this.#scoutBoard();
 
-    this.#fleet.forEach((ship, index) => {
+    this.#fleet.forEach((_, index) => {
       const shipId = index + 1;
       let shipHasNotBeenDeployed = true;
 
@@ -161,11 +205,11 @@ class GameBoard {
         const [row, col] = coordinates;
         if (this.#isOccupiedSquare(row, col)) continue;
 
-        const direction = this.#getDirectionToDeployShip(row, col, ship);
+        const direction = this.#getDirectionToDeployShip(coordinates, shipId);
         const missingDirection = direction === null;
         if (missingDirection) continue;
 
-        this.#deployShip(row, col, ship, shipId, direction);
+        this.#deployShip(coordinates, shipId, direction);
         shipHasNotBeenDeployed = false;
       }
     });
@@ -175,19 +219,6 @@ class GameBoard {
     this.#fleet.length = 0;
 
     return this;
-  }
-
-  #validateCoordinates(coordinates) {
-    if (coordinates == null) throw new ReferenceError("Coordinates missing.");
-    if (coordinates.length === 1) throw new ReferenceError("Column missing.");
-
-    const [row, col] = coordinates;
-    if (!Number.isInteger(row) || !Number.isInteger(col))
-      throw new TypeError(`Coordinates must be integers.`);
-    if (row < 0 || col < 0 || row >= this.rows || col >= this.cols)
-      throw new RangeError("Coordinates are out of bound.");
-
-    return coordinates;
   }
 
   #decodeDirection(direction = "") {
@@ -204,29 +235,22 @@ class GameBoard {
   }
 
   placeShip(coordinates, length = 1, direction = "", name = "") {
-    const [row, col] = this.#validateCoordinates(coordinates);
+    this.#validateCoordinates(coordinates);
 
-    const ship = this.#addShipToFleet(length, name);
+    this.#addShipToFleet(length, name);
     const shipId = this.#fleet.length;
     const placementDirection = this.#decodeDirection(direction);
 
     let placed = false;
 
-    if (this.#isDeploymentZoneAvailable(row, col, length, placementDirection)) {
-      this.#deployShip(row, col, ship, shipId, placementDirection);
+    if (
+      this.#isDeploymentZoneAvailable(coordinates, length, placementDirection)
+    ) {
+      this.#deployShip(coordinates, shipId, placementDirection);
       placed = true;
     }
 
     return placed;
-  }
-
-  #getShip(shipId) {
-    if (!Number.isInteger(shipId))
-      throw new TypeError("Ship Id should be a integer.");
-    if (shipId <= 0) return null;
-
-    const shipPosition = shipId - 1;
-    return this.#fleet[shipPosition];
   }
 
   isFleetSunk() {
