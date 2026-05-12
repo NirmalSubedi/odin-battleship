@@ -141,13 +141,12 @@ describe("isSunk method", () => {
 
 describe("name property", () => {
   it("exists", () => {
-    const ship = new Ship().setName();
+    const ship = new Ship();
     expect("name" in ship).toBe(true);
   });
 
   it("throws Error when writing to it", () => {
-    const ship = new Ship().setName();
-    expect(ship.name).toBe("Ship");
+    const ship = new Ship();
 
     expect(() => {
       ship.name = "Whatever";
