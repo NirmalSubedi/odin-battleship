@@ -1,12 +1,9 @@
-import { GameBoard } from "./index.js";
-
 class Player {
   type;
   board;
 
-  constructor({ type = "computer", row, col } = {}) {
+  constructor({ type = "computer" } = {}) {
     this.type = type;
-    this.board = new GameBoard(row, col);
   }
 }
 

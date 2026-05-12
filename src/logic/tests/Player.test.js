@@ -1,4 +1,4 @@
-import { GameBoard, Player } from "../index.js";
+import { Player } from "../index.js";
 
 describe("Player Constructor", () => {
   it("exists", () => {
@@ -13,7 +13,7 @@ describe("Player Constructor", () => {
 
   it("contains type property", () => {
     const player = new Player();
-    expect(player.type).toBeDefined();
+    expect(Object.hasOwn(player, "type")).toBe(true);
   });
 
   it("sets type to computer by default", () => {
@@ -28,29 +28,6 @@ describe("Player Constructor", () => {
 
   it("contains board property", () => {
     const player = new Player();
-    expect(player.board).toBeDefined();
-  });
-
-  it("creates GameBoard instance", () => {
-    const player = new Player();
-    expect(player.board instanceof GameBoard).toBe(true);
-  });
-
-  it("creates unique GameBoard instance", () => {
-    const player1 = new Player();
-    const player2 = new Player();
-    const isSameInstance = player1.board === player2.board;
-
-    expect(isSameInstance).toBe(false);
-  });
-
-  it("creates specified board size", () => {
-    const player = new Player({ row: 3, col: 3 });
-
-    expect(player.board.peak).toEqual([
-      [0, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
-    ]);
+    expect(Object.hasOwn(player, "board")).toBe(true);
   });
 });
