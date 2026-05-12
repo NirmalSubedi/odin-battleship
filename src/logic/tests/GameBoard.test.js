@@ -395,3 +395,88 @@ describe("isFleetSunk method", () => {
     expect(board.isFleetSunk()).toBe(false);
   });
 });
+
+describe("placeFleetRandomly method", () => {
+  it("exists", () => hasMethod(GameBoard, "placeFleetRandomly"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard();
+  });
+
+  it("returns board instance", () => {
+    board.useDefaultFleet();
+    expect(board.placeFleetRandomly()).toBe(board);
+  });
+
+  it("places ships", () => {
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+
+    board.useDefaultFleet().placeFleetRandomly();
+    expect(board.peak).not.toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("does nothing to already placed ship", () => {
+    board = new GameBoard(3, 3);
+    board.placeShip([1, 1]);
+    expect(board.peak).toEqual([
+      [0, 0, 0],
+      [0, 1, 0],
+      [0, 0, 0],
+    ]);
+
+    board.placeFleetRandomly();
+    expect(board.peak).toEqual([
+      [0, 0, 0],
+      [0, 1, 0],
+      [0, 0, 0],
+    ]);
+  });
+
+  it("throws ReferenceError for empty fleet", () => {
+    expect(() => board.placeFleetRandomly()).toThrow(ReferenceError);
+  });
+
+  it("throws RangeError for board smaller than the fleet", () => {
+    board = new GameBoard(1, 1);
+    board.useDefaultFleet();
+    expect(() => board.placeFleetRandomly()).toThrow(RangeError);
+  });
+
+  it("throws Error for fleet with less than 50% water space available", () => {
+    board = new GameBoard(5, 5);
+    board.useDefaultFleet();
+
+    const shipSpace = board.fleet.reduce((sum, ship) => sum + ship.length, 0);
+    const waterSpace = board.rows * board.cols;
+    const fiftyPercentWaterSpace = waterSpace * 0.5;
+
+    expect(shipSpace).toBe(17);
+    expect(fiftyPercentWaterSpace).toBe(12.5);
+    expect(fiftyPercentWaterSpace).toBeLessThan(shipSpace);
+
+    expect(() => board.placeFleetRandomly()).toThrow(Error);
+  });
+});

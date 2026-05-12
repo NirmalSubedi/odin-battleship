@@ -120,7 +120,7 @@ class GameBoard {
     return true;
   }
 
-  #getDirectionToDeployShip(coordinates, shipId) {
+  #getRandomDirection(coordinates, shipId) {
     const ship = this.#getShip(shipId);
     const directions = [
       [0, 1],
@@ -128,9 +128,18 @@ class GameBoard {
       [-1, 0],
       [0, -1],
     ];
+
+    const randomDirections = [];
+    directions.forEach((_) => {
+      const randomIndex = Math.floor(Math.random() * directions.length);
+      const randomDirection = directions[randomIndex];
+      randomDirections.push(randomDirection);
+      directions.splice(randomIndex, 1);
+    });
+
     let positionDirection = null;
 
-    for (const direction of directions) {
+    for (const direction of randomDirections) {
       if (this.#isDeploymentZoneAvailable(coordinates, ship, direction)) {
         positionDirection = direction;
         break;
@@ -155,7 +164,7 @@ class GameBoard {
     ship.placementDirection = this.#validateDirection(placementDirection);
   }
 
-  #deployShip(coordinates, shipId, direction) {
+  #place(coordinates, shipId, direction) {
     const ship = this.#getShip(shipId);
     this.#storePlacement(coordinates, shipId, direction);
 
@@ -178,7 +187,7 @@ class GameBoard {
       .at(LONGEST_SHIP).length;
 
     if (longestShipLength > this.rows || longestShipLength > this.cols)
-      throw new Error("Board is too small for the longest ship.");
+      throw new RangeError("Board is too small for the longest ship.");
 
     const boardSpace = this.rows * this.cols;
     const numberOfShips = this.#fleet.length;
@@ -187,28 +196,30 @@ class GameBoard {
     const waterSpace = fleetSpace * WATER_RATIO;
 
     if (boardSpace < fleetSpace + waterSpace)
-      throw new Error("Board is too small for the fleet.");
+      throw new Error(
+        "Board does not have more than 50% water space available the fleet."
+      );
   }
 
-  deployTheFleet() {
-    if (this.#fleet.length === 0) throw new Error("Fleet is empty.");
+  placeFleetRandomly() {
+    if (this.#fleet.length === 0) throw new ReferenceError("Fleet is empty.");
     this.#scoutBoard();
 
-    this.#fleet.forEach((_, index) => {
+    this.#fleet.forEach((ship, index) => {
       const shipId = index + 1;
-      let shipHasNotBeenDeployed = true;
+      let shipHasNotBeenPlaced = ship.placementDirection === undefined;
 
-      while (shipHasNotBeenDeployed) {
+      while (shipHasNotBeenPlaced) {
         const coordinates = this.#getRandomCoordinate();
         const [row, col] = coordinates;
         if (this.#isOccupiedSquare(row, col)) continue;
 
-        const direction = this.#getDirectionToDeployShip(coordinates, shipId);
+        const direction = this.#getRandomDirection(coordinates, shipId);
         const missingDirection = direction === null;
         if (missingDirection) continue;
 
-        this.#deployShip(coordinates, shipId, direction);
-        shipHasNotBeenDeployed = false;
+        this.#place(coordinates, shipId, direction);
+        shipHasNotBeenPlaced = false;
       }
     });
 
@@ -247,7 +258,7 @@ class GameBoard {
     if (
       this.#isDeploymentZoneAvailable(coordinates, ship, placementDirection)
     ) {
-      this.#deployShip(coordinates, shipId, placementDirection);
+      this.#place(coordinates, shipId, placementDirection);
       placed = true;
     }
 
