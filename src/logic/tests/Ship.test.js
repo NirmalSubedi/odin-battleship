@@ -157,24 +157,27 @@ describe("name property", () => {
 describe("setName method", () => {
   it("exists", () => hasMethod(Ship, "setName"));
 
-  it("returns ship instance", () => {
-    const ship = new Ship();
+  let ship;
+  beforeEach(() => {
+    ship = new Ship();
+  });
 
+  it("returns ship instance", () => {
     expect(ship.setName()).toBe(ship);
   });
 
   it('sets name to "Ship" by default', () => {
-    const ship = new Ship().setName();
+    ship.setName();
     expect(ship.name).toBe("Ship");
   });
 
   it("sets name to specified name", () => {
-    const ship = new Ship().setName("raft");
+    ship.setName("raft");
     expect(ship.name).toBe("raft");
   });
 
   it("sets name consecutively", () => {
-    const ship = new Ship().setName();
+    ship.setName();
     expect(ship.name).toBe("Ship");
     ship.setName("marine");
     expect(ship.name).toBe("marine");
@@ -183,8 +186,7 @@ describe("setName method", () => {
   });
 
   it("throws TypeError for non-string types", () => {
-    const ship = new Ship();
-
+    expect(() => ship.setName()).not.toThrow(TypeError);
     expect(() => ship.setName(null)).toThrow(TypeError);
     expect(() => ship.setName(1)).toThrow(TypeError);
     expect(() => ship.setName(1n)).toThrow(TypeError);

@@ -7,28 +7,29 @@ describe("Player Constructor", () => {
     expect(typeof Player).toBe("function");
   });
 
+  let player;
+  beforeEach(() => {
+    player = new Player();
+  });
+
   it("creates instance", () => {
-    const player = new Player();
     expect(player instanceof Player).toBe(true);
   });
 
   it("contains type property", () => {
-    const player = new Player();
     expect(Object.hasOwn(player, "type")).toBe(true);
   });
 
   it("sets type to computer by default", () => {
-    const player = new Player();
     expect(player.type).toBe("computer");
   });
 
   it("sets type to real", () => {
-    const player1 = new Player({ type: "real" });
-    expect(player1.type).toBe("real");
+    player = new Player("real");
+    expect(player.type).toBe("real");
   });
 
   it("contains board property", () => {
-    const player = new Player();
     expect(Object.hasOwn(player, "board")).toBe(true);
   });
 });
@@ -36,24 +37,27 @@ describe("Player Constructor", () => {
 describe("setName method", () => {
   it("exists", () => hasMethod(Player, "setName"));
 
-  it("returns player instance", () => {
-    const player = new Player();
+  let player;
+  beforeEach(() => {
+    player = new Player();
+  });
 
+  it("returns player instance", () => {
     expect(player.setName()).toBe(player);
   });
 
   it('sets name to "Player" by default', () => {
-    const player = new Player().setName();
+    player.setName();
     expect(player.name).toBe("Player");
   });
 
   it("sets name to specified name", () => {
-    const player = new Player().setName("bob");
+    player.setName("bob");
     expect(player.name).toBe("bob");
   });
 
   it("sets name consecutively", () => {
-    const player = new Player().setName();
+    player.setName();
     expect(player.name).toBe("Player");
     player.setName("jane");
     expect(player.name).toBe("jane");
@@ -62,15 +66,14 @@ describe("setName method", () => {
   });
 
   it("throws TypeError for non-string types", () => {
-    const player = new Player();
-
+    expect(() => player.setName()).not.toThrow(TypeError);
     expect(() => player.setName(null)).toThrow(TypeError);
+    expect(() => player.setName(true)).toThrow(TypeError);
     expect(() => player.setName(1)).toThrow(TypeError);
     expect(() => player.setName(1n)).toThrow(TypeError);
-    expect(() => player.setName(() => {})).toThrow(TypeError);
-    expect(() => player.setName([])).toThrow(TypeError);
     expect(() => player.setName({})).toThrow(TypeError);
-    expect(() => player.setName(true)).toThrow(TypeError);
+    expect(() => player.setName([])).toThrow(TypeError);
+    expect(() => player.setName(() => {})).toThrow(TypeError);
   });
 });
 

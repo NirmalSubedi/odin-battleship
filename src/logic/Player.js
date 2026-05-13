@@ -3,7 +3,7 @@ class Player {
   board;
   #name;
 
-  constructor({ type = "computer" } = {}) {
+  constructor(type = "computer") {
     this.type = type;
   }
 
@@ -14,6 +14,7 @@ class Player {
   setName(name = "Player") {
     if (typeof name !== "string")
       throw new TypeError(`(${name}) <- Name must be a string.`);
+
     this.#name = name;
 
     return this;
