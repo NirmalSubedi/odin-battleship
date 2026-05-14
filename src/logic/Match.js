@@ -1,7 +1,10 @@
+import { Player, GameBoard } from "./index.js";
+
 class Match {
   #mode;
   #activePlayer;
-  #players = new Map();
+  #players = [];
+  #activePlayerIndex;
 
   get mode() {
     return this.#mode;
@@ -11,25 +14,37 @@ class Match {
     return this.#activePlayer;
   }
 
+  #isValidMode(mode) {
+    return mode === "single" || mode === "double";
+  }
+
   #validateMode(mode) {
-    const isValidMode = mode === "single" || mode === "double";
-    if (!isValidMode)
+    if (!this.#isValidMode(mode))
       throw new ReferenceError(`${mode} <- Mode is an invalid mode.`);
 
     return mode;
   }
 
-  setMode(modeName) {
+  setMode(modeName = "") {
     this.#mode = this.#validateMode(modeName);
 
     return this;
   }
 
-  setPlayers(player1, player2) {
-    this.#players.set("player1", player1);
-    this.#players.set("player2", player2);
+  setPlayers(...players) {
+    this.#players = players;
 
     return this;
+  }
+
+  #chooseActivePlayer() {
+    this.#activePlayerIndex = 0;
+    this.#activePlayer = this.#players[this.#activePlayerIndex];
+  }
+
+  #changeActivePlayer() {
+    this.#activePlayerIndex = ++this.#activePlayerIndex % this.#players.length;
+    this.#activePlayer = this.#players[this.#activePlayerIndex];
   }
 
   switchTurn() {
@@ -37,20 +52,65 @@ class Match {
 
     switch (this.#activePlayer) {
       case NO_ACTIVE_PLAYER:
-        this.#activePlayer = this.#players.get("player1");
-        break;
-
-      case this.#players.get("player2"):
-        this.#activePlayer = this.#players.get("player1");
-        break;
-
-      case this.#players.get("player1"):
-        this.#activePlayer = this.#players.get("player2");
+        this.#chooseActivePlayer();
         break;
 
       default:
-        throw new ReferenceError("Unknown Player.");
+        this.#changeActivePlayer();
     }
+
+    return this;
+  }
+
+  static #defaults = {
+    player1Name: "Player 1",
+    player2Name: "Player 2",
+  };
+
+  static #setupPlayerBoards(players) {
+    players.forEach((player) => {
+      player.board = new GameBoard().useDefaultFleet();
+    });
+  }
+
+  static #setupSinglePlayer(...names) {
+    const [player1Name, player2Name] = names;
+    const player1 = new Player("real").setName(
+      player1Name ?? Match.#defaults.player1Name
+    );
+    const player2 = new Player().setName(
+      player2Name ?? Match.#defaults.player2Name
+    );
+
+    this.setPlayers(player1, player2);
+  }
+
+  static #setupDoublePlayers(...names) {
+    const [player1Name, player2Name] = names;
+    const player1 = new Player("real").setName(
+      player1Name ?? Match.#defaults.player1Name
+    );
+    const player2 = new Player("real").setName(
+      player2Name ?? Match.#defaults.player2Name
+    );
+
+    this.setPlayers(player1, player2);
+  }
+
+  static #playerSetups = {
+    single: Match.#setupSinglePlayer,
+    double: Match.#setupDoublePlayers,
+  };
+
+  init() {
+    this.#validateMode(this.#mode);
+
+    const playerSetup = Match.#playerSetups[this.#mode];
+    const customNames = this.#players;
+    playerSetup.call(this, ...customNames);
+    Match.#setupPlayerBoards(this.#players);
+
+    this.#chooseActivePlayer();
 
     return this;
   }

@@ -1,4 +1,4 @@
-import { Match } from "../index.js";
+import { Match, Player, GameBoard } from "../index.js";
 import { isInheritedProperty, hasMethod } from "./utils/index.js";
 
 describe("Match constructor", () => {
@@ -175,5 +175,125 @@ describe("setPlayers method", () => {
 
   it("returns match instance", () => {
     expect(match.setMode("single").setPlayers("", "")).toBe(match);
+  });
+});
+
+describe("init method", () => {
+  it("exists", () => hasMethod(Match, "init"));
+
+  let match;
+  beforeEach(() => {
+    match = new Match();
+  });
+
+  it("throws ReferenceError when no game mode is set", () => {
+    expect(match.mode).toBeUndefined();
+
+    expect(() => match.init()).toThrow(ReferenceError);
+  });
+
+  it("sets activePlayer property as an instance of Player constructor", () => {
+    match.setMode("single");
+
+    match.init();
+    expect(match.activePlayer).toBeInstanceOf(Player);
+  });
+
+  it("sets up player types correctly for single player mode", () => {
+    match.setMode("single").init();
+
+    expect(match.activePlayer.type).toBe("real");
+    match.switchTurn();
+    expect(match.activePlayer.type).toBe("computer");
+  });
+
+  it("sets up player types correctly for double player mode", () => {
+    match.setMode("double").init();
+
+    expect(match.activePlayer.type).toBe("real");
+    match.switchTurn();
+    expect(match.activePlayer.type).toBe("real");
+  });
+
+  it("sets up player with default names for single mode", () => {
+    match.setMode("single").init();
+
+    expect(match.activePlayer.name).toBe("Player 1");
+    match.switchTurn();
+    expect(match.activePlayer.name).toBe("Player 2");
+  });
+
+  it("sets up player with default names for double mode", () => {
+    match.setMode("double").init();
+
+    expect(match.activePlayer.name).toBe("Player 1");
+    match.switchTurn();
+    expect(match.activePlayer.name).toBe("Player 2");
+  });
+
+  it("sets up player with custom name for single mode", () => {
+    match.setMode("single").setPlayers("Bob").init();
+
+    expect(match.activePlayer.name).toBe("Bob");
+  });
+
+  it("sets up players with custom name for double mode", () => {
+    match.setMode("double").setPlayers("Bill", "John").init();
+
+    expect(match.activePlayer.name).toBe("Bill");
+    match.switchTurn();
+    expect(match.activePlayer.name).toBe("John");
+  });
+
+  it("sets up players with boards from GameBoard constructor", () => {
+    match.setMode("single").init();
+
+    expect(match.activePlayer.board).toBeInstanceOf(GameBoard);
+    match.switchTurn();
+    expect(match.activePlayer.board).toBeInstanceOf(GameBoard);
+  });
+
+  it("sets up players with unique board instances", () => {
+    match.setMode("single").init();
+
+    const board1 = match.activePlayer.board;
+    match.switchTurn();
+    const board2 = match.activePlayer.board;
+
+    expect(board1).not.toBe(board2);
+  });
+
+  it("sets up players' board as 10x10", () => {
+    match.setMode("single").init();
+
+    const board1Rows = match.activePlayer.board.rows;
+    const board1Cols = match.activePlayer.board.cols;
+    expect(board1Rows).toBe(10);
+    expect(board1Cols).toBe(10);
+
+    match.switchTurn();
+
+    const board2Rows = match.activePlayer.board.rows;
+    const board2Cols = match.activePlayer.board.cols;
+    expect(board2Rows).toBe(10);
+    expect(board2Cols).toBe(10);
+  });
+
+  it("sets up players' board with default fleet", () => {
+    match.setMode("single").init();
+
+    expect(match.activePlayer.board.fleet.length).toBeGreaterThan(0);
+    expect(match.activePlayer.board.fleet.length).toBe(5);
+
+    match.switchTurn();
+
+    expect(match.activePlayer.board.fleet.length).toBeGreaterThan(0);
+    expect(match.activePlayer.board.fleet.length).toBe(5);
+  });
+
+  it("returns match instance", () => {
+    match.setMode("single");
+
+    expect(match.init()).toBe(match);
   });
 });
