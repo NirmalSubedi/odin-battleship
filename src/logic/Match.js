@@ -15,7 +15,7 @@ class Match {
   }
 
   #isValidMode(mode) {
-    return mode === "single" || mode === "double";
+    return mode === "single" || mode === "double" || mode === "random";
   }
 
   #validateMode(mode) {
@@ -97,7 +97,20 @@ class Match {
     this.setPlayers(player1, player2);
   }
 
+  static #setupRandomPlayers(...names) {
+    const [player1Name, player2Name] = names;
+    const player1 = new Player().setName(
+      player1Name ?? Match.#defaults.player1Name
+    );
+    const player2 = new Player().setName(
+      player2Name ?? Match.#defaults.player2Name
+    );
+
+    this.setPlayers(player1, player2);
+  }
+
   static #playerSetups = {
+    random: Match.#setupRandomPlayers,
     single: Match.#setupSinglePlayer,
     double: Match.#setupDoublePlayers,
   };
@@ -107,6 +120,10 @@ class Match {
 
     const playerSetup = Match.#playerSetups[this.#mode];
     const customNames = this.#players;
+
+    if (playerSetup === undefined)
+      throw new ReferenceError(`No setup created for ${this.#mode}  mode.`);
+
     playerSetup.call(this, ...customNames);
     Match.#setupPlayerBoards(this.#players);
 

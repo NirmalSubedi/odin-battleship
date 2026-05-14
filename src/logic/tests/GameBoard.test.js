@@ -480,3 +480,100 @@ describe("placeFleetRandomly method", () => {
     expect(() => board.placeFleetRandomly()).toThrow(Error);
   });
 });
+
+describe("randomAttack method", () => {
+  it("exists", () => hasMethod(GameBoard, "randomAttack"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(1, 1);
+  });
+
+  it("calls receiveAttack method with coordinates", () => {
+    const spy = jest.spyOn(board, "receiveAttack");
+
+    expect(spy).not.toHaveBeenCalled();
+    board.randomAttack();
+    expect(spy).toHaveBeenCalledWith([0, 0]);
+  });
+});
+
+describe("randomAttack method (integration)", () => {
+  it("attacks a square on board", () => {
+    const board = new GameBoard();
+    const isBoardAttacked = (board) =>
+      board.peak.some((row) => row.some((col) => col !== board.water));
+
+    expect(isBoardAttacked(board)).toBe(false);
+
+    board.randomAttack();
+    expect(isBoardAttacked(board)).toBe(true);
+  });
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(1, 1);
+  });
+
+  it("attacks the lone square", () => {
+    const MISS = -1;
+
+    expect(board.peak).toEqual([[0]]);
+
+    board.randomAttack();
+    expect(board.peak).toEqual([[MISS]]);
+  });
+
+  it("sinks placed ship on lone square", () => {
+    const SUNK = -3;
+    board.placeShip([0, 0]);
+
+    expect(board.peak).toEqual([[1]]);
+
+    board.randomAttack();
+    expect(board.peak).toEqual([[SUNK]]);
+  });
+
+  it("returns null for no more or duplicate shot", () => {
+    board.randomAttack();
+
+    expect(board.randomAttack()).toBeNull();
+  });
+
+  it("returns same object as receiveAttack for sunk ship", () => {
+    board.placeShip([0, 0]);
+
+    const SHIP_POSITION = 0;
+    const ship = board.fleet.at(SHIP_POSITION);
+
+    expect(board.randomAttack()).toEqual({
+      hit: true,
+      sunk: true,
+      ship,
+    });
+  });
+
+  it("returns same object as receiveAttack for hit ship", () => {
+    board = new GameBoard(2, 1);
+    board.placeShip([0, 0], 2);
+
+    const SHIP_POSITION = 0;
+    const ship = board.fleet.at(SHIP_POSITION);
+
+    expect(board.randomAttack()).toEqual({
+      hit: true,
+      sunk: false,
+      ship,
+    });
+  });
+
+  it("returns same object as receiveAttack for miss", () => {
+    board = new GameBoard(2, 1);
+    jest.spyOn(global.Math, "random").mockReturnValue(0.5);
+
+    expect(board.peak).toEqual([[0], [0]]);
+
+    expect(board.randomAttack()).toEqual({ hit: false });
+    expect(board.peak).toEqual([[0], [-1]]);
+  });
+});

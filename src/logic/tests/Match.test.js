@@ -215,6 +215,14 @@ describe("init method", () => {
     expect(match.activePlayer.type).toBe("real");
   });
 
+  it("sets up player types correctly for random mode", () => {
+    match.setMode("random").init();
+
+    expect(match.activePlayer.type).toBe("computer");
+    match.switchTurn();
+    expect(match.activePlayer.type).toBe("computer");
+  });
+
   it("sets up player with default names for single mode", () => {
     match.setMode("single").init();
 

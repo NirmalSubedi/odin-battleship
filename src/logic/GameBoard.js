@@ -3,6 +3,9 @@ import { Ship } from "./index.js";
 const ROWS = 10;
 const COLS = 10;
 const WATER = 0;
+const MISS = -1;
+const HIT = -2;
+const SUNK = -3;
 
 class GameBoard {
   #rows;
@@ -150,8 +153,8 @@ class GameBoard {
   }
 
   #getRandomCoordinate() {
-    const row = Math.floor(Math.random() * ROWS);
-    const col = Math.floor(Math.random() * COLS);
+    const row = Math.floor(Math.random() * this.rows);
+    const col = Math.floor(Math.random() * this.cols);
 
     return [row, col];
   }
@@ -270,8 +273,6 @@ class GameBoard {
   }
 
   #hitShip(row, col, shipId) {
-    const HIT = -2;
-
     this.#board[row][col] = HIT;
     const ship = this.#getShip(shipId);
     ship.hit();
@@ -287,8 +288,6 @@ class GameBoard {
   }
 
   #sinkAllShipParts(shipId) {
-    const SINK = -3;
-
     const ship = this.#getShip(shipId);
     const coordinates = ship.head;
     const placedDirection = ship.placementDirection;
@@ -297,7 +296,7 @@ class GameBoard {
     const [dirRow, dirCol] = placedDirection;
 
     for (let i = 0; i < ship.length; ++i) {
-      this.#board[currRow][currCol] = SINK;
+      this.#board[currRow][currCol] = SUNK;
 
       currRow += dirRow;
       currCol += dirCol;
@@ -305,7 +304,6 @@ class GameBoard {
   }
 
   #missShip(row, col) {
-    const MISS = -1;
     this.#board[row][col] = MISS;
 
     return { hit: false };
@@ -328,6 +326,10 @@ class GameBoard {
     }
 
     return result;
+  }
+
+  randomAttack() {
+    return this.receiveAttack(this.#getRandomCoordinate());
   }
 }
 
