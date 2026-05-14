@@ -46,9 +46,11 @@ class GameBoard {
     if (shipId === undefined) throw new Error("Ship Id is missing.");
     if (!Number.isInteger(shipId))
       throw new TypeError("Ship Id should be a integer.");
-    if (shipId <= 0) return null;
+
+    if (shipId <= 0) return;
 
     const shipPosition = shipId - 1;
+
     return this.#fleet[shipPosition];
   }
 
@@ -57,6 +59,7 @@ class GameBoard {
     if (coordinates.length === 1) throw new ReferenceError("Column missing.");
 
     const [row, col] = coordinates;
+
     if (!Number.isInteger(row) || !Number.isInteger(col))
       throw new TypeError(`Coordinates must be integers.`);
     if (row < 0 || col < 0 || row >= this.rows || col >= this.cols)
@@ -133,9 +136,10 @@ class GameBoard {
     ];
 
     const randomDirections = [];
-    directions.forEach((_) => {
+    directions.forEach(() => {
       const randomIndex = Math.floor(Math.random() * directions.length);
       const randomDirection = directions[randomIndex];
+
       randomDirections.push(randomDirection);
       directions.splice(randomIndex, 1);
     });
@@ -161,6 +165,7 @@ class GameBoard {
 
   #storePlacement(coordinates, shipId, placementDirection) {
     this.#validateCoordinates(coordinates);
+
     const ship = this.#getShip(shipId);
 
     ship.head = coordinates;
@@ -169,6 +174,7 @@ class GameBoard {
 
   #place(coordinates, shipId, direction) {
     const ship = this.#getShip(shipId);
+
     this.#storePlacement(coordinates, shipId, direction);
 
     const token = shipId;
@@ -215,10 +221,12 @@ class GameBoard {
       while (shipHasNotBeenPlaced) {
         const coordinates = this.#getRandomCoordinate();
         const [row, col] = coordinates;
+
         if (this.#isOccupiedSquare(row, col)) continue;
 
         const direction = this.#getRandomDirection(coordinates, shipId);
         const missingDirection = direction === null;
+
         if (missingDirection) continue;
 
         this.#place(coordinates, shipId, direction);
@@ -239,10 +247,13 @@ class GameBoard {
     switch (direction) {
       case "R":
         return [0, 1];
+
       case "L":
         return [0, -1];
+
       case "U":
         return [-1, 0];
+
       default:
         return [1, 0];
     }
@@ -250,8 +261,8 @@ class GameBoard {
 
   placeShip(coordinates, length = 1, direction = "", name = "") {
     this.#validateCoordinates(coordinates);
-
     this.#addShipToFleet(length, name);
+
     const shipId = this.#fleet.length;
     const ship = this.#getShip(shipId);
     const placementDirection = this.#decodeDirection(direction);
@@ -273,9 +284,10 @@ class GameBoard {
   }
 
   #hitShip(row, col, shipId) {
-    this.#board[row][col] = HIT;
     const ship = this.#getShip(shipId);
+
     ship.hit();
+    this.#board[row][col] = HIT;
 
     const sunk = ship.isSunk();
     if (sunk) this.#sinkAllShipParts(shipId);
@@ -289,6 +301,7 @@ class GameBoard {
 
   #sinkAllShipParts(shipId) {
     const ship = this.#getShip(shipId);
+
     const coordinates = ship.head;
     const placedDirection = ship.placementDirection;
 
@@ -316,13 +329,21 @@ class GameBoard {
     const ship = this.#getShip(shipId);
 
     let result;
-    const isDuplicateAttack = shipId < 0;
-    if (isDuplicateAttack) {
-      result = null;
-    } else if (ship) {
-      result = this.#hitShip(row, col, shipId);
-    } else {
-      result = this.#missShip(row, col);
+    const ATTACK = true;
+    const atPreviousAttack = shipId < 0;
+    const onShip = typeof ship !== "undefined";
+
+    switch (ATTACK) {
+      case atPreviousAttack:
+        result = null;
+        break;
+
+      case onShip:
+        result = this.#hitShip(row, col, shipId);
+        break;
+
+      default:
+        result = this.#missShip(row, col);
     }
 
     return result;

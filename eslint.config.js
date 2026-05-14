@@ -111,7 +111,7 @@ export default defineConfig([
       },
     },
     rules: {
-      "no-undef": "warn",
+      "no-undef": "off",
       "max-lines-per-function": "off",
     },
   },
