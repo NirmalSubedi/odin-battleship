@@ -108,16 +108,16 @@ class GameBoard {
     return this;
   }
 
-  #isOccupiedSquare(row, col) {
-    return this.peak[row]?.[col] !== WATER;
+  #isWater(row, col) {
+    return this.peak[row]?.[col] === this.water;
   }
 
-  #isDeploymentZoneAvailable(coordinates, ship, direction) {
+  #canDraw(coordinates, length, direction) {
     const [dr, dc] = this.#validateDirection(direction);
     let [currRow, currCol] = coordinates;
 
-    for (let i = 0; i < ship.length; ++i) {
-      if (this.#isOccupiedSquare(currRow, currCol)) return false;
+    for (let i = 0; i < length; ++i) {
+      if (!this.#isWater(currRow, currCol)) return false;
 
       currRow += dr;
       currCol += dc;
@@ -147,7 +147,7 @@ class GameBoard {
     let positionDirection = null;
 
     for (const direction of randomDirections) {
-      if (this.#isDeploymentZoneAvailable(coordinates, ship, direction)) {
+      if (this.#canDraw(coordinates, ship.length, direction)) {
         positionDirection = direction;
         break;
       }
@@ -170,20 +170,19 @@ class GameBoard {
     ship.placementDirection = this.#validateDirection(placementDirection);
   }
 
-  #place(coordinates, shipId, direction) {
-    const ship = this.#getShip(shipId);
+  #draw(startCoordinates, item, direction, length) {
+    if (this.#getShip(item)) {
+      this.#storePlacement(startCoordinates, item, direction);
+    }
 
-    this.#storePlacement(coordinates, shipId, direction);
+    const [dr, dc] = direction;
+    let [cr, cc] = startCoordinates;
 
-    const token = shipId;
-    const [dirRow, dirCol] = direction;
-    let [currRow, currCol] = coordinates;
+    for (let i = 0; i < length; ++i) {
+      this.#board[cr][cc] = item;
 
-    for (let i = 0; i < ship.length; ++i) {
-      this.peak[currRow][currCol] = token;
-
-      currRow += dirRow;
-      currCol += dirCol;
+      cr += dr;
+      cc += dc;
     }
   }
 
@@ -220,14 +219,14 @@ class GameBoard {
         const coordinates = this.#getRandomCoordinate();
         const [row, col] = coordinates;
 
-        if (this.#isOccupiedSquare(row, col)) continue;
+        if (!this.#isWater(row, col)) continue;
 
         const direction = this.#getRandomDirection(coordinates, shipId);
         const missingDirection = direction === null;
 
         if (missingDirection) continue;
 
-        this.#place(coordinates, shipId, direction);
+        this.#draw(coordinates, shipId, direction, ship.length);
         shipHasNotBeenPlaced = false;
       }
     });
@@ -267,10 +266,8 @@ class GameBoard {
 
     let placed = false;
 
-    if (
-      this.#isDeploymentZoneAvailable(coordinates, ship, placementDirection)
-    ) {
-      this.#place(coordinates, shipId, placementDirection);
+    if (this.#canDraw(coordinates, ship.length, placementDirection)) {
+      this.#draw(coordinates, shipId, placementDirection, ship.length);
       placed = true;
     }
 
@@ -301,17 +298,9 @@ class GameBoard {
     const ship = this.#getShip(shipId);
 
     const coordinates = ship.head;
-    const placedDirection = ship.placementDirection;
+    const direction = ship.placementDirection;
 
-    let [currRow, currCol] = coordinates;
-    const [dirRow, dirCol] = placedDirection;
-
-    for (let i = 0; i < ship.length; ++i) {
-      this.#board[currRow][currCol] = SUNK;
-
-      currRow += dirRow;
-      currCol += dirCol;
-    }
+    this.#draw(coordinates, SUNK, direction, ship.length);
   }
 
   #missShip(row, col) {
@@ -349,6 +338,49 @@ class GameBoard {
 
   randomAttack() {
     return this.receiveAttack(this.#getRandomCoordinate());
+  }
+
+  rotateShipAt(coordinates, counterClockWise = false) {
+    const [row, col] = this.#validateCoordinates(coordinates);
+
+    const shipId = this.#board[row][col];
+    const ship = this.#getShip(shipId);
+
+    if (ship === undefined) return false;
+
+    const [dirRow, dirCol] = ship.placementDirection;
+    const isShipPlacedHorizontally = Math.abs(dirRow) === 0;
+    let rotatedRow;
+    let rotatedCol;
+
+    if (counterClockWise) {
+      rotatedRow = isShipPlacedHorizontally ? -dirCol : dirCol;
+      rotatedCol = dirRow;
+    } else {
+      rotatedRow = dirCol;
+      rotatedCol = isShipPlacedHorizontally ? dirRow : -dirRow;
+    }
+
+    const rotatedDirection = [rotatedRow, rotatedCol];
+    let [pivotRow, pivotCol] = ship.head;
+
+    pivotRow += rotatedRow;
+    pivotCol += rotatedCol;
+
+    const drawLength = ship.length - 1;
+    const drawFrom = [pivotRow, pivotCol];
+    const drawTowards = ship.placementDirection;
+
+    if (!this.#canDraw(drawFrom, drawLength, drawTowards)) {
+      return false;
+    }
+
+    this.#draw(ship.head, this.water, drawTowards, ship.length);
+
+    ship.placementDirection = rotatedDirection;
+    this.#draw(ship.head, shipId, rotatedDirection, ship.length);
+
+    return true;
   }
 }
 

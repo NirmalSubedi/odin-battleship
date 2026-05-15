@@ -116,7 +116,7 @@ describe("placeShip method", () => {
     board = new GameBoard(3, 3);
   });
 
-  it("validates coordinates", () => {
+  it("validates passed in  coordinates", () => {
     testCoordinates(board, "placeShip");
   });
 
@@ -246,7 +246,7 @@ describe("receiveAttack method", () => {
     board = new GameBoard(3, 3);
   });
 
-  it("validates coordinates", () => {
+  it("validates passed in coordinates", () => {
     testCoordinates(board, "receiveAttack");
   });
 
@@ -575,5 +575,215 @@ describe("randomAttack method (integration)", () => {
 
     expect(board.randomAttack()).toEqual({ hit: false });
     expect(board.peak).toEqual([[0], [-1]]);
+  });
+});
+
+describe("rotateShipAt method", () => {
+  it("exists", () => hasMethod(GameBoard, "rotateShipAt"));
+
+  it("validates passed in coordinates", () => {
+    const board = new GameBoard(1, 1);
+
+    testCoordinates(board, "rotateShipAt");
+  });
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(5, 5);
+    board.placeShip([2, 2], 3);
+  });
+
+  it("keeps head coordinates the same after rotation", () => {
+    const shipPosition = 0;
+    const ship = board.fleet.at(shipPosition);
+
+    expect(ship.head).toEqual([2, 2]);
+
+    board.rotateShipAt([2, 2]);
+    expect(ship.head).toEqual([2, 2]);
+  });
+
+  it("rotates ship 90 degree clockwise", () => {
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ]);
+
+    board.rotateShipAt([2, 2]);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+  it("rotates ship 180 degree clockwise", () => {
+    board.rotateShipAt([2, 2]);
+    board.rotateShipAt([2, 2]);
+    expect(board.peak).toEqual([
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+  it("rotates ship 270 degree clockwise", () => {
+    board.rotateShipAt([2, 2]);
+    board.rotateShipAt([2, 2]);
+    board.rotateShipAt([2, 2]);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+  it("rotates ship 360 degree clockwise", () => {
+    board.rotateShipAt([2, 2]);
+    board.rotateShipAt([2, 2]);
+    board.rotateShipAt([2, 2]);
+    board.rotateShipAt([2, 2]);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ]);
+  });
+
+  it("rotates ship 90 degree counterclockwise", () => {
+    board.rotateShipAt([2, 2], true);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 1, 1, 1],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+  it("rotates ship 180 degree counterclockwise", () => {
+    board.rotateShipAt([2, 2], true);
+    board.rotateShipAt([2, 2], true);
+    expect(board.peak).toEqual([
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+  it("rotates ship 270 degree counterclockwise", () => {
+    board.rotateShipAt([2, 2], true);
+    board.rotateShipAt([2, 2], true);
+    board.rotateShipAt([2, 2], true);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+  it("rotates ship 360 degree counterclockwise", () => {
+    board.rotateShipAt([2, 2], true);
+    board.rotateShipAt([2, 2], true);
+    board.rotateShipAt([2, 2], true);
+    board.rotateShipAt([2, 2], true);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ]);
+  });
+
+  it("updates placement directions after clockwise rotation", () => {
+    const shipPosition = 0;
+    const ship = board.fleet.at(shipPosition);
+
+    const down = [1, 0];
+    expect(ship.placementDirection).toEqual(down);
+
+    board.rotateShipAt([2, 2]);
+    const left = [0, -1];
+    expect(ship.placementDirection).toEqual(left);
+
+    board.rotateShipAt([2, 2]);
+    const up = [-1, 0];
+    expect(ship.placementDirection).toEqual(up);
+
+    board.rotateShipAt([2, 2]);
+    const right = [0, 1];
+    expect(ship.placementDirection).toEqual(right);
+
+    board.rotateShipAt([2, 2]);
+    expect(ship.placementDirection).toEqual(down);
+  });
+
+  it("updates placement directions after counterclockwise rotation", () => {
+    const shipPosition = 0;
+    const ship = board.fleet.at(shipPosition);
+
+    const down = [1, 0];
+    expect(ship.placementDirection).toEqual(down);
+
+    board.rotateShipAt([2, 2], true);
+    const right = [0, 1];
+    expect(ship.placementDirection).toEqual(right);
+
+    board.rotateShipAt([2, 2], true);
+    const up = [-1, 0];
+    expect(ship.placementDirection).toEqual(up);
+
+    board.rotateShipAt([2, 2], true);
+    const left = [0, -1];
+    expect(ship.placementDirection).toEqual(left);
+
+    board.rotateShipAt([2, 2], true);
+    expect(ship.placementDirection).toEqual(down);
+  });
+
+  it("returns true if ship was rotated", () => {
+    expect(board.rotateShipAt([2, 2])).toBe(true);
+  });
+
+  it("returns false if there is no ship at the coordinates", () => {
+    expect(board.rotateShipAt([0, 0])).toBe(false);
+  });
+
+  it("returns false if ship could not be rotated", () => {
+    board = new GameBoard(3, 1);
+    board.placeShip([0, 0], 3);
+
+    expect(board.rotateShipAt([0, 0])).toBe(false);
+  });
+
+  it("returns false if another ship is blocking rotation", () => {
+    board.placeShip([2, 1]);
+
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 2, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ]);
+
+    expect(board.rotateShipAt([2, 2])).toBe(false);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 2, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ]);
   });
 });
