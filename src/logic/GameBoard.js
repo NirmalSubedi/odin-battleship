@@ -114,7 +114,7 @@ class GameBoard {
 
   #isDeploymentZoneAvailable(coordinates, ship, direction) {
     const [dr, dc] = this.#validateDirection(direction);
-    let [currRow, currCol] = this.#validateCoordinates(coordinates);
+    let [currRow, currCol] = coordinates;
 
     for (let i = 0; i < ship.length; ++i) {
       if (this.#isOccupiedSquare(currRow, currCol)) return false;
@@ -164,8 +164,6 @@ class GameBoard {
   }
 
   #storePlacement(coordinates, shipId, placementDirection) {
-    this.#validateCoordinates(coordinates);
-
     const ship = this.#getShip(shipId);
 
     ship.head = coordinates;
@@ -179,7 +177,7 @@ class GameBoard {
 
     const token = shipId;
     const [dirRow, dirCol] = direction;
-    let [currRow, currCol] = this.#validateCoordinates(coordinates);
+    let [currRow, currCol] = coordinates;
 
     for (let i = 0; i < ship.length; ++i) {
       this.peak[currRow][currCol] = token;

@@ -1,5 +1,5 @@
 import { GameBoard } from "../index.js";
-import { hasMethod, isValidCoordinates } from "./utils/index.js";
+import { hasMethod, testCoordinates } from "./utils/index.js";
 
 describe("GameBoard constructor", () => {
   it("exists", () => {
@@ -117,7 +117,7 @@ describe("placeShip method", () => {
   });
 
   it("validates coordinates", () => {
-    expect(() => isValidCoordinates(board, "placeShip"));
+    testCoordinates(board, "placeShip");
   });
 
   it("adds ship to the fleet", () => {
@@ -247,7 +247,7 @@ describe("receiveAttack method", () => {
   });
 
   it("validates coordinates", () => {
-    expect(() => isValidCoordinates(board, "receiveAttack"));
+    testCoordinates(board, "receiveAttack");
   });
 
   it("call hit method on ship", () => {
