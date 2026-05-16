@@ -73,41 +73,6 @@ describe("GameBoard constructor", () => {
   });
 });
 
-describe("useDefaultFleet method", () => {
-  it("exists", () => hasMethod(GameBoard, "useDefaultFleet"));
-
-  it("adds ships to fleet", () => {
-    const board = new GameBoard(1, 1);
-    expect(board.fleet.length).toBe(0);
-
-    board.useDefaultFleet();
-    expect(board.fleet.length).toBeGreaterThan(0);
-  });
-
-  it("returns the GameBoard instance", () => {
-    const board = new GameBoard(1, 1);
-    expect(board.useDefaultFleet()).toBe(board);
-  });
-});
-
-describe("clearFleet method", () => {
-  it("exists", () => hasMethod(GameBoard, "clearFleet"));
-
-  it("clears the fleet", () => {
-    const board = new GameBoard(1, 1);
-    board.useDefaultFleet();
-    expect(board.fleet.length).toBeGreaterThan(0);
-
-    board.clearFleet();
-    expect(board.fleet.length).toBe(0);
-  });
-
-  it("returns the GameBoard instance", () => {
-    const board = new GameBoard(1, 1);
-    expect(board.clearFleet()).toBe(board);
-  });
-});
-
 describe("placeShip method", () => {
   it("exists", () => hasMethod(GameBoard, "placeShip"));
 
@@ -381,23 +346,10 @@ describe("isFleetSunk method", () => {
     board.placeShip([1, 1]);
     expect(board.isFleetSunk()).toBe(false);
   });
-
-  it("switches return value to false when clearing fleet and adding a ship", () => {
-    board = new GameBoard(3, 3);
-    board.placeShip([0, 0]);
-    expect(board.isFleetSunk()).toBe(false);
-
-    board.receiveAttack([0, 0]);
-    expect(board.isFleetSunk()).toBe(true);
-
-    board.clearFleet();
-    board.placeShip([1, 1]);
-    expect(board.isFleetSunk()).toBe(false);
-  });
 });
 
-describe("placeFleetRandomly method", () => {
-  it("exists", () => hasMethod(GameBoard, "placeFleetRandomly"));
+describe("randomPlace method", () => {
+  it("exists", () => hasMethod(GameBoard, "randomPlace"));
 
   let board;
   beforeEach(() => {
@@ -405,8 +357,10 @@ describe("placeFleetRandomly method", () => {
   });
 
   it("returns board instance", () => {
-    board.useDefaultFleet();
-    expect(board.placeFleetRandomly()).toBe(board);
+    const shipLength = 2;
+    const shipName = "";
+
+    expect(board.randomPlace(shipLength, shipName)).toBe(board);
   });
 
   it("places ships", () => {
@@ -423,7 +377,11 @@ describe("placeFleetRandomly method", () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 
-    board.useDefaultFleet().placeFleetRandomly();
+    const shipLength = 2;
+    const shipName = "";
+
+    board.randomPlace(shipLength, shipName);
+
     expect(board.peak).not.toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -438,46 +396,22 @@ describe("placeFleetRandomly method", () => {
     ]);
   });
 
-  it("does nothing to already placed ship", () => {
-    board = new GameBoard(3, 3);
-    board.placeShip([1, 1]);
-    expect(board.peak).toEqual([
-      [0, 0, 0],
-      [0, 1, 0],
-      [0, 0, 0],
-    ]);
+  it("throws Error for board with less than 50% water space", () => {
+    board = new GameBoard(2, 2);
+    board.placeShip([0, 0], 2);
 
-    board.placeFleetRandomly();
-    expect(board.peak).toEqual([
-      [0, 0, 0],
-      [0, 1, 0],
-      [0, 0, 0],
-    ]);
+    const shipLength = 1;
+    const shipName = "";
+    expect(() => board.randomPlace(shipLength, shipName)).toThrow(Error);
   });
 
-  it("throws ReferenceError for empty fleet", () => {
-    expect(() => board.placeFleetRandomly()).toThrow(ReferenceError);
-  });
-
-  it("throws RangeError for board smaller than the fleet", () => {
+  it("throws RangeError for board smaller than ship", () => {
     board = new GameBoard(1, 1);
-    board.useDefaultFleet();
-    expect(() => board.placeFleetRandomly()).toThrow(RangeError);
-  });
 
-  it("throws Error for fleet with less than 50% water space available", () => {
-    board = new GameBoard(5, 5);
-    board.useDefaultFleet();
+    const shipLength = 2;
+    const shipName = "";
 
-    const shipSpace = board.fleet.reduce((sum, ship) => sum + ship.length, 0);
-    const waterSpace = board.rows * board.cols;
-    const fiftyPercentWaterSpace = waterSpace * 0.5;
-
-    expect(shipSpace).toBe(17);
-    expect(fiftyPercentWaterSpace).toBe(12.5);
-    expect(fiftyPercentWaterSpace).toBeLessThan(shipSpace);
-
-    expect(() => board.placeFleetRandomly()).toThrow(Error);
+    expect(() => board.randomPlace(shipLength, shipName)).toThrow(RangeError);
   });
 });
 

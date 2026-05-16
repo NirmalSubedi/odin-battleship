@@ -1,6 +1,7 @@
 class Player {
   type;
   board;
+  dock = [];
   #name;
 
   constructor(type = "computer") {
@@ -16,6 +17,12 @@ class Player {
       throw new TypeError(`(${name}) <- Name must be a string.`);
 
     this.#name = name;
+
+    return this;
+  }
+
+  clearDock() {
+    this.dock.length = 0;
 
     return this;
   }

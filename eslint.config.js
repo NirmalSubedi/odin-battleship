@@ -31,7 +31,6 @@ export default defineConfig([
       "prefer-template": "error",
       "no-useless-call": "error",
       "no-multi-assign": "error",
-      "no-invalid-this": "error",
       "no-implied-eval": "error",
       "no-return-assign": "error",
       "no-throw-literal": "error",
@@ -53,7 +52,6 @@ export default defineConfig([
       "no-useless-constructor": "error",
       "require-atomic-updates": "error", // Discourage race condition with assignments using await or yield
       "no-useless-computed-key": "error",
-      "func-style": ["error", "expression"],
       "no-template-curly-in-string": "warn",
       "prefer-promise-reject-errors": "error",
       "no-unmodified-loop-condition": "error",

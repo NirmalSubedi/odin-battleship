@@ -287,16 +287,16 @@ describe("init method", () => {
     expect(board2Cols).toBe(10);
   });
 
-  it("sets up players' board with default fleet", () => {
+  it("sets up players' dock with default dock", () => {
     match.setMode("single").init();
 
-    expect(match.activePlayer.board.fleet.length).toBeGreaterThan(0);
-    expect(match.activePlayer.board.fleet.length).toBe(5);
+    expect(match.activePlayer.dock.length).toBeGreaterThan(0);
+    expect(match.activePlayer.dock.length).toBe(5);
 
     match.switchTurn();
 
-    expect(match.activePlayer.board.fleet.length).toBeGreaterThan(0);
-    expect(match.activePlayer.board.fleet.length).toBe(5);
+    expect(match.activePlayer.dock.length).toBeGreaterThan(0);
+    expect(match.activePlayer.dock.length).toBe(5);
   });
 
   it("returns match instance", () => {

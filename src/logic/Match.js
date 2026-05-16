@@ -1,4 +1,67 @@
-import { Player, GameBoard } from "./index.js";
+import { Player, GameBoard, Ship } from "./index.js";
+
+const config = {
+  player1Name: "Player 1",
+  player2Name: "Player 2",
+  defaultDock: [
+    ["carrier", 5],
+    ["battleship", 4],
+    ["cruiser", 3],
+    ["submarine", 3],
+    ["destroyer", 2],
+  ],
+};
+
+function setupPlayerBoards(players) {
+  players.forEach((player) => {
+    player.board = new GameBoard();
+  });
+}
+
+function addShipToPlayerFleet(player, length, name) {
+  const ship = new Ship().setLength(length).setName(name);
+  player.dock.push(ship);
+
+  return ship;
+}
+
+function setupPlayersDock(players) {
+  players.forEach((player) => {
+    config.defaultDock.forEach(([shipName, shipLength]) => {
+      addShipToPlayerFleet(player, shipLength, shipName);
+    });
+  });
+}
+
+function setupSinglePlayer(...names) {
+  const [player1Name, player2Name] = names;
+  const player1 = new Player("real").setName(player1Name ?? config.player1Name);
+  const player2 = new Player().setName(player2Name ?? config.player2Name);
+
+  this.setPlayers(player1, player2);
+}
+
+function setupDoublePlayers(...names) {
+  const [player1Name, player2Name] = names;
+  const player1 = new Player("real").setName(player1Name ?? config.player1Name);
+  const player2 = new Player("real").setName(player2Name ?? config.player2Name);
+
+  this.setPlayers(player1, player2);
+}
+
+function setupRandomPlayers(...names) {
+  const [player1Name, player2Name] = names;
+  const player1 = new Player().setName(player1Name ?? config.player1Name);
+  const player2 = new Player().setName(player2Name ?? config.player2Name);
+
+  this.setPlayers(player1, player2);
+}
+
+const playerSetups = {
+  random: setupRandomPlayers,
+  single: setupSinglePlayer,
+  double: setupDoublePlayers,
+};
 
 class Match {
   #mode;
@@ -62,70 +125,18 @@ class Match {
     return this;
   }
 
-  static #defaults = {
-    player1Name: "Player 1",
-    player2Name: "Player 2",
-  };
-
-  static #setupPlayerBoards(players) {
-    players.forEach((player) => {
-      player.board = new GameBoard().useDefaultFleet();
-    });
-  }
-
-  static #setupSinglePlayer(...names) {
-    const [player1Name, player2Name] = names;
-    const player1 = new Player("real").setName(
-      player1Name ?? Match.#defaults.player1Name
-    );
-    const player2 = new Player().setName(
-      player2Name ?? Match.#defaults.player2Name
-    );
-
-    this.setPlayers(player1, player2);
-  }
-
-  static #setupDoublePlayers(...names) {
-    const [player1Name, player2Name] = names;
-    const player1 = new Player("real").setName(
-      player1Name ?? Match.#defaults.player1Name
-    );
-    const player2 = new Player("real").setName(
-      player2Name ?? Match.#defaults.player2Name
-    );
-
-    this.setPlayers(player1, player2);
-  }
-
-  static #setupRandomPlayers(...names) {
-    const [player1Name, player2Name] = names;
-    const player1 = new Player().setName(
-      player1Name ?? Match.#defaults.player1Name
-    );
-    const player2 = new Player().setName(
-      player2Name ?? Match.#defaults.player2Name
-    );
-
-    this.setPlayers(player1, player2);
-  }
-
-  static #playerSetups = {
-    random: Match.#setupRandomPlayers,
-    single: Match.#setupSinglePlayer,
-    double: Match.#setupDoublePlayers,
-  };
-
   init() {
     this.#validateMode(this.#mode);
 
-    const playerSetup = Match.#playerSetups[this.#mode];
+    const playerSetup = playerSetups[this.#mode];
     const customNames = this.#players;
 
     if (playerSetup === undefined)
       throw new ReferenceError(`No setup created for ${this.#mode}  mode.`);
 
     playerSetup.call(this, ...customNames);
-    Match.#setupPlayerBoards(this.#players);
+    setupPlayerBoards(this.#players);
+    setupPlayersDock(this.#players);
 
     this.#chooseActivePlayer();
 

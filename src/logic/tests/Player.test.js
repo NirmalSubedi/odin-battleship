@@ -91,3 +91,21 @@ describe("name property", () => {
     }).toThrow(Error);
   });
 });
+
+describe("clearDock method", () => {
+  it("exists", () => hasMethod(Player, "clearDock"));
+
+  it("clears the dock", () => {
+    const player = new Player();
+    player.dock.push({});
+    expect(player.dock.length).toBeGreaterThan(0);
+
+    player.clearDock();
+    expect(player.dock.length).toBe(0);
+  });
+
+  it("returns the Player instance", () => {
+    const player = new Player();
+    expect(player.clearDock()).toBe(player);
+  });
+});

@@ -93,22 +93,6 @@ class GameBoard {
     return ship;
   }
 
-  useDefaultFleet() {
-    const defaultFleet = [
-      ["carrier", 5],
-      ["battleship", 4],
-      ["cruiser", 3],
-      ["submarine", 3],
-      ["destroyer", 2],
-    ];
-
-    defaultFleet.forEach(([shipName, shipLength]) => {
-      this.#addShipToFleet(shipLength, shipName);
-    });
-
-    return this;
-  }
-
   #isWater(row, col) {
     return this.peak[row]?.[col] === this.water;
   }
@@ -187,56 +171,49 @@ class GameBoard {
     }
   }
 
-  #scoutBoard() {
+  #scoutBoard(shipLength) {
+    if (shipLength > this.rows || shipLength > this.cols)
+      throw new RangeError("Board is too small for the ship.");
+
     const LONGEST_SHIP = 0;
     const longestShipLength = this.#fleet
       .toSorted((shipA, shipB) => shipB.length - shipA.length)
       .at(LONGEST_SHIP).length;
 
-    if (longestShipLength > this.rows || longestShipLength > this.cols)
-      throw new RangeError("Board is too small for the longest ship.");
-
+    const WATER_RATIO = 1;
     const boardSpace = this.rows * this.cols;
     const numberOfShips = this.#fleet.length;
     const fleetSpace = longestShipLength * numberOfShips;
-    const WATER_RATIO = 1;
     const waterSpace = fleetSpace * WATER_RATIO;
 
     if (boardSpace < fleetSpace + waterSpace)
-      throw new Error(
+      throw new RangeError(
         "Board does not have more than 50% water space available the fleet."
       );
   }
 
-  placeFleetRandomly() {
-    if (this.#fleet.length === 0) throw new ReferenceError("Fleet is empty.");
-    this.#scoutBoard();
+  randomPlace(shipLength, shipName) {
+    this.#addShipToFleet(shipLength, shipName);
+    this.#scoutBoard(shipLength);
 
-    this.#fleet.forEach((ship, index) => {
-      const shipId = index + 1;
-      let shipHasNotBeenPlaced = ship.placementDirection === undefined;
+    const shipId = this.#fleet.length;
+    const ship = this.#getShip(shipId);
+    let shipHasNotBeenPlaced = ship.placementDirection === undefined;
 
-      while (shipHasNotBeenPlaced) {
-        const coordinates = this.#getRandomCoordinate();
-        const [row, col] = coordinates;
+    while (shipHasNotBeenPlaced) {
+      const coordinates = this.#getRandomCoordinate();
+      const [row, col] = coordinates;
 
-        if (!this.#isWater(row, col)) continue;
+      if (!this.#isWater(row, col)) continue;
 
-        const direction = this.#getRandomDirection(coordinates, shipId);
-        const missingDirection = direction === null;
+      const direction = this.#getRandomDirection(coordinates, shipId);
+      const missingDirection = direction === null;
 
-        if (missingDirection) continue;
+      if (missingDirection) continue;
 
-        this.#draw(coordinates, shipId, direction, ship.length);
-        shipHasNotBeenPlaced = false;
-      }
-    });
-
-    return this;
-  }
-
-  clearFleet() {
-    this.#fleet.length = 0;
+      this.#draw(coordinates, shipId, direction, shipLength);
+      shipHasNotBeenPlaced = false;
+    }
 
     return this;
   }
@@ -276,7 +253,7 @@ class GameBoard {
   }
 
   isFleetSunk() {
-    return this.fleet.every((ship) => ship.isSunk());
+    return this.#fleet.every((ship) => ship.isSunk());
   }
 
   #hitShip(row, col, shipId) {
