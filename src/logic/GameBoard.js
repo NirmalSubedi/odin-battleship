@@ -10,8 +10,8 @@ const SUNK = -3;
 class GameBoard {
   #rows;
   #cols;
-  #board;
   #water = WATER;
+  #board;
   #fleet = [];
 
   constructor(rows = ROWS, cols = COLS) {
@@ -101,6 +101,7 @@ class GameBoard {
       ["submarine", 3],
       ["destroyer", 2],
     ];
+
     defaultFleet.forEach(([shipName, shipLength]) => {
       this.#addShipToFleet(shipLength, shipName);
     });
@@ -381,6 +382,20 @@ class GameBoard {
     this.#draw(ship.head, shipId, rotatedDirection, ship.length);
 
     return true;
+  }
+
+  resetBoard() {
+    this.#board.forEach((row, rowIndex) => {
+      row.forEach((_, colIndex) => {
+        this.#board[rowIndex][colIndex] = this.#water;
+      });
+    });
+
+    return this;
+  }
+
+  countAliveShips() {
+    return this.#fleet.reduce((sum, ship) => sum + Number(!ship.isSunk()), 0);
   }
 }
 

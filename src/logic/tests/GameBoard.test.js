@@ -787,3 +787,89 @@ describe("rotateShipAt method", () => {
     ]);
   });
 });
+
+describe("resetBoard method", () => {
+  it("exists", () => hasMethod(GameBoard, "resetBoard"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(2, 2);
+  });
+
+  it("removes ship from board", () => {
+    expect(board.peak).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+    board.placeShip([0, 0], 2);
+    expect(board.peak).toEqual([
+      [1, 0],
+      [1, 0],
+    ]);
+
+    board.resetBoard();
+    expect(board.peak).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+  });
+
+  it("removes ships from board", () => {
+    expect(board.peak).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+    board.placeShip([0, 0], 2);
+    board.placeShip([0, 1], 2);
+    expect(board.peak).toEqual([
+      [1, 2],
+      [1, 2],
+    ]);
+
+    board.resetBoard();
+    expect(board.peak).toEqual([
+      [0, 0],
+      [0, 0],
+    ]);
+  });
+
+  it("return instance", () => {
+    expect(board.resetBoard()).toBe(board);
+  });
+});
+
+describe("countAliveShips", () => {
+  it("exists", () => hasMethod(GameBoard, "countAliveShips"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(2, 2);
+  });
+
+  it("returns ship count", () => {
+    expect(board.countAliveShips()).toBe(0);
+    board.placeShip([0, 0]);
+    expect(board.countAliveShips()).toBe(1);
+    board.placeShip([0, 1]);
+    expect(board.countAliveShips()).toBe(2);
+    board.placeShip([1, 1]);
+    expect(board.countAliveShips()).toBe(3);
+    board.placeShip([1, 0]);
+    expect(board.countAliveShips()).toBe(4);
+  });
+
+  it("return count of alive ship", () => {
+    board.placeShip([0, 0], 2);
+    board.placeShip([0, 1]);
+    expect(board.countAliveShips()).toBe(2);
+
+    board.receiveAttack([0, 1]);
+    expect(board.countAliveShips()).toBe(1);
+
+    board.receiveAttack([0, 0]);
+    expect(board.countAliveShips()).toBe(1);
+
+    board.receiveAttack([1, 0]);
+    expect(board.countAliveShips()).toBe(0);
+  });
+});
