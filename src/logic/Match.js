@@ -174,10 +174,12 @@ class Match {
     if (sunk) ++stats.shipsSunk;
   }
 
+  #getDefender() {
+    return this.#players.find((player) => player !== this.#activePlayer);
+  }
+
   attack(coordinates) {
-    const defender = this.#players.find(
-      (player) => player !== this.#activePlayer
-    );
+    const defender = this.#getDefender();
 
     if (defender === undefined)
       throw new ReferenceError("Players are not set.");
@@ -204,6 +206,14 @@ class Match {
 
     ++player.lastPlacedIndex;
     return player.board.placeShip(coordinates, ship.length, "", ship.name);
+  }
+
+  isGameOver() {
+    const defender = this.#getDefender();
+    if (defender === undefined)
+      throw new ReferenceError("Players are not set.");
+
+    return defender.board.isFleetSunk();
   }
 }
 

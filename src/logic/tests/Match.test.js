@@ -532,3 +532,46 @@ describe("place method", () => {
     expect(match.place([0, 0])).toBe(false);
   });
 });
+
+describe("isGameOver", () => {
+  it("exists", () => hasMethod(Match, "isGameOver"));
+
+  let match;
+  beforeEach(() => {
+    match = new Match();
+    match.setMode("single").init();
+  });
+
+  it("calls the correct player's board isFleetSunk method", () => {
+    const player1Board = match.activePlayer.board;
+    const player1Method = jest.spyOn(player1Board, "isFleetSunk");
+
+    match.switchTurn();
+    const player2Board = match.activePlayer.board;
+    const player2Method = jest.spyOn(player2Board, "isFleetSunk");
+
+    expect(player1Method).not.toHaveBeenCalled();
+    expect(player2Method).not.toHaveBeenCalled();
+
+    match.isGameOver();
+    expect(player1Method).toHaveBeenCalled();
+    expect(player2Method).not.toHaveBeenCalled();
+  });
+
+  it("throws ReferenceError for no players set", () => {
+    match = new Match();
+    expect(() => match.isGameOver()).toThrow(ReferenceError);
+  });
+
+  it("returns true for game over", () => {
+    expect(match.isGameOver()).toBe(true);
+  });
+
+  it("returns false not game over", () => {
+    match.place([0, 0]);
+    match.switchTurn();
+    match.place([0, 0]);
+
+    expect(match.isGameOver()).toBe(false);
+  });
+});
