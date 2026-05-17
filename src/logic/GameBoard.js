@@ -374,6 +374,31 @@ class GameBoard {
   countAliveShips() {
     return this.#fleet.reduce((sum, ship) => sum + Number(!ship.isSunk()), 0);
   }
+
+  moveShip(fromCoordinates, toCoordinates) {
+    const [fromRow, fromCol] = this.#validateCoordinates(fromCoordinates);
+    const [toRow, toCol] = this.#validateCoordinates(toCoordinates);
+
+    const shipId = this.#board[fromRow][fromCol];
+    const ship = this.#getShip(shipId);
+
+    let moved = false;
+    if (ship === undefined) return moved;
+
+    if (!this.#canDraw(toCoordinates, ship.length, ship.placementDirection))
+      return moved;
+
+    this.#draw(
+      fromCoordinates,
+      this.water,
+      ship.placementDirection,
+      ship.length
+    );
+    this.#draw(toCoordinates, shipId, ship.placementDirection, ship.length);
+    moved = true;
+
+    return moved;
+  }
 }
 
 export { GameBoard };

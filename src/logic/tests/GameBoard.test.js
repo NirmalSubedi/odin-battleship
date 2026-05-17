@@ -807,3 +807,83 @@ describe("countAliveShips", () => {
     expect(board.countAliveShips()).toBe(0);
   });
 });
+
+describe("moveShip method", () => {
+  it("exists", () => hasMethod(GameBoard, "moveShip"));
+
+  let board;
+  beforeEach(() => {
+    board = new GameBoard(3, 3);
+  });
+
+  it("moves ship", () => {
+    board.placeShip([0, 0]);
+
+    expect(board.peak).toEqual([
+      [1, 0, 0],
+      [0, 0, 0],
+      [0, 0, 0],
+    ]);
+
+    board.moveShip([0, 0], [2, 2]);
+    expect(board.peak).toEqual([
+      [0, 0, 0],
+      [0, 0, 0],
+      [0, 0, 1],
+    ]);
+  });
+
+  it("does not move ship to occupied space", () => {
+    board.placeShip([0, 0]);
+    board.placeShip([2, 2]);
+
+    expect(board.peak).toEqual([
+      [1, 0, 0],
+      [0, 0, 0],
+      [0, 0, 2],
+    ]);
+
+    board.moveShip([0, 0], [2, 2]);
+    expect(board.peak).toEqual([
+      [1, 0, 0],
+      [0, 0, 0],
+      [0, 0, 2],
+    ]);
+  });
+
+  it("updates ship's head position", () => {
+    board.placeShip([0, 0]);
+    const ship = board.fleet.at(0);
+
+    expect(ship.head).toEqual([0, 0]);
+
+    board.moveShip([0, 0], [0, 1]);
+
+    expect(ship.head).toEqual([0, 1]);
+  });
+
+  it("validates from coordinates", () => {
+    testCoordinates(board, "moveShip");
+  });
+
+  it("validates to coordinates", () => {
+    testCoordinates(board, "moveShip", [0, 0]);
+  });
+
+  it("returns true if moved", () => {
+    board.placeShip([0, 0]);
+
+    expect(board.moveShip([0, 0], [0, 1])).toBe(true);
+  });
+
+  it("returns false if movement was blocked by another ship", () => {
+    board.placeShip([0, 0]);
+    board.placeShip([0, 1]);
+
+    expect(board.moveShip([0, 0], [0, 1])).toBe(false);
+  });
+
+  it("return false if no ship found at coordinates", () => {
+    expect(board.moveShip([0, 0], [1, 1])).toBe(false);
+  });
+});
