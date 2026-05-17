@@ -13,6 +13,7 @@ const config = {
   stats: [
     ["hits", 0],
     ["shots", 0],
+    ["shipsSunk", 0],
   ],
 };
 
@@ -162,6 +163,17 @@ class Match {
     return this.#activePlayer.stats;
   }
 
+  #updatePlayerStats(statusObject) {
+    if (statusObject === null) return null;
+
+    const { hit, sunk } = statusObject;
+    const { stats } = this.#activePlayer;
+
+    ++stats.shots;
+    if (hit) ++stats.hits;
+    if (sunk) ++stats.shipsSunk;
+  }
+
   attack(coordinates) {
     const defender = this.#players.find(
       (player) => player !== this.#activePlayer
@@ -170,7 +182,11 @@ class Match {
     if (defender === undefined)
       throw new ReferenceError("Players are not set.");
 
-    return defender.board.receiveAttack(coordinates);
+    const status = defender.board.receiveAttack(coordinates);
+
+    this.#updatePlayerStats(status);
+
+    return status;
   }
 
   place(coordinates) {

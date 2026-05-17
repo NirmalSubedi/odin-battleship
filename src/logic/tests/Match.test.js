@@ -305,11 +305,13 @@ describe("init method", () => {
     expect(match.activePlayer.stats).toEqual({
       hits: 0,
       shots: 0,
+      shipsSunk: 0,
     });
     match.switchTurn();
     expect(match.activePlayer.stats).toEqual({
       hits: 0,
       shots: 0,
+      shipsSunk: 0,
     });
   });
 
@@ -329,6 +331,7 @@ describe("getPlayerStats", () => {
     expect(match.getPlayerStats()).toEqual({
       hits: 0,
       shots: 0,
+      shipsSunk: 0,
     });
   });
 });
@@ -336,9 +339,12 @@ describe("getPlayerStats", () => {
 describe("attack method", () => {
   it("exists", () => hasMethod(Match, "attack"));
 
-  it("calls receiveAttack on correct player's board", () => {
-    const match = new Match().setMode("single").init();
+  let match;
+  beforeEach(() => {
+    match = new Match().setMode("single").init();
+  });
 
+  it("calls receiveAttack on correct player's board", () => {
     const player1Board = match.activePlayer.board;
     match.switchTurn();
     const player2Board = match.activePlayer.board;
@@ -352,14 +358,66 @@ describe("attack method", () => {
   });
 
   it("throws ReferenceError when players are not set", () => {
-    const match = new Match();
+    match = new Match();
 
     expect(() => match.attack()).toThrow(ReferenceError);
   });
 
-  it("returns object to report attack status", () => {
-    const match = new Match().setMode("single").init();
+  it("updates correct player's stats", () => {
+    const player1Stats = match.getPlayerStats();
+    match.switchTurn();
+    const player2Stats = match.getPlayerStats();
 
+    expect(player1Stats).toEqual({
+      hits: 0,
+      shots: 0,
+      shipsSunk: 0,
+    });
+    expect(player2Stats).toEqual({
+      hits: 0,
+      shots: 0,
+      shipsSunk: 0,
+    });
+
+    match.attack([0, 0]);
+
+    expect(player1Stats).toEqual({
+      hits: 0,
+      shots: 0,
+      shipsSunk: 0,
+    });
+    expect(player2Stats).toEqual({
+      hits: 0,
+      shots: 1,
+      shipsSunk: 0,
+    });
+  });
+
+  it("updates player's stats correctly", () => {
+    match.place([0, 0]);
+    match.switchTurn();
+    const stats = match.getPlayerStats();
+
+    match.attack([0, 0]);
+    expect(stats).toEqual({
+      hits: 1,
+      shots: 1,
+      shipsSunk: 0,
+    });
+
+    match.attack([1, 0]);
+    match.attack([2, 0]);
+    match.attack([3, 0]);
+    match.attack([4, 0]);
+
+    expect(stats).toEqual({
+      hits: 5,
+      shots: 5,
+      shipsSunk: 1,
+    });
+  });
+
+  it("returns object to report attack status", () => {
     expect(typeof match.attack([0, 0])).toBe("object");
   });
 });
