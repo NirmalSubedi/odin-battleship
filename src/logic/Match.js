@@ -10,6 +10,10 @@ const config = {
     ["submarine", 3],
     ["destroyer", 2],
   ],
+  stats: [
+    ["hits", 0],
+    ["shots", 0],
+  ],
 };
 
 function setupPlayerBoards(players) {
@@ -29,6 +33,14 @@ function setupPlayersDock(players) {
   players.forEach((player) => {
     config.defaultDock.forEach(([shipName, shipLength]) => {
       addShipToPlayerFleet(player, shipLength, shipName);
+    });
+  });
+}
+
+function setupPlayerStats(players) {
+  players.forEach((player) => {
+    config.stats.forEach(([stat, statValue]) => {
+      player.stats[stat] = statValue;
     });
   });
 }
@@ -57,6 +69,8 @@ function setupRandomPlayers(...names) {
   this.setPlayers(player1, player2);
 }
 
+const knownModes = new Set(["random", "single", "double"]);
+
 const playerSetups = {
   random: setupRandomPlayers,
   single: setupSinglePlayer,
@@ -65,8 +79,8 @@ const playerSetups = {
 
 class Match {
   #mode;
-  #activePlayer;
   #players = [];
+  #activePlayer;
   #activePlayerIndex;
 
   get mode() {
@@ -78,7 +92,7 @@ class Match {
   }
 
   #isValidMode(mode) {
-    return mode === "single" || mode === "double" || mode === "random";
+    return knownModes.has(mode);
   }
 
   #validateMode(mode) {
@@ -137,10 +151,15 @@ class Match {
     playerSetup.call(this, ...customNames);
     setupPlayerBoards(this.#players);
     setupPlayersDock(this.#players);
+    setupPlayerStats(this.#players);
 
     this.#chooseActivePlayer();
 
     return this;
+  }
+
+  getPlayerStats() {
+    return this.#activePlayer.stats;
   }
 }
 

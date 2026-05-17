@@ -1,6 +1,7 @@
 class Player {
   type;
   board;
+  stats = {};
   dock = [];
   #name;
 

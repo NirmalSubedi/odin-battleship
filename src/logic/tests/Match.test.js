@@ -299,9 +299,36 @@ describe("init method", () => {
     expect(match.activePlayer.dock.length).toBe(5);
   });
 
+  it("sets up players' stats", () => {
+    match.setMode("single").init();
+
+    expect(match.activePlayer.stats).toEqual({
+      hits: 0,
+      shots: 0,
+    });
+    match.switchTurn();
+    expect(match.activePlayer.stats).toEqual({
+      hits: 0,
+      shots: 0,
+    });
+  });
+
   it("returns match instance", () => {
     match.setMode("single");
 
     expect(match.init()).toBe(match);
+  });
+});
+
+describe("getPlayerStats", () => {
+  it("exists", () => hasMethod(Match, "getPlayerStats"));
+
+  it("return active player's stats", () => {
+    const match = new Match().setMode("single").init();
+
+    expect(match.getPlayerStats()).toEqual({
+      hits: 0,
+      shots: 0,
+    });
   });
 });
