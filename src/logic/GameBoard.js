@@ -377,7 +377,7 @@ class GameBoard {
 
   moveShip(fromCoordinates, toCoordinates) {
     const [fromRow, fromCol] = this.#validateCoordinates(fromCoordinates);
-    const [toRow, toCol] = this.#validateCoordinates(toCoordinates);
+    this.#validateCoordinates(toCoordinates);
 
     const shipId = this.#board[fromRow][fromCol];
     const ship = this.#getShip(shipId);

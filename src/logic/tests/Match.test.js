@@ -332,3 +332,145 @@ describe("getPlayerStats", () => {
     });
   });
 });
+
+describe("attack method", () => {
+  it("exists", () => hasMethod(Match, "attack"));
+
+  it("calls receiveAttack on correct player's board", () => {
+    const match = new Match().setMode("single").init();
+
+    const player1Board = match.activePlayer.board;
+    match.switchTurn();
+    const player2Board = match.activePlayer.board;
+
+    const player1AttackReceiver = jest.spyOn(player1Board, "receiveAttack");
+    const player2AttackReceiver = jest.spyOn(player2Board, "receiveAttack");
+
+    match.attack([0, 0]);
+    expect(player1AttackReceiver).toHaveBeenCalledWith([0, 0]);
+    expect(player2AttackReceiver).not.toHaveBeenCalled();
+  });
+
+  it("throws ReferenceError when players are not set", () => {
+    const match = new Match();
+
+    expect(() => match.attack()).toThrow(ReferenceError);
+  });
+
+  it("returns object to report attack status", () => {
+    const match = new Match().setMode("single").init();
+
+    expect(typeof match.attack([0, 0])).toBe("object");
+  });
+});
+
+describe("place method", () => {
+  it("exists", () => hasMethod(Match, "place"));
+
+  let match;
+  beforeEach(() => {
+    match = new Match().setMode("single").init();
+  });
+
+  it("calls placeShip on correct player's board", () => {
+    const player1Board = match.activePlayer.board;
+    match.switchTurn();
+    const player2Board = match.activePlayer.board;
+
+    const player1Placer = jest.spyOn(player1Board, "placeShip");
+    const player2Placer = jest.spyOn(player2Board, "placeShip");
+
+    match.place([0, 0]);
+    expect(player1Placer).not.toHaveBeenCalled();
+    expect(player2Placer).toHaveBeenCalled();
+  });
+
+  it("places ship from player's dock on player's board", () => {
+    const { board } = match.activePlayer;
+
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+
+    match.place([0, 0]);
+    expect(board.peak).toEqual([
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("places multiple ships", () => {
+    const { board } = match.activePlayer;
+
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+
+    match.place([0, 0]);
+    match.place([0, 1]);
+    match.place([0, 2]);
+    expect(board.peak).toEqual([
+      [1, 2, 3, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 3, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 3, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("throws RangeError when placing more ships than player's dock", () => {
+    const { dock } = match.activePlayer;
+    let i = 0;
+    for (; i < dock.length; ++i) {
+      match.place([0, i]);
+    }
+
+    expect(() => match.place([0, i + 1])).toThrow(RangeError);
+  });
+
+  it("throws ReferenceError when players are not set", () => {
+    match = new Match();
+
+    expect(() => match.place()).toThrow(ReferenceError);
+  });
+
+  it("return true if placed", () => {
+    expect(match.place([0, 0])).toBe(true);
+  });
+
+  it("return false if not placed", () => {
+    match.place([0, 0]);
+    expect(match.place([0, 0])).toBe(false);
+  });
+});

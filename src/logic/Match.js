@@ -161,6 +161,34 @@ class Match {
   getPlayerStats() {
     return this.#activePlayer.stats;
   }
+
+  attack(coordinates) {
+    const defender = this.#players.find(
+      (player) => player !== this.#activePlayer
+    );
+
+    if (defender === undefined)
+      throw new ReferenceError("Players are not set.");
+
+    return defender.board.receiveAttack(coordinates);
+  }
+
+  place(coordinates) {
+    if (this.#activePlayer === undefined)
+      throw new ReferenceError("Players are not set.");
+
+    const player = this.#activePlayer;
+
+    player.lastPlacedIndex ??= 0;
+    const { lastPlacedIndex } = this.#activePlayer;
+    const ship = player.dock.at(lastPlacedIndex);
+
+    if (ship === undefined)
+      throw new RangeError("No more ships to place on player's board.");
+
+    ++player.lastPlacedIndex;
+    return player.board.placeShip(coordinates, ship.length, "", ship.name);
+  }
 }
 
 export { Match };
