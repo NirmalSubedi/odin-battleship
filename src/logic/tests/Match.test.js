@@ -575,3 +575,225 @@ describe("isGameOver", () => {
     expect(match.isGameOver()).toBe(false);
   });
 });
+
+describe("rematch method", () => {
+  it("exists", () => hasMethod(Match, "rematch"));
+
+  let match;
+  beforeEach(() => {
+    match = new Match().setMode("single").init();
+  });
+
+  it("isGameOver return false", () => {
+    expect(match.isGameOver()).toBe(true);
+
+    match.rematch();
+    match.place([0, 0]);
+    match.switchTurn();
+    match.place([0, 0]);
+
+    expect(match.isGameOver()).toBe(false);
+  });
+
+  it("keeps mode", () => {
+    expect(match.mode).toBe("single");
+    match.rematch();
+    expect(match.mode).toBe("single");
+  });
+
+  it("keeps players names", () => {
+    match = new Match().setPlayers("Bob", "Joe").setMode("single").init();
+    const player1 = match.activePlayer;
+    match.switchTurn();
+    const player2 = match.activePlayer;
+
+    expect(player1.name).toBe("Bob");
+    expect(player2.name).toBe("Joe");
+
+    match.rematch();
+    expect(player1.name).toBe("Bob");
+    expect(player2.name).toBe("Joe");
+  });
+
+  it("alternates turn start", () => {
+    match = new Match().setPlayers("Bob", "Joe").setMode("single").init();
+    const player1 = match.activePlayer;
+    match.switchTurn();
+    const player2 = match.activePlayer;
+    match.switchTurn();
+
+    expect(match.activePlayer.name).toBe(player1.name);
+    match.rematch();
+    expect(match.activePlayer.name).toBe(player2.name);
+  });
+
+  it("clears players stats", () => {
+    match.place([0, 0]);
+    match.switchTurn();
+    match.place([0, 0]);
+
+    match.attack([0, 0]);
+    match.attack([0, 1]);
+
+    match.switchTurn();
+    match.attack([0, 0]);
+    match.attack([1, 0]);
+    match.attack([2, 0]);
+    match.attack([3, 0]);
+    match.attack([4, 0]);
+
+    expect(match.activePlayer.stats).toEqual({
+      hits: 5,
+      shots: 5,
+      shipsSunk: 1,
+    });
+    match.switchTurn();
+    expect(match.activePlayer.stats).toEqual({
+      hits: 1,
+      shots: 2,
+      shipsSunk: 0,
+    });
+
+    match.rematch();
+    expect(match.activePlayer.stats).toEqual({
+      hits: 0,
+      shots: 0,
+      shipsSunk: 0,
+    });
+    match.switchTurn();
+    expect(match.activePlayer.stats).toEqual({
+      hits: 0,
+      shots: 0,
+      shipsSunk: 0,
+    });
+  });
+
+  it("clears players boards", () => {
+    match.place([0, 1]);
+    expect(match.activePlayer.board.peak).toEqual([
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    match.switchTurn();
+    match.place([0, 0]);
+    expect(match.activePlayer.board.peak).toEqual([
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+
+    match.rematch();
+
+    expect(match.activePlayer.board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    match.switchTurn();
+    expect(match.activePlayer.board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("attack method works after rematch", () => {
+    match.rematch();
+
+    match.place([0, 0]);
+    match.switchTurn();
+    match.place([0, 0]);
+
+    match.attack([0, 0]);
+    expect(match.getPlayerStats()).toEqual({
+      hits: 1,
+      shots: 1,
+      shipsSunk: 0,
+    });
+
+    match.switchTurn();
+    const HIT = -2;
+    expect(match.activePlayer.board.peak).toEqual([
+      [HIT, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("place method works after rematch", () => {
+    match.place([0, 0]);
+    match.place([0, 1]);
+    match.place([0, 2]);
+    match.place([0, 3]);
+    match.place([0, 4]);
+    expect(match.activePlayer.board.peak).toEqual([
+      [1, 2, 3, 4, 5, 0, 0, 0, 0, 0],
+      [1, 2, 3, 4, 5, 0, 0, 0, 0, 0],
+      [1, 2, 3, 4, 0, 0, 0, 0, 0, 0],
+      [1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+
+    match.rematch();
+    match.place([0, 0]);
+    match.place([0, 1]);
+    match.place([0, 2]);
+    expect(match.activePlayer.board.peak).toEqual([
+      [1, 2, 3, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 3, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 3, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
+  it("returns Match instance", () => {
+    expect(match.rematch()).toBe(match);
+  });
+});

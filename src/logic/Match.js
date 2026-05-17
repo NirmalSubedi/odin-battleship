@@ -215,6 +215,19 @@ class Match {
 
     return defender.board.isFleetSunk();
   }
+
+  rematch() {
+    const playerNames = this.#players.reduce((names, player) => {
+      names.push(player.name);
+      return names;
+    }, []);
+
+    this.#players.length = 0;
+    this.setPlayers(...playerNames).init();
+    this.switchTurn();
+
+    return this;
+  }
 }
 
 export { Match };
