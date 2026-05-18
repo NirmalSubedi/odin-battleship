@@ -8,11 +8,11 @@
 
   <body>
     <!-- screens: mode, name, fleet, pass, attack, sunk, over -->
-    <div class="screen-overlay" data-screen="fleet">
+    <div class="screen-overlay" data-screen="mode">
       <header>
         <h1 class="game-name">BattleShip</h1>
         <div class="announce">
-          <span class="message">Bob WINS!</span>
+          <span class="message">Select Mode</span>
         </div>
 
         <div class="instructions">
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <a href="#buttons" class="skip-link">Skip To Buttons</a>
+      <a href="#buttons" tabindex="0" class="skip-link">Skip To Buttons</a>
 
       <main>
         <div class="game-board">
@@ -105,108 +105,7 @@
               <span>10</span>
             </div>
             <!-- Cell state: hit, miss, sunk, hover -->
-            <div class="cells">
-              <button class="cell" data-x="1" data-y="1"></button>
-              <button class="cell miss" data-x="2" data-y="1"></button>
-              <button class="cell sunk" data-x="3" data-y="1"></button>
-              <button class="cell sunk" data-x="4" data-y="1"></button>
-              <button class="cell sunk" data-x="5" data-y="1"></button>
-              <button class="cell sunk" data-x="6" data-y="1"></button>
-              <button class="cell" data-x="7" data-y="1"></button>
-              <button class="cell" data-x="8" data-y="1"></button>
-              <button class="cell" data-x="9" data-y="1"></button>
-              <button class="cell" data-x="10" data-y="1"></button>
-              <button class="cell" data-x="1" data-y="2"></button>
-              <button class="cell" data-x="2" data-y="2"></button>
-              <button class="cell" data-x="3" data-y="2"></button>
-              <button class="cell" data-x="4" data-y="2"></button>
-              <button class="cell" data-x="5" data-y="2"></button>
-              <button class="cell" data-x="6" data-y="2"></button>
-              <button class="cell" data-x="7" data-y="2"></button>
-              <button class="cell" data-x="8" data-y="2"></button>
-              <button class="cell" data-x="9" data-y="2"></button>
-              <button class="cell" data-x="10" data-y="2"></button>
-              <button class="cell sunk" data-x="1" data-y="3"></button>
-              <button class="cell" data-x="2" data-y="3"></button>
-              <button class="cell" data-x="3" data-y="3"></button>
-              <button class="cell" data-x="4" data-y="3"></button>
-              <button class="cell" data-x="5" data-y="3"></button>
-              <button class="cell" data-x="6" data-y="3"></button>
-              <button class="cell" data-x="7" data-y="3"></button>
-              <button class="cell" data-x="8" data-y="3"></button>
-              <button class="cell" data-x="9" data-y="3"></button>
-              <button class="cell" data-x="10" data-y="3"></button>
-              <button class="cell sunk" data-x="1" data-y="4"></button>
-              <button class="cell miss" data-x="2" data-y="4"></button>
-              <button class="cell" data-x="3" data-y="4"></button>
-              <button class="cell sunk" data-x="4" data-y="4"></button>
-              <button class="cell" data-x="5" data-y="4"></button>
-              <button class="cell" data-x="6" data-y="4"></button>
-              <button class="cell" data-x="7" data-y="4"></button>
-              <button class="cell" data-x="8" data-y="4"></button>
-              <button class="cell" data-x="9" data-y="4"></button>
-              <button class="cell" data-x="10" data-y="4"></button>
-              <button class="cell sunk" data-x="1" data-y="5"></button>
-              <button class="cell miss" data-x="2" data-y="5"></button>
-              <button class="cell" data-x="3" data-y="5"></button>
-              <button class="cell sunk" data-x="4" data-y="5"></button>
-              <button class="cell" data-x="5" data-y="5"></button>
-              <button class="cell" data-x="6" data-y="5"></button>
-              <button class="cell sunk" data-x="7" data-y="5"></button>
-              <button class="cell" data-x="8" data-y="5"></button>
-              <button class="cell" data-x="9" data-y="5"></button>
-              <button class="cell" data-x="10" data-y="5"></button>
-              <button class="cell" data-x="1" data-y="6"></button>
-              <button class="cell" data-x="2" data-y="6"></button>
-              <button class="cell" data-x="3" data-y="6"></button>
-              <button class="cell" data-x="4" data-y="6"></button>
-              <button class="cell" data-x="5" data-y="6"></button>
-              <button class="cell" data-x="6" data-y="6"></button>
-              <button class="cell sunk" data-x="7" data-y="6"></button>
-              <button class="cell" data-x="8" data-y="6"></button>
-              <button class="cell" data-x="9" data-y="6"></button>
-              <button class="cell" data-x="10" data-y="6"></button>
-              <button class="cell" data-x="1" data-y="7"></button>
-              <button class="cell" data-x="2" data-y="7"></button>
-              <button class="cell" data-x="3" data-y="7"></button>
-              <button class="cell" data-x="4" data-y="7"></button>
-              <button class="cell" data-x="5" data-y="7"></button>
-              <button class="cell" data-x="6" data-y="7"></button>
-              <button class="cell sunk" data-x="7" data-y="7"></button>
-              <button class="cell" data-x="8" data-y="7"></button>
-              <button class="cell" data-x="9" data-y="7"></button>
-              <button class="cell" data-x="10" data-y="7"></button>
-              <button class="cell" data-x="1" data-y="8"></button>
-              <button class="cell" data-x="2" data-y="8"></button>
-              <button class="cell" data-x="3" data-y="8"></button>
-              <button class="cell" data-x="4" data-y="8"></button>
-              <button class="cell" data-x="5" data-y="8"></button>
-              <button class="cell" data-x="6" data-y="8"></button>
-              <button class="cell" data-x="7" data-y="8"></button>
-              <button class="cell" data-x="8" data-y="8"></button>
-              <button class="cell" data-x="9" data-y="8"></button>
-              <button class="cell" data-x="10" data-y="8"></button>
-              <button class="cell" data-x="1" data-y="9"></button>
-              <button class="cell" data-x="2" data-y="9"></button>
-              <button class="cell sunk" data-x="3" data-y="9"></button>
-              <button class="cell sunk" data-x="4" data-y="9"></button>
-              <button class="cell sunk" data-x="5" data-y="9"></button>
-              <button class="cell sunk" data-x="6" data-y="9"></button>
-              <button class="cell sunk" data-x="7" data-y="9"></button>
-              <button class="cell" data-x="8" data-y="9"></button>
-              <button class="cell" data-x="9" data-y="9"></button>
-              <button class="cell" data-x="10" data-y="9"></button>
-              <button class="cell" data-x="1" data-y="10"></button>
-              <button class="cell" data-x="2" data-y="10"></button>
-              <button class="cell" data-x="3" data-y="10"></button>
-              <button class="cell" data-x="4" data-y="10"></button>
-              <button class="cell" data-x="5" data-y="10"></button>
-              <button class="cell" data-x="6" data-y="10"></button>
-              <button class="cell" data-x="7" data-y="10"></button>
-              <button class="cell" data-x="8" data-y="10"></button>
-              <button class="cell" data-x="9" data-y="10"></button>
-              <button class="cell" data-x="10" data-y="10"></button>
-            </div>
+            <div class="cells"></div>
             <p class="ship-count">Ships Left: <span class="ships">0</span></p>
             <p class="board-label">Player John's Board</p>
           </div>
@@ -218,41 +117,13 @@
               <span class="control">Place: </span>Click empty square
             </p>
             <p class="message" data-hint="rotate">
-              <span class="control">Rotate: </span>Click placed ship
+              <span class="control">Rotate: </span>Click the placed ship
             </p>
           </div>
 
           <div class="fleet">
             <p class="fleet-label">Fleet</p>
-            <div class="dock">
-              <div class="ship">
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-              </div>
-              <div class="ship">
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-              </div>
-              <div class="ship">
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-              </div>
-              <div class="ship">
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-              </div>
-              <div class="ship">
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-                <div class="ship-part"></div>
-              </div>
-            </div>
+            <div class="dock"></div>
           </div>
         </aside>
       </main>

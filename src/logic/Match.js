@@ -83,6 +83,7 @@ class Match {
   #players = [];
   #activePlayer;
   #activePlayerIndex;
+  #defender;
 
   get mode() {
     return this.#mode;
@@ -90,6 +91,10 @@ class Match {
 
   get activePlayer() {
     return this.#activePlayer;
+  }
+
+  get defender() {
+    return this.#defender;
   }
 
   #isValidMode(mode) {
@@ -118,11 +123,15 @@ class Match {
   #chooseActivePlayer() {
     this.#activePlayerIndex = 0;
     this.#activePlayer = this.#players[this.#activePlayerIndex];
+    this.#defender =
+      this.#players[(this.#activePlayerIndex + 1) % this.#players.length];
   }
 
   #changeActivePlayer() {
     this.#activePlayerIndex = ++this.#activePlayerIndex % this.#players.length;
     this.#activePlayer = this.#players[this.#activePlayerIndex];
+    this.#defender =
+      this.#players[(this.#activePlayerIndex + 1) % this.#players.length];
   }
 
   switchTurn() {
@@ -174,19 +183,15 @@ class Match {
     if (sunk) ++stats.shipsSunk;
   }
 
-  #getDefender() {
-    return this.#players.find((player) => player !== this.#activePlayer);
-  }
-
   attack(coordinates) {
-    const defender = this.#getDefender();
-
-    if (defender === undefined)
+    if (this.#defender === undefined)
       throw new ReferenceError("Players are not set.");
 
-    const status = defender.board.receiveAttack(coordinates);
+    const status = this.#defender.board.receiveAttack(coordinates);
 
-    this.#updatePlayerStats(status);
+    if (status !== null) {
+      this.#updatePlayerStats(status);
+    }
 
     return status;
   }
@@ -204,16 +209,22 @@ class Match {
     if (ship === undefined)
       throw new RangeError("No more ships to place on player's board.");
 
-    ++player.lastPlacedIndex;
-    return player.board.placeShip(coordinates, ship.length, "", ship.name);
+    const placed = player.board.placeShip(
+      coordinates,
+      ship.length,
+      "",
+      ship.name
+    );
+    if (placed) ++player.lastPlacedIndex;
+
+    return placed;
   }
 
   isGameOver() {
-    const defender = this.#getDefender();
-    if (defender === undefined)
+    if (this.#defender === undefined)
       throw new ReferenceError("Players are not set.");
 
-    return defender.board.isFleetSunk();
+    return this.#defender.board.isFleetSunk();
   }
 
   rematch() {
