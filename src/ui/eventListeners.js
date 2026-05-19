@@ -1,4 +1,5 @@
-import { renderBoard } from "./render/index.js";
+import { renderBoard, renderCell } from "./render/index.js";
+import { moveOrthogonallyOnBoard } from "./index.js";
 import { Match } from "../logic/index.js";
 
 const toggleSkipLink = () => {
@@ -38,67 +39,114 @@ const processNames = () => {
   game.match.setPlayers(...names);
 };
 
-const selectMode = (event) => {
+const renderAsideShips = (playerDock = []) => {
+  const dockElm = document.body.querySelector("aside .fleet .dock");
+
+  for (let i = 0; i < playerDock.length; ++i) {
+    const ship = playerDock[i];
+    const shipElm = document.createElement("div");
+    for (let j = 0; j < ship.length; ++j) {
+      const shipPartElm = document.createElement("div");
+
+      shipPartElm.setAttribute("class", "ship-part");
+      shipElm.appendChild(shipPartElm);
+    }
+    shipElm.setAttribute("class", "ship");
+    dockElm.appendChild(shipElm);
+  }
+};
+
+const renderBoardLabel = (message = "") => {
+  const label = document.body.querySelector("main .board .board-label");
+  label.textContent = message;
+};
+const renderAnnouncement = (message = "") => {
+  const announcement = document.body.querySelector("header .announce .message");
+  announcement.textContent = message;
+};
+
+const getModeSelection = (event) => {
   const modeElm = event.target.closest("[class$='-player']");
   if (!modeElm || !event.currentTarget.contains(modeElm)) return;
 
-  if (event.type !== "click" && event.type !== "keydown") return;
-  const keyCodes = ["Enter", "Space"];
-  if (event.code && !keyCodes.includes(event.code)) return;
+  const validKeys = ["Enter", "Space"];
+  if (event.code && !validKeys.includes(event.code)) return;
 
   const mode = modeElm.className;
-  const selectedMode = mode.slice(0, mode.indexOf("-"));
-  game.match.setMode(selectedMode);
+  return mode.slice(0, mode.indexOf("-"));
+};
 
-  const renderAsideShips = (playerDock = []) => {
-    const dockElm = document.body.querySelector("aside .fleet .dock");
+const removeShipFromAside = () => {
+  const asideShip = document.body.querySelector("aside .dock .ship");
+  if (!asideShip) return;
+  asideShip.parentElement.removeChild(asideShip);
+};
 
-    for (let i = 0; i < playerDock.length; ++i) {
-      const ship = playerDock[i];
-      const shipElm = document.createElement("div");
-      for (let j = 0; j < ship.length; ++j) {
-        const shipPartElm = document.createElement("div");
+const renderShipPlacement = (game) => {
+  const cellsContainer = document.querySelector("main .cells");
+  let shipsPlaced = 0;
 
-        shipPartElm.setAttribute("class", "ship-part");
-        shipElm.appendChild(shipPartElm);
-      }
-      shipElm.setAttribute("class", "ship");
-      dockElm.appendChild(shipElm);
+  const renderShip = (event) => {
+    const cellElm = event.target.closest(".cell");
+    if (!cellElm || !event.currentTarget.contains(cellElm)) return;
+
+    const row = Number(cellElm.dataset.y) - 1;
+    const col = Number(cellElm.dataset.x) - 1;
+    const coordinates = [row, col];
+
+    const isSuccess = game.match.place(coordinates);
+    if (!isSuccess) return;
+
+    const ship = game.match.activePlayer.board.fleet.at(-1);
+    renderCell(coordinates, "ship", ship.placementDirection, ship.length);
+    removeShipFromAside();
+
+    ++shipsPlaced;
+    if (shipsPlaced >= game.match.activePlayer.dock.length) {
+      cellsContainer.removeEventListener("click", renderShip);
     }
   };
-  const changeBoardLabel = (message = "") => {
-    const label = document.body.querySelector("main .board .board-label");
-    label.textContent = message;
-  };
-  const changeAnnouncement = (message = "") => {
-    const announcement = document.body.querySelector(
-      "header .announce .message"
-    );
-    announcement.textContent = message;
-  };
+  cellsContainer.addEventListener("click", renderShip);
+};
 
-  switch (selectedMode) {
+const selectMode = (event) => {
+  const mode = getModeSelection(event);
+  if (mode === undefined) return;
+  game.match.setMode(mode);
+
+  switch (mode) {
     case "single": {
-      overlay.dataset.screen = "fleet";
       game.match.init();
-
       const board = game.match.activePlayer.board.peak;
       const { dock } = game.match.activePlayer;
+
+      overlay.dataset.screen = "fleet";
       renderBoard(board);
       renderAsideShips(dock);
-      changeBoardLabel("Your Board");
-      changeAnnouncement("Place Fleet");
+      renderBoardLabel("Your Board");
+      renderAnnouncement("Place Fleet");
+      renderShipPlacement(game);
       toggleSkipLink();
       break;
     }
 
-    default:
+    case "double": {
       overlay.dataset.screen = "name";
       overlay.querySelector(".name-selection input").focus();
       break;
+    }
+
+    default:
+      throw new ReferenceError(`(${mode}) is a unknown mode.`);
   }
 };
 
 const gameModes = document.body.querySelector(".game-modes");
 gameModes.addEventListener("click", selectMode);
 gameModes.addEventListener("keydown", selectMode);
+
+const cellsContainer = document.body.querySelector("main .cells");
+cellsContainer.addEventListener("keydown", (event) => {
+  const { board } = game.match.activePlayer;
+  moveOrthogonallyOnBoard(event, board);
+});
