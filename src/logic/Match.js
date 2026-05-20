@@ -205,7 +205,6 @@ class Match {
     const ship = player.dock.at(lastPlacedShipIndex);
 
     if (ship === undefined) {
-      console.log(coordinates, lastPlacedShipIndex);
       return false;
     }
 

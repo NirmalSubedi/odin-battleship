@@ -1,4 +1,7 @@
-export { renderCell } from "./renderCell.js";
-export { renderDock } from "./renderDock.js";
-export { renderShipPlacement } from "./renderShipPlacement.js";
-export { renderBoard } from "./renderBoard.js";
+export * from "./renderCell.js";
+export * from "./renderDock.js";
+export * from "./renderBoard.js";
+export * from "./renderShip.js";
+export * from "./renderAsideShips.js";
+export * from "./renderAnnouncement.js";
+export * from "./renderBoardLabel.js";

@@ -1,4 +1,4 @@
-export { isNumeric } from "./isNumeric.js";
-export { hasMethod } from "./hasMethod.js";
-export { testCoordinates } from "./testCoordinates.js";
-export { isInheritedProperty } from "./isInheritedProperty.js";
+export * from "./isNumeric.js";
+export * from "./hasMethod.js";
+export * from "./testCoordinates.js";
+export * from "./isInheritedProperty.js";

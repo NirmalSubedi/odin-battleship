@@ -1,1 +1,1 @@
-export { moveOrthogonallyOnBoard } from "./moveOrthogonallyOnBoard.js";
+export * from "./moveOrthogonallyOnBoard.js";
