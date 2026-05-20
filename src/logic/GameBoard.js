@@ -236,16 +236,16 @@ class GameBoard {
 
   placeShip(coordinates, length = 1, direction = "", name = "") {
     this.#validateCoordinates(coordinates);
-    this.#addShipToFleet(length, name);
 
-    const shipId = this.#fleet.length;
-    const ship = this.#getShip(shipId);
+    const shipId = this.#fleet.length + 1;
     const placementDirection = this.#decodeDirection(direction);
 
     let placed = false;
 
-    if (this.#canDraw(coordinates, ship.length, placementDirection)) {
-      this.#draw(coordinates, shipId, placementDirection, ship.length);
+    if (this.#canDraw(coordinates, length, placementDirection)) {
+      this.#draw(coordinates, shipId, placementDirection, length);
+      this.#addShipToFleet(length, name);
+      this.#storePlacement(coordinates, shipId, placementDirection);
       placed = true;
     }
 
