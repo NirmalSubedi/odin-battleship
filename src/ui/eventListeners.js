@@ -19,15 +19,9 @@ const preventURLClutter = () => {
 };
 preventURLClutter();
 
-const game = {
-  match: new Match(),
-  player1Placed: false,
-  player2Placed: false,
-};
-
 const overlay = document.querySelector(".screen-overlay");
 
-const processNames = () => {
+const processNames = (match) => {
   const names = [];
   const inputs = overlay.querySelectorAll(".name-selection input");
 
@@ -36,7 +30,7 @@ const processNames = () => {
     if (name !== "") names.push(name);
   });
 
-  game.match.setPlayers(...names);
+  match.setPlayers(...names);
 };
 
 const renderAsideShips = (playerDock = []) => {
@@ -109,7 +103,7 @@ const renderShipPlacement = (game) => {
   cellsContainer.addEventListener("click", renderShip);
 };
 
-const selectMode = (event) => {
+const selectMode = (event, game) => {
   const mode = getModeSelection(event);
   if (mode === undefined) return;
   game.match.setMode(mode);
@@ -141,12 +135,49 @@ const selectMode = (event) => {
   }
 };
 
-const gameModes = document.body.querySelector(".game-modes");
-gameModes.addEventListener("click", selectMode);
-gameModes.addEventListener("keydown", selectMode);
+const game = {
+  match: new Match(),
+  player1Placed: false,
+  player2Placed: false,
+};
 
-const cellsContainer = document.body.querySelector("main .cells");
+const gameModes = overlay.querySelector(".game-modes");
+gameModes.addEventListener("click", (event) => selectMode(event, game));
+gameModes.addEventListener("keydown", (event) => selectMode(event, game));
+
+const cellsContainer = overlay.querySelector("main .cells");
 cellsContainer.addEventListener("keydown", (event) => {
   const { board } = game.match.activePlayer;
   moveOrthogonallyOnBoard(event, board);
+});
+
+const placeShipsRandomly = (match) => {
+  // De-render any placed ships
+  const player = match.activePlayer;
+  const { fleet } = player.board;
+
+  for (let i = 0; i < fleet.length; ++i) {
+    const ship = fleet.at(i);
+    renderCell(ship.head, "", ship.placementDirection, ship.length);
+  }
+
+  // Randomly place ships
+  match.randomizeBoard();
+
+  // Render randomly placed ships
+  for (let i = 0; i < fleet.length; ++i) {
+    const ship = fleet.at(i);
+    renderCell(ship.head, "ship", ship.placementDirection, ship.length);
+    removeShipFromAside();
+  }
+};
+
+const randomizeBoardBtn = overlay.querySelector(".buttons .randomize-board");
+randomizeBoardBtn.addEventListener("click", () => {
+  placeShipsRandomly(game.match);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (overlay.dataset.screen !== "fleet" || event.code !== "KeyR") return;
+  placeShipsRandomly(game.match);
 });

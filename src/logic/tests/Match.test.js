@@ -507,16 +507,6 @@ describe("place method", () => {
     ]);
   });
 
-  it("throws RangeError when placing more ships than player's dock", () => {
-    const { dock } = match.activePlayer;
-    let i = 0;
-    for (; i < dock.length; ++i) {
-      match.place([0, i]);
-    }
-
-    expect(() => match.place([0, i + 1])).toThrow(RangeError);
-  });
-
   it("throws ReferenceError when players are not set", () => {
     match = new Match();
 
@@ -530,6 +520,16 @@ describe("place method", () => {
   it("return false if not placed", () => {
     match.place([0, 0]);
     expect(match.place([0, 0])).toBe(false);
+  });
+
+  it("return false when placing more ships than player's dock", () => {
+    const { dock } = match.activePlayer;
+    let i = 0;
+    for (; i < dock.length; ++i) {
+      match.place([0, i]);
+    }
+
+    expect(match.place([0, i + 1])).toBe(false);
   });
 });
 

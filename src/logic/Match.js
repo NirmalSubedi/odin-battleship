@@ -201,13 +201,10 @@ class Match {
       throw new ReferenceError("Players are not set.");
 
     const player = this.#activePlayer;
+    const { lastPlacedShipIndex } = this.#activePlayer;
+    const ship = player.dock.at(lastPlacedShipIndex);
 
-    player.lastPlacedIndex ??= 0;
-    const { lastPlacedIndex } = this.#activePlayer;
-    const ship = player.dock.at(lastPlacedIndex);
-
-    if (ship === undefined)
-      throw new RangeError("No more ships to place on player's board.");
+    if (ship === undefined) return false;
 
     const placed = player.board.placeShip(
       coordinates,
@@ -215,9 +212,31 @@ class Match {
       "",
       ship.name
     );
-    if (placed) ++player.lastPlacedIndex;
+    if (placed) ++player.lastPlacedShipIndex;
 
     return placed;
+  }
+
+  randomizeBoard() {
+    if (this.#activePlayer === undefined)
+      throw new ReferenceError("Players are not set.");
+
+    const player = this.#activePlayer;
+
+    const { board } = player;
+    if (player.lastPlacedShipIndex === player.dock.length) {
+      player.lastPlacedShipIndex = 0;
+      board.resetBoard().resetFleet();
+    }
+
+    while (player.lastPlacedShipIndex < player.dock.length) {
+      const ship = player.dock.at(player.lastPlacedShipIndex);
+
+      board.randomPlace(ship.length, ship.name);
+      ++player.lastPlacedShipIndex;
+    }
+
+    return this;
   }
 
   isGameOver() {

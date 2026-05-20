@@ -361,6 +361,12 @@ class GameBoard {
     return true;
   }
 
+  resetFleet() {
+    this.#fleet.length = 0;
+
+    return this;
+  }
+
   resetBoard() {
     this.#board.forEach((row, rowIndex) => {
       row.forEach((_, colIndex) => {
