@@ -14,7 +14,7 @@ const preventURLClutter = () => {
 
   skipLink.addEventListener("click", (event) => {
     event.preventDefault();
-    buttons.focus();
+    buttons.firstElementChild?.focus();
   });
 };
 preventURLClutter();
@@ -36,6 +36,9 @@ const processNames = (match) => {
 const renderAsideShips = (playerDock = []) => {
   const dockElm = document.body.querySelector("aside .fleet .dock");
 
+  if (dockElm.childElementCount >= playerDock.length) return;
+
+  dockElm.textContent = "";
   for (let i = 0; i < playerDock.length; ++i) {
     const ship = playerDock[i];
     const shipElm = document.createElement("div");
@@ -78,7 +81,6 @@ const removeShipFromAside = () => {
 
 const renderShipPlacement = (game) => {
   const cellsContainer = document.querySelector("main .cells");
-  let shipsPlaced = 0;
 
   const renderShip = (event) => {
     const cellElm = event.target.closest(".cell");
@@ -94,11 +96,6 @@ const renderShipPlacement = (game) => {
     const ship = game.match.activePlayer.board.fleet.at(-1);
     renderCell(coordinates, "ship", ship.placementDirection, ship.length);
     removeShipFromAside();
-
-    ++shipsPlaced;
-    if (shipsPlaced >= game.match.activePlayer.dock.length) {
-      cellsContainer.removeEventListener("click", renderShip);
-    }
   };
   cellsContainer.addEventListener("click", renderShip);
 };
@@ -172,12 +169,36 @@ const placeShipsRandomly = (match) => {
   }
 };
 
+const resetShipsPlacements = (match) => {
+  const player = match.activePlayer;
+  const { fleet } = player.board;
+
+  for (let i = 0; i < fleet.length; ++i) {
+    const ship = fleet.at(i);
+    renderCell(ship.head, "", ship.placementDirection, ship.length);
+  }
+
+  match.resetBoard();
+
+  renderAsideShips(player.dock);
+};
+
 const randomizeBoardBtn = overlay.querySelector(".buttons .randomize-board");
 randomizeBoardBtn.addEventListener("click", () => {
   placeShipsRandomly(game.match);
 });
 
 document.addEventListener("keydown", (event) => {
-  if (overlay.dataset.screen !== "fleet" || event.code !== "KeyR") return;
+  if (overlay.dataset.screen !== "fleet" || event.code !== "KeyS") return;
   placeShipsRandomly(game.match);
+});
+
+const resetBoardBtn = overlay.querySelector(".buttons .reset-board");
+resetBoardBtn.addEventListener("click", () => {
+  resetShipsPlacements(game.match);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (overlay.dataset.screen !== "fleet" || event.code !== "KeyR") return;
+  resetShipsPlacements(game.match);
 });

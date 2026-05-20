@@ -204,7 +204,10 @@ class Match {
     const { lastPlacedShipIndex } = this.#activePlayer;
     const ship = player.dock.at(lastPlacedShipIndex);
 
-    if (ship === undefined) return false;
+    if (ship === undefined) {
+      console.log(coordinates, lastPlacedShipIndex);
+      return false;
+    }
 
     const placed = player.board.placeShip(
       coordinates,
@@ -235,6 +238,19 @@ class Match {
       board.randomPlace(ship.length, ship.name);
       ++player.lastPlacedShipIndex;
     }
+
+    return this;
+  }
+
+  resetBoard() {
+    if (this.#activePlayer === undefined)
+      throw new ReferenceError("Players are not set.");
+
+    const player = this.#activePlayer;
+
+    const { board } = player;
+    player.lastPlacedShipIndex = 0;
+    board.resetBoard().resetFleet();
 
     return this;
   }
