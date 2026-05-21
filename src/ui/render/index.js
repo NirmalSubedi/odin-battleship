@@ -6,3 +6,4 @@ export * from "./renderAsideShips.js";
 export * from "./renderAnnouncement.js";
 export * from "./renderBoardLabel.js";
 export * from "./renderShipCount.js";
+export * from "./renderStats.js";
