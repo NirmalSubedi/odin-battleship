@@ -5,3 +5,4 @@ export * from "./renderShipPlacement.js";
 export * from "./renderAsideShips.js";
 export * from "./renderAnnouncement.js";
 export * from "./renderBoardLabel.js";
+export * from "./renderShipCount.js";
