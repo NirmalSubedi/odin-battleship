@@ -266,6 +266,7 @@ class GameBoard {
     if (sunk) this.#sinkAllShipParts(shipId);
 
     return {
+      coordinates: [row, col],
       hit: true,
       sunk,
       ship,
@@ -284,7 +285,7 @@ class GameBoard {
   #missShip(row, col) {
     this.#board[row][col] = MISS;
 
-    return { hit: false };
+    return { coordinates: [row, col], hit: false };
   }
 
   receiveAttack(coordinates) {

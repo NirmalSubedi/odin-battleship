@@ -282,6 +282,7 @@ describe("receiveAttack method", () => {
     const ship = board.fleet.at(SHIP_POSITION);
 
     expect(board.receiveAttack([0, 0])).toEqual({
+      coordinates: [0, 0],
       hit: true,
       sunk: true,
       ship,
@@ -294,6 +295,7 @@ describe("receiveAttack method", () => {
     const ship = board.fleet.at(SHIP_POSITION);
 
     expect(board.receiveAttack([0, 0])).toEqual({
+      coordinates: [0, 0],
       hit: true,
       sunk: false,
       ship,
@@ -303,7 +305,10 @@ describe("receiveAttack method", () => {
   it("returns correct object for missed shot", () => {
     board.placeShip([0, 0]);
 
-    expect(board.receiveAttack([1, 1])).toEqual({ hit: false });
+    expect(board.receiveAttack([1, 1])).toEqual({
+      coordinates: [1, 1],
+      hit: false,
+    });
   });
 
   it("returns null for duplicate shot", () => {
@@ -481,6 +486,7 @@ describe("randomAttack method (integration)", () => {
     const ship = board.fleet.at(SHIP_POSITION);
 
     expect(board.randomAttack()).toEqual({
+      coordinates: [0, 0],
       hit: true,
       sunk: true,
       ship,
@@ -490,11 +496,13 @@ describe("randomAttack method (integration)", () => {
   it("returns same object as receiveAttack for hit ship", () => {
     board = new GameBoard(2, 1);
     board.placeShip([0, 0], 2);
+    jest.spyOn(global.Math, "random").mockReturnValue(0.5);
 
     const SHIP_POSITION = 0;
     const ship = board.fleet.at(SHIP_POSITION);
 
     expect(board.randomAttack()).toEqual({
+      coordinates: [1, 0],
       hit: true,
       sunk: false,
       ship,
@@ -507,7 +515,7 @@ describe("randomAttack method (integration)", () => {
 
     expect(board.peak).toEqual([[0], [0]]);
 
-    expect(board.randomAttack()).toEqual({ hit: false });
+    expect(board.randomAttack()).toEqual({ coordinates: [1, 0], hit: false });
     expect(board.peak).toEqual([[0], [-1]]);
   });
 });
