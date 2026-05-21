@@ -408,4 +408,4 @@ class GameBoard {
   }
 }
 
-export { GameBoard };
+export { GameBoard, HIT, MISS, SUNK, WATER };

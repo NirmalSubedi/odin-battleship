@@ -1,9 +1,10 @@
 import {
   renderBoard,
-  renderShip,
+  renderShipPlacement,
   renderAsideShips,
   renderAnnouncement,
   renderBoardLabel,
+  renderCell,
 } from "./render/index.js";
 import {
   getModeSelection,
@@ -31,37 +32,171 @@ skipLink.addEventListener("click", (event) => {
   buttons.firstElementChild?.focus();
 });
 
+const fleetController = new AbortController();
+
+const cellsContainer = document.querySelector("main .cells");
+cellsContainer.addEventListener("keydown", (event) => {
+  const { board } = game.match.activePlayer;
+  moveOrthogonallyOnBoard(event, board);
+});
+
+const delay = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const unRenderAttackTip = () => {
+  const attackTipElm = document.body.querySelector(".instructions .message");
+  attackTipElm.classList.add("remove");
+};
+
+const renderSunkReport = (shipName, render = false) => {
+  const reportElm = document.body.querySelector(".report");
+  const shipNameElm = reportElm.querySelector(".ship-name");
+  shipNameElm.textContent = shipName;
+  reportElm.classList.toggle("show", render);
+};
+
+const attackCell = (event, match) => {
+  const cell = event.target.closest(".cell");
+  if (!cell || !event.currentTarget.contains(cell)) return;
+
+  const row = Number(cell.dataset.y) - 1;
+  const col = Number(cell.dataset.x) - 1;
+  const coordinates = [row, col];
+
+  const status = match.attack(coordinates);
+
+  return status;
+};
+
+const waitForAttack = async (match) =>
+  new Promise((resolve) => {
+    cellsContainer.addEventListener(
+      "click",
+      (event) => {
+        resolve(attackCell(event, match));
+      },
+      { once: true }
+    );
+  });
+
+const toggleAnnouncementTheme = () => {
+  const announcementElm = document.querySelector("header .announce");
+  announcementElm.classList.toggle("alternative");
+};
+
+const prepareAttackScreen = async (match) => {
+  const player = match.activePlayer;
+
+  if (player.lastPlacedShipIndex < player.dock.length) {
+    placeShipsRandomly(match);
+    await delay(1000);
+  }
+
+  match.switchTurn();
+  match.randomizeBoard();
+  match.switchTurn();
+
+  overlay.dataset.screen = "attack";
+  cellsContainer?.firstElementChild?.focus();
+  fleetController.abort();
+
+  while (!match.isGameOver()) {
+    renderBoard(match.defender.board.peak);
+    renderAnnouncement(`${match.activePlayer.name} Turn`);
+
+    let attackStatus;
+
+    if (match.activePlayer.type === "real") {
+      attackStatus = await waitForAttack(match);
+    } else if (match.activePlayer.type === "computer") {
+      attackStatus = match.defender.board.randomAttack();
+    }
+
+    if (attackStatus === null) continue;
+    const { hit, ship, sunk, coordinates } = attackStatus;
+    if (match.activePlayer.type === "computer") await delay(500);
+
+    unRenderAttackTip();
+    renderSunkReport(ship?.name, sunk);
+
+    if (sunk) {
+      renderCell(ship.head, "sunk", ship.placementDirection, ship.length);
+    } else if (hit) {
+      renderCell(coordinates, "hit", [0, 0], 1);
+    } else {
+      renderCell(coordinates, "miss", [0, 0], 1);
+    }
+
+    await delay(500);
+
+    if (hit) continue;
+    match.switchTurn();
+    toggleAnnouncementTheme();
+    renderBoardLabel(`${match.defender.name} Board`);
+  }
+
+  let winner = match.activePlayer.name;
+  if (match.activePlayer.name === "Your") {
+    winner = "You";
+  }
+
+  overlay.dataset.screen = "over";
+  renderAnnouncement(`${winner} WIN!`);
+};
+
 const attachShipPlacementListeners = (match) => {
-  const cellsContainer = document.querySelector("main .cells");
-
-  cellsContainer.addEventListener("click", (event) => {
-    renderShip(event, match);
-  });
-
-  cellsContainer.addEventListener("keydown", (event) => {
-    const { board } = game.match.activePlayer;
-    moveOrthogonallyOnBoard(event, board);
-  });
+  cellsContainer.addEventListener(
+    "click",
+    (event) => {
+      renderShipPlacement(event, match);
+    },
+    { signal: fleetController.signal }
+  );
 
   const randomizeBoardBtn = buttons.querySelector(".randomize-board");
-  randomizeBoardBtn.addEventListener("click", () => {
-    placeShipsRandomly(game.match);
-  });
+  randomizeBoardBtn.addEventListener(
+    "click",
+    () => {
+      placeShipsRandomly(match);
+    },
+    { signal: fleetController.signal }
+  );
 
-  document.addEventListener("keydown", (event) => {
-    if (overlay.dataset.screen !== "fleet" || event.code !== "KeyS") return;
-    placeShipsRandomly(game.match);
-  });
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (overlay.dataset.screen !== "fleet" || event.code !== "KeyS") return;
+      placeShipsRandomly(match);
+    },
+    { signal: fleetController.signal }
+  );
 
   const resetBoardBtn = buttons.querySelector(".reset-board");
-  resetBoardBtn.addEventListener("click", () => {
-    resetShipsPlacements(game.match);
-  });
+  resetBoardBtn.addEventListener(
+    "click",
+    () => {
+      resetShipsPlacements(match);
+    },
+    { signal: fleetController.signal }
+  );
 
-  document.addEventListener("keydown", (event) => {
-    if (overlay.dataset.screen !== "fleet" || event.code !== "KeyR") return;
-    resetShipsPlacements(game.match);
-  });
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (overlay.dataset.screen !== "fleet" || event.code !== "KeyR") return;
+      resetShipsPlacements(match);
+    },
+    { signal: fleetController.signal }
+  );
+
+  const continueBtn = buttons.querySelector(".continue");
+  continueBtn.addEventListener(
+    "click",
+    () => {
+      prepareAttackScreen(match);
+    },
+    { signal: fleetController.signal }
+  );
 };
 
 const prepareSinglePlayer = (match, mode) => {

@@ -226,9 +226,9 @@ describe("init method", () => {
   it("sets up player with default names for single mode", () => {
     match.setMode("single").init();
 
-    expect(match.activePlayer.name).toBe("Player 1");
+    expect(match.activePlayer.name).toBe("Your");
     match.switchTurn();
-    expect(match.activePlayer.name).toBe("Player 2");
+    expect(match.activePlayer.name).toBe("Opponent");
   });
 
   it("sets up player with default names for double mode", () => {

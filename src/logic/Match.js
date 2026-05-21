@@ -1,8 +1,16 @@
 import { Player, GameBoard, Ship } from "./index.js";
 
 const config = {
-  player1Name: "Player 1",
-  player2Name: "Player 2",
+  mode: {
+    single: {
+      player1Name: "Your",
+      player2Name: "Opponent",
+    },
+    double: {
+      player1Name: "Player 1",
+      player2Name: "Player 2",
+    },
+  },
   defaultDock: [
     ["carrier", 5],
     ["battleship", 4],
@@ -48,24 +56,36 @@ function setupPlayerStats(players) {
 
 function setupSinglePlayer(...names) {
   const [player1Name, player2Name] = names;
-  const player1 = new Player("real").setName(player1Name ?? config.player1Name);
-  const player2 = new Player().setName(player2Name ?? config.player2Name);
+  const player1 = new Player("real").setName(
+    player1Name ?? config.mode.single.player1Name
+  );
+  const player2 = new Player().setName(
+    player2Name ?? config.mode.single.player2Name
+  );
 
   this.setPlayers(player1, player2);
 }
 
 function setupDoublePlayers(...names) {
   const [player1Name, player2Name] = names;
-  const player1 = new Player("real").setName(player1Name ?? config.player1Name);
-  const player2 = new Player("real").setName(player2Name ?? config.player2Name);
+  const player1 = new Player("real").setName(
+    player1Name ?? config.mode.double.player1Name
+  );
+  const player2 = new Player("real").setName(
+    player2Name ?? config.mode.double.player2Name
+  );
 
   this.setPlayers(player1, player2);
 }
 
 function setupRandomPlayers(...names) {
   const [player1Name, player2Name] = names;
-  const player1 = new Player().setName(player1Name ?? config.player1Name);
-  const player2 = new Player().setName(player2Name ?? config.player2Name);
+  const player1 = new Player().setName(
+    player1Name ?? config.mode.double.player1Name
+  );
+  const player2 = new Player().setName(
+    player2Name ?? config.mode.double.player2Name
+  );
 
   this.setPlayers(player1, player2);
 }

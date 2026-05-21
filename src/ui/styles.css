@@ -142,6 +142,10 @@ Custom Styles
   display: none !important;
 }
 
+.show {
+  display: block !important;
+}
+
 .game-modes,
 .main,
 aside .controls,
@@ -246,7 +250,6 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 [data-screen="attack"] .instructions,
-[data-screen="sunk"] .instructions,
 [data-screen="over"] .instructions {
   display: flex;
 }
@@ -264,14 +267,6 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 [data-screen="attack"] .instructions .message {
-  display: block;
-}
-
-[data-screen="sunk"] .instructions .report {
-  display: block;
-}
-
-[data-screen="over"] .instructions .feedback {
   display: block;
 }
 
@@ -323,8 +318,12 @@ header:has(~ .game-modes > *:hover) .announce::after {
   font-weight: 700;
 }
 
-[data-screen="sunk"] .instructions .report {
+[data-screen="attack"] .instructions .report {
   color: var(--clr-success);
+}
+
+.report .ship-name {
+  text-transform: capitalize;
 }
 
 .game-modes {
@@ -516,7 +515,6 @@ main {
 
 [data-screen="fleet"] main,
 [data-screen="attack"] main,
-[data-screen="sunk"] main,
 [data-screen="over"] main {
   display: grid;
 }
@@ -589,6 +587,12 @@ main .board .cells {
 
 [data-screen="attack"] .cells > *:focus {
   outline: 0;
+  box-shadow: inset 0 0 0 1px var(--clr-text);
+  border-color: var(--clr-text);
+}
+
+[data-screen="attack"] .cells > *[data-state=""]:focus {
+  outline: 0;
   box-shadow: inset 0 0 0 1px var(--clr-success);
   border-color: var(--clr-success);
 }
@@ -626,8 +630,8 @@ main .board .cells {
 }
 
 /* Hover/Focus Empty Cell Styles */
-[data-screen="attack"] .cells .cell:hover::before,
-[data-screen="attack"] .cells .cell:focus::before {
+[data-screen="attack"] .cells [data-state=""]:hover::before,
+[data-screen="attack"] .cells [data-state=""]:focus::before {
   --_target-circle-size: 16%;
 
   grid-area: stack;
@@ -643,8 +647,8 @@ main .board .cells {
   outline: var(--bd-2xsm) solid var(--clr-gray-400);
 }
 
-[data-screen="attack"] .cells .cell:hover::after,
-[data-screen="attack"] .cells .cell:focus::after {
+[data-screen="attack"] .cells [data-state=""]:hover::after,
+[data-screen="attack"] .cells [data-state=""]:focus::after {
   grid-area: stack;
 
   content: "⤫";
@@ -656,6 +660,11 @@ main .board .cells {
 
 /* Active Empty Cell Styles */
 [data-screen="attack"] .cells .cell:active::before {
+  background: none;
+  border-color: var(--clr-text);
+}
+
+[data-screen="attack"] .cells [data-state=""]:active::before {
   background: none;
   border-color: var(--clr-success-lite);
 }
@@ -871,7 +880,6 @@ dialog .stat {
 
 [data-screen="fleet"] .buttons,
 [data-screen="attack"] .buttons,
-[data-screen="sunk"] .buttons,
 [data-screen="over"] .buttons {
   margin-top: var(--sp-md);
 }
@@ -919,10 +927,7 @@ dialog .stat {
 
 [data-screen="attack"] .buttons .continue,
 [data-screen="attack"] .buttons .home-screen,
-[data-screen="attack"] .buttons .random-attack,
-[data-screen="sunk"] .buttons .continue,
-[data-screen="sunk"] .buttons .home-screen,
-[data-screen="sunk"] .buttons .random-attack {
+[data-screen="attack"] .buttons .random-attack {
   display: block;
 }
 

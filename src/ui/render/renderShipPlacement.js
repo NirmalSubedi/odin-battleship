@@ -6,7 +6,7 @@ const unRenderShipFromAside = () => {
   asideShip.parentElement.removeChild(asideShip);
 };
 
-const renderShip = (event, match) => {
+const renderShipPlacement = (event, match) => {
   const cellElm = event.target.closest(".cell");
   if (!cellElm || !event.currentTarget.contains(cellElm)) return;
 
@@ -22,4 +22,4 @@ const renderShip = (event, match) => {
   unRenderShipFromAside();
 };
 
-export { renderShip, unRenderShipFromAside };
+export { renderShipPlacement, unRenderShipFromAside };
