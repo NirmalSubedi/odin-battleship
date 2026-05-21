@@ -315,10 +315,6 @@ class GameBoard {
     return result;
   }
 
-  randomAttack() {
-    return this.receiveAttack(this.#getRandomCoordinate());
-  }
-
   rotateShipAt(coordinates, counterClockWise = false) {
     const [row, col] = this.#validateCoordinates(coordinates);
 

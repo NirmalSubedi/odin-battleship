@@ -797,3 +797,20 @@ describe("rematch method", () => {
     expect(match.rematch()).toBe(match);
   });
 });
+
+describe("randomAttack method", () => {
+  it("exists", () => hasMethod(Match, "randomAttack"));
+
+  let match;
+  beforeEach(() => {
+    match = new Match().setMode("single").init();
+  });
+
+  it("calls attack method with coordinates", () => {
+    const spy = jest.spyOn(match, "attack");
+
+    expect(spy).not.toHaveBeenCalled();
+    match.randomAttack();
+    expect(spy).toHaveBeenCalled();
+  });
+});

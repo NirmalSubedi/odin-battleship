@@ -261,6 +261,17 @@ class Match {
     return this;
   }
 
+  #getRandomCoordinate() {
+    const row = Math.floor(Math.random() * this.#activePlayer.board.rows);
+    const col = Math.floor(Math.random() * this.#activePlayer.board.cols);
+
+    return [row, col];
+  }
+
+  randomAttack() {
+    return this.attack(this.#getRandomCoordinate());
+  }
+
   resetBoard() {
     if (this.#activePlayer === undefined)
       throw new ReferenceError("Players are not set.");
