@@ -183,7 +183,7 @@ class Match {
     setupPlayersDock(this.#players);
     setupPlayerStats(this.#players);
 
-    this.#chooseActivePlayer();
+    this.switchTurn();
 
     return this;
   }
@@ -293,14 +293,10 @@ class Match {
   }
 
   rematch() {
-    const playerNames = this.#players.reduce((names, player) => {
-      names.push(player.name);
-      return names;
-    }, []);
+    const playerNames = this.#players.map((player) => player.name);
 
     this.#players.length = 0;
-    this.setPlayers(...playerNames).init();
-    this.switchTurn();
+    this.setPlayers(...playerNames);
 
     return this;
   }

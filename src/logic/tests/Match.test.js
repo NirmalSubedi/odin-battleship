@@ -587,7 +587,7 @@ describe("rematch method", () => {
   it("isGameOver return false", () => {
     expect(match.isGameOver()).toBe(true);
 
-    match.rematch();
+    match.rematch().init();
     match.place([0, 0]);
     match.switchTurn();
     match.place([0, 0]);
@@ -597,7 +597,7 @@ describe("rematch method", () => {
 
   it("keeps mode", () => {
     expect(match.mode).toBe("single");
-    match.rematch();
+    match.rematch().init();
     expect(match.mode).toBe("single");
   });
 
@@ -610,7 +610,7 @@ describe("rematch method", () => {
     expect(player1.name).toBe("Bob");
     expect(player2.name).toBe("Joe");
 
-    match.rematch();
+    match.rematch().init();
     expect(player1.name).toBe("Bob");
     expect(player2.name).toBe("Joe");
   });
@@ -623,7 +623,7 @@ describe("rematch method", () => {
     match.switchTurn();
 
     expect(match.activePlayer.name).toBe(player1.name);
-    match.rematch();
+    match.rematch().init();
     expect(match.activePlayer.name).toBe(player2.name);
   });
 
@@ -654,7 +654,7 @@ describe("rematch method", () => {
       shipsSunk: 0,
     });
 
-    match.rematch();
+    match.rematch().init();
     expect(match.activePlayer.stats).toEqual({
       hits: 0,
       shots: 0,
@@ -697,7 +697,7 @@ describe("rematch method", () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 
-    match.rematch();
+    match.rematch().init();
 
     expect(match.activePlayer.board.peak).toEqual([
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -727,7 +727,7 @@ describe("rematch method", () => {
   });
 
   it("attack method works after rematch", () => {
-    match.rematch();
+    match.rematch().init();
 
     match.place([0, 0]);
     match.switchTurn();
@@ -775,7 +775,7 @@ describe("rematch method", () => {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 
-    match.rematch();
+    match.rematch().init();
     match.place([0, 0]);
     match.place([0, 1]);
     match.place([0, 2]);

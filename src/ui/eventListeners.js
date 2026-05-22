@@ -103,13 +103,13 @@ const attachShipPlacementListeners = (match) => {
 
 const prepareDoublePlayer = (match, mode) => {
   match.setMode(mode).init();
-
   overlay.dataset.screen = "name";
   overlay.querySelector(".name-selection input").focus();
 };
 
 const selectMode = (event, match) => {
-  const mode = getModeSelection(event);
+  let { mode } = match;
+  if (match.mode === undefined) mode = getModeSelection(event);
   if (mode === undefined) return;
 
   switch (mode) {
@@ -158,4 +158,10 @@ quitBtn.addEventListener("click", () => {
   renderAnnouncement("Select Mode");
   attackController.abort();
   match = new Match();
+});
+
+const rematchBtn = buttons.querySelector(".rematch");
+rematchBtn.addEventListener("click", (event) => {
+  match.rematch();
+  selectMode(event, match);
 });
