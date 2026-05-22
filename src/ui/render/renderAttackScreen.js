@@ -1,12 +1,10 @@
-import { renderBoard } from "./index.js";
-import { placeShipsRandomly, delay } from "../actions/index.js";
+import { placeShipsRandomly } from "../actions/index.js";
 
-const renderAttackScreen = async (match, fleetController) => {
+const renderAttackScreen = (match, fleetController) => {
   const player = match.activePlayer;
 
   if (player.lastPlacedShipIndex < player.dock.length) {
     placeShipsRandomly(match);
-    await delay(1000);
   }
 
   match.switchTurn();

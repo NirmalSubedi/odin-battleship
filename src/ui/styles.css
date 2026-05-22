@@ -950,10 +950,10 @@ dialog .stat {
 }
 
 [data-screen="lose"] .buttons .home-screen,
-[data-screen="lose"] .buttons .stats,
+[data-screen="lose"] .buttons .show-stats,
 [data-screen="lose"] .buttons .rematch,
 [data-screen="win"] .buttons .home-screen,
-[data-screen="win"] .buttons .stats,
+[data-screen="win"] .buttons .show-stats,
 [data-screen="win"] .buttons .rematch {
   display: block;
 }

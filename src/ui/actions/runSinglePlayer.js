@@ -9,12 +9,14 @@ import {
 } from "../render/index.js";
 import { delay, waitForAttack, toggleAnnouncementTheme } from "./index.js";
 
-const runSinglePlayer = async (match) => {
+const runSinglePlayer = async (match, signal) => {
   const overlay = document.body.querySelector(".screen-overlay");
   const cellsContainer = document.body.querySelector("main .cells");
   renderBoard(match.defender.board.peak);
 
   while (!match.isGameOver()) {
+    if (signal.aborted) return;
+
     renderAnnouncement(`${match.activePlayer.name} Turn`);
     renderShipCount(match.defender.board);
     renderBoard(match.defender.board.peak);
@@ -24,7 +26,7 @@ const runSinglePlayer = async (match) => {
 
     if (match.activePlayer.type === "real") {
       overlay.dataset.screen = "attack";
-      attackStatus = await waitForAttack(match, cellsContainer);
+      attackStatus = await waitForAttack(match, cellsContainer, signal);
       renderBoard(match.defender.board.peak, isSpectator);
     } else {
       overlay.dataset.screen = "spectate";

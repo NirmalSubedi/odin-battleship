@@ -2,6 +2,7 @@ import {
   renderShipPlacement,
   renderAttackScreen,
   renderSinglePlayerEndScreen,
+  renderAnnouncement,
 } from "./render/index.js";
 import {
   getModeSelection,
@@ -14,30 +15,8 @@ import {
 } from "./actions/index.js";
 import { Match } from "../logic/index.js";
 
-const game = {
-  match: new Match(),
-  player1Placed: false,
-  player2Placed: false,
-};
-
-toggleSkipLink();
-
 const overlay = document.querySelector(".screen-overlay");
-const skipLink = document.querySelector(".skip-link");
 const buttons = document.querySelector(".buttons");
-
-skipLink.addEventListener("click", (event) => {
-  event.preventDefault();
-  buttons?.firstElementChild?.focus();
-});
-
-const fleetController = new AbortController();
-
-const cellsContainer = document.querySelector("main .cells");
-cellsContainer.addEventListener("keydown", (event) => {
-  const { board } = game.match.activePlayer;
-  moveOrthogonallyOnBoard(event, board);
-});
 
 const modes = {
   gameLoops: {
@@ -48,17 +27,26 @@ const modes = {
   },
 };
 
+let match = new Match();
+let fleetController;
+let attackController;
+
 const processAttackScreen = async (match) => {
-  await renderAttackScreen(match, fleetController);
+  renderAttackScreen(match, fleetController);
+  attackController = new AbortController();
 
   const gameLoop = modes.gameLoops[match.mode];
-  await gameLoop(match);
+  await gameLoop(match, attackController.signal);
+  if (attackController.signal.aborted) return;
 
   const endScreen = modes.endScreens[match.mode];
   endScreen(match);
 };
 
 const attachShipPlacementListeners = (match) => {
+  fleetController = new AbortController();
+
+  const cellsContainer = document.body.querySelector("main .cells");
   cellsContainer.addEventListener(
     "click",
     (event) => {
@@ -138,6 +126,36 @@ const selectMode = (event, match) => {
   }
 };
 
+const skipLink = document.querySelector(".skip-link");
+skipLink.addEventListener("click", (event) => {
+  event.preventDefault();
+  Array.from(buttons.children)
+    .find((child) => child.checkVisibility())
+    ?.focus();
+});
+toggleSkipLink();
+
 const gameModes = overlay.querySelector(".game-modes");
-gameModes.addEventListener("click", (event) => selectMode(event, game.match));
-gameModes.addEventListener("keydown", (event) => selectMode(event, game.match));
+gameModes.addEventListener("click", (event) => {
+  selectMode(event, match);
+});
+gameModes.addEventListener("keydown", (event) => selectMode(event, match));
+
+const cellsContainer = document.querySelector("main .cells");
+cellsContainer.addEventListener("keydown", (event) => {
+  const { board } = match.activePlayer;
+  moveOrthogonallyOnBoard(event, board);
+});
+
+const showsStatsBtn = buttons.querySelector(".show-stats");
+showsStatsBtn.addEventListener("click", () =>
+  overlay.querySelector("dialog.stats").show()
+);
+
+const quitBtn = buttons.querySelector(".home-screen");
+quitBtn.addEventListener("click", () => {
+  overlay.dataset.screen = "mode";
+  renderAnnouncement("Select Mode");
+  attackController.abort();
+  match = new Match();
+});
