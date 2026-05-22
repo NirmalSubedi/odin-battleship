@@ -9,6 +9,7 @@
   --clr-sunk-ship: #fd6c6c;
   --clr-ship: #2e90d6;
   --clr-ship-lite: #aed4ef;
+  --clr-ship-faded: #358fd040;
 
   --clr-hit-fill: #ff3539;
   --clr-hit-stroke: #cc0003;
@@ -214,7 +215,12 @@ header {
   color: var(--clr-text);
 }
 
-[data-screen="over"] .announce {
+[data-screen="lose"] .announce {
+  background: var(--clr-hit-stroke);
+  color: var(--clr-bg);
+}
+
+[data-screen="win"] .announce {
   background: var(--clr-success);
 }
 
@@ -250,7 +256,9 @@ header:has(~ .game-modes > *:hover) .announce::after {
 }
 
 [data-screen="attack"] .instructions,
-[data-screen="over"] .instructions {
+[data-screen="spectate"] .instructions,
+[data-screen="lose"] .instructions,
+[data-screen="win"] .instructions {
   display: flex;
 }
 
@@ -266,7 +274,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   display: none;
 }
 
-[data-screen="attack"] .instructions .message {
+[data-screen="attack"] .instructions .attack-message {
   display: block;
 }
 
@@ -291,7 +299,6 @@ header:has(~ .game-modes > *:hover) .announce::after {
   box-sizing: content-box;
   position: relative;
   width: var(--_target-circle-size);
-  background: red;
   height: var(--_target-circle-size);
 
   border-radius: 50%;
@@ -310,7 +317,7 @@ header:has(~ .game-modes > *:hover) .announce::after {
   font-weight: 100;
 }
 
-[data-screen="attack"] .instructions .message {
+[data-screen="attack"] .instructions .attack-message {
   font-weight: 400;
 }
 
@@ -320,6 +327,10 @@ header:has(~ .game-modes > *:hover) .announce::after {
 
 [data-screen="attack"] .instructions .report {
   color: var(--clr-success);
+}
+
+[data-screen="spectate"] .instructions .report {
+  color: var(--clr-hit-stroke);
 }
 
 .report .ship-name {
@@ -514,8 +525,10 @@ main {
 }
 
 [data-screen="fleet"] main,
+[data-screen="spectate"] main,
 [data-screen="attack"] main,
-[data-screen="over"] main {
+[data-screen="lose"] main,
+[data-screen="win"] main {
   display: grid;
 }
 
@@ -601,6 +614,10 @@ main .board .cells {
   background: var(--clr-ship);
 }
 
+[data-screen="spectate"] .cells [data-state="ship"] {
+  background: var(--clr-ship-faded);
+}
+
 .cells [data-state="ship"]:focus {
   box-shadow: inset 0 0 0 1px var(--clr-text);
 }
@@ -677,7 +694,9 @@ main .board .cells {
 }
 
 [data-screen="attack"] .board .ship-count,
-[data-screen="over"] .board .ship-count {
+[data-screen="spectate"] .board .ship-count,
+[data-screen="lose"] .board .ship-count,
+[data-screen="win"] .board .ship-count {
   visibility: visible;
 }
 
@@ -811,15 +830,11 @@ dialog .close-stats::after {
   transform: rotateZ(-45deg);
 }
 
+dialog .close-stats:focus,
 dialog .close-stats:hover {
+  outline: none;
   background: var(--clr-dialog-bg);
   color: var(--clr-text);
-}
-
-dialog .close-stats:focus {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--clr-bg);
-  border-radius: 4px;
 }
 
 dialog .close-stats:active {
@@ -879,8 +894,10 @@ dialog .stat {
 }
 
 [data-screen="fleet"] .buttons,
+[data-screen="spectate"] .buttons,
 [data-screen="attack"] .buttons,
-[data-screen="over"] .buttons {
+[data-screen="lose"] .buttons,
+[data-screen="win"] .buttons {
   margin-top: var(--sp-md);
 }
 
@@ -925,14 +942,18 @@ dialog .stat {
   display: block;
 }
 
-[data-screen="attack"] .buttons .continue,
+[data-screen="spectate"] .buttons .home-screen,
+[data-screen="spectate"] .buttons .random-attack,
 [data-screen="attack"] .buttons .home-screen,
 [data-screen="attack"] .buttons .random-attack {
   display: block;
 }
 
-[data-screen="over"] .buttons .home-screen,
-[data-screen="over"] .buttons .stats,
-[data-screen="over"] .buttons .rematch {
+[data-screen="lose"] .buttons .home-screen,
+[data-screen="lose"] .buttons .stats,
+[data-screen="lose"] .buttons .rematch,
+[data-screen="win"] .buttons .home-screen,
+[data-screen="win"] .buttons .stats,
+[data-screen="win"] .buttons .rematch {
   display: block;
 }
