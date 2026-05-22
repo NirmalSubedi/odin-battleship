@@ -13,7 +13,7 @@ const renderStats = (players = []) => {
     const player = players[i];
     const { stats } = player;
 
-    nameElms[i].textContent = player.name;
+    nameElms[i].textContent = player.name === "Your" ? "You" : player.name;
     shipsSunkElms[i].textContent = stats.shipsSunk;
     shotsFiredElms[i].textContent = stats.shots;
     hitAccuracyElms[i].textContent = getHitAccuracy(stats.shots, stats.hits);

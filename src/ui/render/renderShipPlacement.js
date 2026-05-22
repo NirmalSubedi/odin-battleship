@@ -1,10 +1,4 @@
-import { renderCell } from "./renderCell.js";
-
-const unRenderShipFromAside = () => {
-  const asideShip = document.body.querySelector("aside .dock .ship");
-  if (!asideShip) return;
-  asideShip.parentElement.removeChild(asideShip);
-};
+import { renderCell, unRenderShipFromAside } from "./index.js";
 
 const renderShipPlacement = (event, match) => {
   const cellElm = event.target.closest(".cell");
@@ -22,4 +16,4 @@ const renderShipPlacement = (event, match) => {
   unRenderShipFromAside();
 };
 
-export { renderShipPlacement, unRenderShipFromAside };
+export { renderShipPlacement };

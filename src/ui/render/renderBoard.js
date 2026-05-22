@@ -1,8 +1,8 @@
-import { HIT, MISS, SUNK } from "../../logic/index.js";
+import { HIT, MISS, SUNK, WATER } from "../../logic/index.js";
 
 const CELL_ELEMENT = "button";
 
-const renderBoard = (board = []) => {
+const renderBoard = (board = [], isSpectator = false) => {
   const cellsContainer = document.body.querySelector("main .board .cells");
   cellsContainer.textContent = "";
 
@@ -29,8 +29,12 @@ const renderBoard = (board = []) => {
         case SUNK:
           state = "sunk";
           break;
-        default:
+        case WATER:
           state = "";
+          break;
+        default:
+          if (isSpectator) state = "ship";
+          else state = "";
           break;
       }
       cell.setAttribute("data-state", state);
