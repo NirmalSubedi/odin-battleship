@@ -1,23 +1,26 @@
 import {
-  renderShipPlacement,
   renderAttackScreen,
   renderSinglePlayerEndScreen,
   renderAnnouncement,
+  renderBoard,
+  renderFleetScreen,
 } from "./render/index.js";
 import {
   getModeSelection,
   moveOrthogonallyOnBoard,
-  placeShipsRandomly,
-  resetShipsPlacements,
+  attachFleetControls,
   toggleSkipLink,
   prepareSinglePlayer,
   runSinglePlayer,
   toggleAnnouncementTheme,
+  waitForNameInputs,
+  waitForContinueButtonPress,
+  focusBoardCell,
 } from "./actions/index.js";
 import { Match } from "../logic/index.js";
 
-const overlay = document.querySelector(".screen-overlay");
-const buttons = document.querySelector(".buttons");
+const overlay = document.body.querySelector(".screen-overlay");
+const buttons = document.body.querySelector(".buttons");
 
 const modes = {
   gameLoops: {
@@ -44,53 +47,10 @@ const processAttackScreen = async (match) => {
   endScreen(match);
 };
 
-const attachShipPlacementListeners = (match) => {
+const attachSinglePlayerControls = (match) => {
   fleetController = new AbortController();
 
-  const cellsContainer = document.body.querySelector("main .cells");
-  cellsContainer.addEventListener(
-    "click",
-    (event) => {
-      renderShipPlacement(event, match);
-    },
-    { signal: fleetController.signal }
-  );
-
-  const randomizeBoardBtn = buttons.querySelector(".randomize-board");
-  randomizeBoardBtn.addEventListener(
-    "click",
-    () => {
-      placeShipsRandomly(match);
-    },
-    { signal: fleetController.signal }
-  );
-
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      if (overlay.dataset.screen !== "fleet" || event.code !== "KeyS") return;
-      placeShipsRandomly(match);
-    },
-    { signal: fleetController.signal }
-  );
-
-  const resetBoardBtn = buttons.querySelector(".reset-board");
-  resetBoardBtn.addEventListener(
-    "click",
-    () => {
-      resetShipsPlacements(match);
-    },
-    { signal: fleetController.signal }
-  );
-
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      if (overlay.dataset.screen !== "fleet" || event.code !== "KeyR") return;
-      resetShipsPlacements(match);
-    },
-    { signal: fleetController.signal }
-  );
+  attachFleetControls(match, fleetController);
 
   const continueBtn = buttons.querySelector(".continue");
   continueBtn.addEventListener(
@@ -102,10 +62,38 @@ const attachShipPlacementListeners = (match) => {
   );
 };
 
-const prepareDoublePlayer = (match, mode) => {
-  match.setMode(mode).init();
+const renderAttackScreenV2 = (match, showShips = false) => {
+  const overlay = document.body.querySelector(".screen-overlay");
+  const cellsContainer = overlay.querySelector("main .cells");
+
+  overlay.dataset.screen = "attack";
+  renderBoard(match.defender.board.peak, showShips);
+  cellsContainer?.firstElementChild?.focus();
+};
+
+const prepareDoublePlayer = async (match, mode) => {
   overlay.dataset.screen = "name";
   overlay.querySelector(".name-selection input").focus();
+
+  await waitForNameInputs(match);
+  match.setMode(mode).init();
+
+  for (let i = 0; i < 2; ++i) {
+    fleetController = new AbortController();
+
+    toggleSkipLink(true);
+    renderFleetScreen(match);
+    attachFleetControls(match, fleetController);
+    focusBoardCell([0, 0]);
+
+    await waitForContinueButtonPress(match);
+
+    toggleAnnouncementTheme();
+    match.switchTurn();
+    fleetController.abort();
+  }
+
+  renderAttackScreenV2(match);
 };
 
 const selectMode = (event, match) => {
@@ -115,7 +103,7 @@ const selectMode = (event, match) => {
 
   switch (mode) {
     case "single":
-      prepareSinglePlayer(match, mode, attachShipPlacementListeners);
+      prepareSinglePlayer(match, mode, attachSinglePlayerControls);
       break;
 
     case "double":

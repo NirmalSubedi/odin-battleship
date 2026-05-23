@@ -12,3 +12,7 @@ export * from "./runSinglePlayer.js";
 export * from "./prepareSinglePlayer.js";
 export * from "./waitForRandomAttack.js";
 export * from "./waitForQuit.js";
+export * from "./attachFleetControls.js";
+export * from "./waitForNameInputs.js";
+export * from "./waitForContinueButtonPress.js";
+export * from "./focusBoardCell.js";

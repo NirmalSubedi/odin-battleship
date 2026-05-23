@@ -1,6 +1,10 @@
-const toggleAnnouncementTheme = (show = true) => {
+const toggleAnnouncementTheme = (show = false) => {
   const announcementElm = document.querySelector("header .announce");
-  announcementElm.classList.toggle("alternative", show);
+  if (show) {
+    announcementElm.classList.toggle("alternative", show);
+  } else {
+    announcementElm.classList.toggle("alternative");
+  }
 };
 
 export { toggleAnnouncementTheme };

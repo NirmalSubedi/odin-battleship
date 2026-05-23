@@ -10,6 +10,7 @@ export * from "./renderStats.js";
 export * from "./renderAttackScreen.js";
 export * from "./renderSunkReport.js";
 export * from "./renderSinglePlayerEndScreen.js";
+export * from "./renderFleetScreen.js";
 
 export * from "./unRenderShipFromAside.js";
 export * from "./unRenderAttackTip.js";

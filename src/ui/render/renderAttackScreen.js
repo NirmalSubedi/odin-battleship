@@ -16,7 +16,7 @@ const renderAttackScreen = (match, fleetController) => {
 
   overlay.dataset.screen = "attack";
   cellsContainer?.firstElementChild?.focus();
-  fleetController.abort();
+  fleetController?.abort();
 };
 
 export { renderAttackScreen };
