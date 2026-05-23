@@ -10,3 +10,5 @@ export * from "./waitForAttack.js";
 export * from "./toggleAnnouncementTheme.js";
 export * from "./runSinglePlayer.js";
 export * from "./prepareSinglePlayer.js";
+export * from "./waitForRandomAttack.js";
+export * from "./waitForQuit.js";

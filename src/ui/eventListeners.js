@@ -12,6 +12,7 @@ import {
   toggleSkipLink,
   prepareSinglePlayer,
   runSinglePlayer,
+  toggleAnnouncementTheme,
 } from "./actions/index.js";
 import { Match } from "../logic/index.js";
 
@@ -29,15 +30,15 @@ const modes = {
 
 let match = new Match();
 let fleetController;
-let attackController;
+let matchController;
 
 const processAttackScreen = async (match) => {
   renderAttackScreen(match, fleetController);
-  attackController = new AbortController();
+  matchController = new AbortController();
 
   const gameLoop = modes.gameLoops[match.mode];
-  await gameLoop(match, attackController.signal);
-  if (attackController.signal.aborted) return;
+  await gameLoop(match, matchController);
+  if (matchController.signal.aborted) return;
 
   const endScreen = modes.endScreens[match.mode];
   endScreen(match);
@@ -156,7 +157,7 @@ const quitBtn = buttons.querySelector(".home-screen");
 quitBtn.addEventListener("click", () => {
   overlay.dataset.screen = "mode";
   renderAnnouncement("Select Mode");
-  attackController.abort();
+  toggleAnnouncementTheme(false);
   match = new Match();
 });
 

@@ -3,6 +3,7 @@ import {
   renderAsideShips,
   renderBoardLabel,
   renderAnnouncement,
+  renderSunkReport,
 } from "../render/index.js";
 import { toggleSkipLink } from "./index.js";
 
@@ -19,6 +20,7 @@ const prepareSinglePlayer = (match, mode, attachShipPlacementListeners) => {
   renderAsideShips(dock);
   renderBoardLabel(`${match.activePlayer.name} Board`);
   renderAnnouncement("Place Fleet");
+  renderSunkReport("");
 
   attachShipPlacementListeners(match);
   toggleSkipLink();
