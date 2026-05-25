@@ -547,6 +547,25 @@ describe("rotateShipAt method", () => {
     ]);
   });
 
+  it("rotates ship with body coordinates", () => {
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0],
+    ]);
+
+    board.rotateShipAt([3, 2]);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 1, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+
   it("updates placement directions after clockwise rotation", () => {
     const shipPosition = 0;
     const ship = board.fleet.at(shipPosition);
@@ -608,6 +627,28 @@ describe("rotateShipAt method", () => {
     expect(board.rotateShipAt([0, 0])).toBe(false);
   });
 
+  it("return false if ship is at edge and cannot be rotated", () => {
+    board = new GameBoard(5, 5);
+    board.placeShip([0, 0], 3);
+
+    expect(board.peak).toEqual([
+      [1, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+
+    expect(board.rotateShipAt([0, 0])).toBe(false);
+    expect(board.peak).toEqual([
+      [1, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+    ]);
+  });
+
   it("returns false if another ship is blocking rotation", () => {
     board.placeShip([2, 1]);
 
@@ -626,6 +667,28 @@ describe("rotateShipAt method", () => {
       [0, 2, 1, 0, 0],
       [0, 0, 1, 0, 0],
       [0, 0, 1, 0, 0],
+    ]);
+  });
+
+  it("returns false if one part is outside of the board", () => {
+    board = new GameBoard(5, 5);
+    board.placeShip([2, 1], 3);
+
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+    ]);
+
+    expect(board.rotateShipAt([2, 1])).toBe(false);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+      [0, 1, 0, 0, 0],
+      [0, 1, 0, 0, 0],
     ]);
   });
 });

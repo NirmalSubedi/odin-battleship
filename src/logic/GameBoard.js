@@ -344,13 +344,13 @@ class GameBoard {
 
     const drawLength = ship.length - 1;
     const drawFrom = [pivotRow, pivotCol];
-    const drawTowards = ship.placementDirection;
+    const drawTowards = rotatedDirection;
 
     if (!this.#canDraw(drawFrom, drawLength, drawTowards)) {
       return false;
     }
 
-    this.#draw(ship.head, this.water, drawTowards, ship.length);
+    this.#draw(ship.head, this.water, ship.placementDirection, ship.length);
 
     ship.placementDirection = rotatedDirection;
     this.#draw(ship.head, shipId, rotatedDirection, ship.length);
