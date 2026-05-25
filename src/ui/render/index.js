@@ -11,6 +11,7 @@ export * from "./renderAttackScreen.js";
 export * from "./renderSunkReport.js";
 export * from "./renderEndScreen.js";
 export * from "./renderFleetScreen.js";
+export * from "./renderShipRotation.js";
 
 export * from "./unRenderShipFromAside.js";
 export * from "./unRenderAttackTip.js";

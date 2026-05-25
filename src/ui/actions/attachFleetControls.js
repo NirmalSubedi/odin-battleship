@@ -1,4 +1,4 @@
-import { renderShipPlacement } from "../render/index.js";
+import { renderShipPlacement, renderShipRotation } from "../render/index.js";
 import { placeShipsRandomly, resetShipsPlacements } from "./index.js";
 
 const attachFleetControls = (match, fleetController) => {
@@ -10,6 +10,14 @@ const attachFleetControls = (match, fleetController) => {
     "click",
     (event) => {
       renderShipPlacement(event, match);
+    },
+    { signal: fleetController.signal }
+  );
+
+  cellsContainer.addEventListener(
+    "click",
+    (event) => {
+      renderShipRotation(event, match);
     },
     { signal: fleetController.signal }
   );
