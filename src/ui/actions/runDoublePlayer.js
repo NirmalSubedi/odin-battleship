@@ -5,6 +5,7 @@ import {
   renderBoard,
   unRenderAttackTip,
   renderSunkReport,
+  renderAttackScreen,
   renderCell,
 } from "../render/index.js";
 import {
@@ -24,15 +25,6 @@ const renderPassScreen = () => {
   continueBtn.focus();
 };
 
-const renderAttackScreenV2 = (match, showShips = false) => {
-  const overlay = document.body.querySelector(".screen-overlay");
-  const cellsContainer = overlay.querySelector("main .cells");
-
-  overlay.dataset.screen = "attack";
-  renderBoard(match.defender.board.peak, showShips);
-  cellsContainer?.firstElementChild?.focus();
-};
-
 const runDoublePlayer = async (match, matchController) => {
   let attackControls;
 
@@ -49,12 +41,14 @@ const runDoublePlayer = async (match, matchController) => {
       waitForQuit(attackControls.signal, matchController),
     ]);
     attackControls.abort();
+
     if (matchController.signal.aborted) return;
     if (attackStatus === null) continue;
 
     const { hit, sunk, ship, coordinates } = attackStatus;
     unRenderAttackTip();
     renderSunkReport(ship?.name, sunk);
+
     if (sunk) {
       renderCell(ship.head, "sunk", ship.placementDirection, ship.length);
     } else if (hit) {
@@ -63,13 +57,14 @@ const runDoublePlayer = async (match, matchController) => {
       renderCell(coordinates, "miss", [0, 0], 1);
     }
     renderShipCount(match.defender.board);
-    await delay(400);
+    await delay(500);
 
     if (matchController.signal.aborted) return;
     if (hit) continue;
+
     renderPassScreen();
     await waitForContinueButtonPress(match);
-    renderAttackScreenV2(match);
+    renderAttackScreen(match);
 
     match.switchTurn();
     toggleAnnouncementTheme();

@@ -1,4 +1,4 @@
-const renderSunkReport = (shipName, render = false) => {
+const renderSunkReport = (shipName = "ship", render = false) => {
   const reportElm = document.body.querySelector(".report");
   const shipNameElm = reportElm.querySelector(".ship-name");
   shipNameElm.textContent = shipName;

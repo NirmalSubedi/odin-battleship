@@ -15,21 +15,24 @@ import {
   toggleAnnouncementTheme,
 } from "./index.js";
 
+const setComputerBoard = (match) => {
+  match.switchTurn();
+  match.randomizeBoard();
+  match.switchTurn();
+};
+
 const runSinglePlayer = async (match, matchController) => {
   const overlay = document.body.querySelector(".screen-overlay");
-  renderBoard(match.defender.board.peak);
   let inputController;
+  setComputerBoard(match);
 
   while (!match.isGameOver()) {
-    if (matchController.signal.aborted) return;
     inputController = new AbortController();
 
     renderAnnouncement(`${match.activePlayer.name} Turn`);
     renderShipCount(match.defender.board);
-    renderBoard(match.defender.board.peak);
 
     let attackStatus;
-    let isSpectator = false;
 
     if (match.activePlayer.type === "real") {
       overlay.dataset.screen = "attack";
@@ -39,10 +42,9 @@ const runSinglePlayer = async (match, matchController) => {
         waitForQuit(inputController.signal, matchController),
       ]);
       inputController.abort();
-      renderBoard(match.defender.board.peak, isSpectator);
     } else {
+      const isSpectator = true;
       overlay.dataset.screen = "spectate";
-      isSpectator = true;
       renderBoard(match.defender.board.peak, isSpectator);
       await delay(400);
       attackStatus = match.randomAttack();
@@ -66,10 +68,12 @@ const runSinglePlayer = async (match, matchController) => {
     renderShipCount(match.defender.board);
     await delay(400);
 
+    if (matchController.signal.aborted) return;
     if (hit) continue;
 
     match.switchTurn();
     toggleAnnouncementTheme();
+    renderBoard(match.defender.board.peak);
     renderBoardLabel(`${match.defender.name} Board`);
   }
 };

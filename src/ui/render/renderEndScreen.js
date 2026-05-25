@@ -1,6 +1,6 @@
 import { renderAnnouncement, renderStats } from "./index.js";
 
-const renderSinglePlayerEndScreen = (match) => {
+const renderEndScreen = (match) => {
   const overlay = document.body.querySelector(".screen-overlay");
   let winnerName = match.activePlayer.name;
 
@@ -16,4 +16,4 @@ const renderSinglePlayerEndScreen = (match) => {
   renderStats([match.activePlayer, match.defender]);
 };
 
-export { renderSinglePlayerEndScreen };
+export { renderEndScreen };

@@ -1,90 +1,67 @@
 import {
+  renderEndScreen,
   renderAttackScreen,
-  renderSinglePlayerEndScreen,
-  renderAnnouncement,
-  renderBoard,
   renderFleetScreen,
+  renderAnnouncement,
 } from "./render/index.js";
 import {
   getModeSelection,
   moveOrthogonallyOnBoard,
   attachFleetControls,
   toggleSkipLink,
-  prepareSinglePlayer,
   runSinglePlayer,
   toggleAnnouncementTheme,
   waitForNameInputs,
   waitForContinueButtonPress,
   focusBoardCell,
+  runDoublePlayer,
+  delay,
 } from "./actions/index.js";
 import { Match } from "../logic/index.js";
 
 const overlay = document.body.querySelector(".screen-overlay");
 const buttons = document.body.querySelector(".buttons");
 
-const modes = {
-  gameLoops: {
-    single: runSinglePlayer,
-  },
-  endScreens: {
-    single: renderSinglePlayerEndScreen,
-  },
-};
-
 let match = new Match();
 let fleetController;
 let matchController;
 
-const processAttackScreen = async (match) => {
-  renderAttackScreen(match, fleetController);
+const playSinglePlayer = async (match, mode) => {
+  match.setMode(mode).init();
+  renderFleetScreen(match);
+
+  fleetController = new AbortController();
+  attachFleetControls(match, fleetController);
+  toggleSkipLink(true);
+  await delay(0); // Prevent click from leaking through
+
+  await waitForContinueButtonPress(match);
+  fleetController.abort();
+
+  renderAttackScreen(match);
   matchController = new AbortController();
 
-  const gameLoop = modes.gameLoops[match.mode];
-  await gameLoop(match, matchController);
+  await runSinglePlayer(match, matchController);
   if (matchController.signal.aborted) return;
 
-  const endScreen = modes.endScreens[match.mode];
-  endScreen(match);
+  renderEndScreen(match);
 };
 
-const attachSinglePlayerControls = (match) => {
-  fleetController = new AbortController();
-
-  attachFleetControls(match, fleetController);
-
-  const continueBtn = buttons.querySelector(".continue");
-  continueBtn.addEventListener(
-    "click",
-    () => {
-      processAttackScreen(match);
-    },
-    { signal: fleetController.signal }
-  );
-};
-
-const renderAttackScreenV2 = (match, showShips = false) => {
-  const overlay = document.body.querySelector(".screen-overlay");
-  const cellsContainer = overlay.querySelector("main .cells");
-
-  overlay.dataset.screen = "attack";
-  renderBoard(match.defender.board.peak, showShips);
-  cellsContainer?.firstElementChild?.focus();
-};
-
-const prepareDoublePlayer = async (match, mode) => {
+const playDoublePlayer = async (match, mode) => {
   overlay.dataset.screen = "name";
   overlay.querySelector(".name-selection input").focus();
 
-  await waitForNameInputs(match);
+  if (match.activePlayer?.name === undefined) {
+    await waitForNameInputs(match);
+  }
   match.setMode(mode).init();
+  toggleSkipLink(true);
 
   for (let i = 0; i < 2; ++i) {
     fleetController = new AbortController();
 
-    toggleSkipLink(true);
     renderFleetScreen(match);
     attachFleetControls(match, fleetController);
-    focusBoardCell([0, 0]);
 
     await waitForContinueButtonPress(match);
 
@@ -93,7 +70,12 @@ const prepareDoublePlayer = async (match, mode) => {
     fleetController.abort();
   }
 
-  renderAttackScreenV2(match);
+  renderAttackScreen(match);
+  matchController = new AbortController();
+  await runDoublePlayer(match, matchController);
+  if (matchController.signal.aborted) return;
+
+  renderEndScreen(match);
 };
 
 const selectMode = (event, match) => {
@@ -103,11 +85,11 @@ const selectMode = (event, match) => {
 
   switch (mode) {
     case "single":
-      prepareSinglePlayer(match, mode, attachSinglePlayerControls);
+      playSinglePlayer(match, mode);
       break;
 
     case "double":
-      prepareDoublePlayer(match, mode);
+      playDoublePlayer(match, mode);
       break;
 
     default:
@@ -144,9 +126,10 @@ showsStatsBtn.addEventListener("click", () =>
 const quitBtn = buttons.querySelector(".home-screen");
 quitBtn.addEventListener("click", () => {
   overlay.dataset.screen = "mode";
-  renderAnnouncement("Select Mode");
   toggleAnnouncementTheme(false);
+  matchController.abort();
   match = new Match();
+  renderAnnouncement("Select Mode");
 });
 
 const rematchBtn = buttons.querySelector(".rematch");
