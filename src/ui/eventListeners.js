@@ -13,7 +13,6 @@ import {
   toggleAnnouncementTheme,
   waitForNameInputs,
   waitForContinueButtonPress,
-  focusBoardCell,
   runDoublePlayer,
   delay,
 } from "./actions/index.js";
@@ -26,6 +25,12 @@ let match = new Match();
 let fleetController;
 let matchController;
 
+const focusTopOfPage = () => {
+  const announceElm = overlay.querySelector(".announce");
+  announceElm.tabIndex = "-1";
+  announceElm.focus();
+};
+
 const playSinglePlayer = async (match, mode) => {
   match.setMode(mode).init();
   renderFleetScreen(match);
@@ -33,7 +38,7 @@ const playSinglePlayer = async (match, mode) => {
   fleetController = new AbortController();
   attachFleetControls(match, fleetController);
   toggleSkipLink(true);
-  await delay(0); // Prevent click from leaking through
+  focusTopOfPage();
 
   await waitForContinueButtonPress(match);
   fleetController.abort();
@@ -63,6 +68,7 @@ const playDoublePlayer = async (match, mode) => {
     renderFleetScreen(match);
     attachFleetControls(match, fleetController);
 
+    focusTopOfPage();
     await waitForContinueButtonPress(match);
 
     toggleAnnouncementTheme();

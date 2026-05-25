@@ -15,6 +15,7 @@ import {
   waitForQuit,
   waitForContinueButtonPress,
   delay,
+  focusBoardCell,
 } from "./index.js";
 
 const renderPassScreen = () => {
@@ -29,13 +30,13 @@ const runDoublePlayer = async (match, matchController) => {
   let attackControls;
 
   while (!match.isGameOver()) {
+    const attacker = match.activePlayer;
     attackControls = new AbortController();
 
-    renderAnnouncement(`${match.activePlayer.name} Turn`);
+    renderAnnouncement(`${attacker.name} Turn`);
     renderShipCount(match.defender.board);
 
-    const attackStatus = match.randomAttack();
-    await Promise.race([
+    const attackStatus = await Promise.race([
       waitForAttack(match, attackControls.signal),
       waitForRandomAttack(match, attackControls.signal),
       waitForQuit(attackControls.signal, matchController),
@@ -46,6 +47,7 @@ const runDoublePlayer = async (match, matchController) => {
     if (attackStatus === null) continue;
 
     const { hit, sunk, ship, coordinates } = attackStatus;
+    attacker.lastAttackCell = coordinates;
     unRenderAttackTip();
     renderSunkReport(ship?.name, sunk);
 
@@ -70,6 +72,7 @@ const runDoublePlayer = async (match, matchController) => {
     toggleAnnouncementTheme();
     renderBoard(match.defender.board.peak);
     renderBoardLabel(`${match.defender.name} Board`);
+    focusBoardCell(match.activePlayer.lastAttackCell);
   }
 };
 

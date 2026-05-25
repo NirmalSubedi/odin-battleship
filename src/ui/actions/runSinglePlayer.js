@@ -13,6 +13,7 @@ import {
   waitForRandomAttack,
   waitForQuit,
   toggleAnnouncementTheme,
+  focusBoardCell,
 } from "./index.js";
 
 const setComputerBoard = (match) => {
@@ -28,13 +29,14 @@ const runSinglePlayer = async (match, matchController) => {
 
   while (!match.isGameOver()) {
     inputController = new AbortController();
+    const attacker = match.activePlayer;
 
-    renderAnnouncement(`${match.activePlayer.name} Turn`);
+    renderAnnouncement(`${attacker.name} Turn`);
     renderShipCount(match.defender.board);
 
     let attackStatus;
 
-    if (match.activePlayer.type === "real") {
+    if (attacker.type === "real") {
       overlay.dataset.screen = "attack";
       attackStatus = await Promise.race([
         waitForAttack(match, inputController.signal),
@@ -54,7 +56,7 @@ const runSinglePlayer = async (match, matchController) => {
     if (attackStatus === null) continue;
 
     const { hit, ship, sunk, coordinates } = attackStatus;
-
+    attacker.lastAttackCell = coordinates;
     unRenderAttackTip();
     renderSunkReport(ship?.name, sunk);
 
@@ -75,6 +77,7 @@ const runSinglePlayer = async (match, matchController) => {
     toggleAnnouncementTheme();
     renderBoard(match.defender.board.peak);
     renderBoardLabel(`${match.defender.name} Board`);
+    focusBoardCell(match.activePlayer.lastAttackCell);
   }
 };
 
