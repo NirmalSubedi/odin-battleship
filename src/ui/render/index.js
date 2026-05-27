@@ -1,5 +1,4 @@
 export * from "./renderCell.js";
-export * from "./renderDock.js";
 export * from "./renderBoard.js";
 export * from "./renderShipPlacement.js";
 export * from "./renderAsideShips.js";

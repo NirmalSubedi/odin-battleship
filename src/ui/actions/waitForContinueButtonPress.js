@@ -9,7 +9,7 @@ const waitForContinueButtonPress = (match) =>
       () => {
         const player = match.activePlayer;
 
-        if (player.lastPlacedShipIndex < player.dock.length) {
+        if (player.dock.length > 0) {
           placeShipsRandomly(match);
         }
         resolve();

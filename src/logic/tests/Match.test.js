@@ -443,7 +443,7 @@ describe("place method", () => {
     expect(player2Placer).toHaveBeenCalled();
   });
 
-  it("places ship from player's dock on player's board", () => {
+  it("places ship", () => {
     const { board } = match.activePlayer;
 
     expect(board.peak).toEqual([
@@ -507,6 +507,40 @@ describe("place method", () => {
     ]);
   });
 
+  it("places specified ship position from player's dock", () => {
+    const { board, dock } = match.activePlayer;
+    const shipPosition = 3;
+    const shipLength = dock.at(shipPosition).length;
+
+    expect(shipLength).toBe(3);
+    expect(board.peak).toEqual([
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+
+    match.place([0, 0], shipPosition);
+    expect(board.peak).toEqual([
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+  });
+
   it("throws ReferenceError when players are not set", () => {
     match = new Match();
 
@@ -524,8 +558,9 @@ describe("place method", () => {
 
   it("return false when placing more ships than player's dock", () => {
     const { dock } = match.activePlayer;
+    const dockLen = dock.length;
     let i = 0;
-    for (; i < dock.length; ++i) {
+    for (; i < dockLen; ++i) {
       match.place([0, i]);
     }
 

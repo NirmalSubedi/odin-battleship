@@ -3,7 +3,6 @@ class Player {
   board;
   stats = {};
   dock = [];
-  lastPlacedShipIndex = 0;
   #name;
 
   constructor(type = "computer") {

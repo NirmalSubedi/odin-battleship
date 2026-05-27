@@ -14,7 +14,6 @@ import {
   waitForNameInputs,
   waitForContinueButtonPress,
   runDoublePlayer,
-  delay,
 } from "./actions/index.js";
 import { Match } from "../logic/index.js";
 

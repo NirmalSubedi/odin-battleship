@@ -31,18 +31,22 @@ function setupPlayerBoards(players) {
   });
 }
 
-function addShipToPlayerFleet(player, length, name) {
+function addShipToPlayerDock(player, length, name) {
   const ship = new Ship().setLength(length).setName(name);
   player.dock.push(ship);
 
   return ship;
 }
 
+function setupPlayerDock(player) {
+  config.defaultDock.forEach(([shipName, shipLength]) => {
+    addShipToPlayerDock(player, shipLength, shipName);
+  });
+}
+
 function setupPlayersDock(players) {
   players.forEach((player) => {
-    config.defaultDock.forEach(([shipName, shipLength]) => {
-      addShipToPlayerFleet(player, shipLength, shipName);
-    });
+    setupPlayerDock(player);
   });
 }
 
@@ -216,13 +220,13 @@ class Match {
     return status;
   }
 
-  place(coordinates) {
+  place(coordinates, shipPosition = 1) {
     if (this.#activePlayer === undefined)
       throw new ReferenceError("Players are not set.");
 
     const player = this.#activePlayer;
-    const { lastPlacedShipIndex } = this.#activePlayer;
-    const ship = player.dock.at(lastPlacedShipIndex);
+    const shipIndex = shipPosition - 1;
+    const ship = player.dock.at(shipIndex);
 
     if (ship === undefined) {
       return false;
@@ -234,9 +238,16 @@ class Match {
       "",
       ship.name
     );
-    if (placed) ++player.lastPlacedShipIndex;
+    if (placed) player.dock.splice(shipIndex, 1);
 
     return placed;
+  }
+
+  #resetPlayerDock() {
+    if (this.#activePlayer.dock.length >= config.defaultDock.length) return;
+    setupPlayerDock(this.#activePlayer);
+
+    return this;
   }
 
   randomizeBoard() {
@@ -246,16 +257,16 @@ class Match {
     const player = this.#activePlayer;
 
     const { board } = player;
-    if (player.lastPlacedShipIndex === player.dock.length) {
-      player.lastPlacedShipIndex = 0;
+    if (player.dock.length === 0) {
       board.resetBoard().resetFleet();
+      this.#resetPlayerDock();
     }
 
-    while (player.lastPlacedShipIndex < player.dock.length) {
-      const ship = player.dock.at(player.lastPlacedShipIndex);
+    while (player.dock.length > 0) {
+      const ship = player.dock.at(0);
 
       board.randomPlace(ship.length, ship.name);
-      ++player.lastPlacedShipIndex;
+      player.dock.splice(0, 1);
     }
 
     return this;
@@ -279,7 +290,7 @@ class Match {
     const player = this.#activePlayer;
 
     const { board } = player;
-    player.lastPlacedShipIndex = 0;
+    this.#resetPlayerDock();
     board.resetBoard().resetFleet();
 
     return this;
