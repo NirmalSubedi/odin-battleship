@@ -4,6 +4,7 @@ const renderShipRotation = (event, match) => {
   const cellElm = event.target.closest(".cell");
   if (!cellElm || !event.currentTarget.contains(cellElm)) return;
   if (cellElm.dataset.state !== "ship") return;
+  if (cellElm.dataset.state === "ship") event.stopImmediatePropagation();
 
   const row = Number(cellElm.dataset.y) - 1;
   const col = Number(cellElm.dataset.x) - 1;

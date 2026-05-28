@@ -14,6 +14,7 @@ const renderAsideShips = (playerDock = []) => {
       shipElm.appendChild(shipPartElm);
     }
     shipElm.setAttribute("class", "ship");
+    shipElm.setAttribute("draggable", "true");
     dockElm.appendChild(shipElm);
   }
 };

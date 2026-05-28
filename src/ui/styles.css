@@ -746,7 +746,6 @@ aside .fleet {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  /* justify-content: space-between; */
   gap: calc(var(--board-cell-size) * 0.75);
 }
 
@@ -756,18 +755,19 @@ aside .fleet-label {
   text-underline-offset: 0.3em;
 }
 
-.fleet .ship {
-  border: var(--bd-2xsm) solid var(--clr-text);
-}
-
 .ship .ship-part {
   width: var(--board-cell-size);
   height: var(--board-cell-size);
   background: var(--clr-ship);
+  border: var(--bd-2xsm) solid var(--clr-text);
 }
 
-.ship .ship-part:not(:last-child) {
-  border-bottom: var(--bd-2xsm) solid var(--clr-text);
+.ship .ship-part:not(:first-child) {
+  border-top: 0;
+}
+
+.ship#dragged-ship {
+  opacity: 0.2;
 }
 
 dialog.stats {

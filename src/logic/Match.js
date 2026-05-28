@@ -244,7 +244,7 @@ class Match {
   }
 
   #resetPlayerDock() {
-    if (this.#activePlayer.dock.length >= config.defaultDock.length) return;
+    this.#activePlayer.dock.length = 0;
     setupPlayerDock(this.#activePlayer);
 
     return this;
@@ -289,7 +289,8 @@ class Match {
 
     const player = this.#activePlayer;
 
-    const { board } = player;
+    const { board, dock } = player;
+    if (dock.length === config.defaultDock.length) return;
     this.#resetPlayerDock();
     board.resetBoard().resetFleet();
 
