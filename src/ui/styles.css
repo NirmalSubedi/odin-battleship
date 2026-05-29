@@ -569,11 +569,29 @@ main .board .cells {
   display: grid;
   grid-template-columns: repeat(var(--board-columns), var(--board-cell-size));
   grid-auto-rows: var(--board-cell-size);
-
+  position: relative;
   border: var(--bd-2xsm) solid var(--clr-text);
 }
 
-.cells > * {
+.placeholder-ship {
+  position: absolute;
+  top: calc(var(--bd-2xsm) * -1);
+  left: calc(var(--bd-2xsm) * -1);
+  display: flex;
+  flex-direction: column;
+  border: calc(var(--bd-2xsm) / 2) solid var(--clr-text);
+  background: var(--clr-ship);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.placeholder-ship > * {
+  border: calc(var(--bd-2xsm) / 2) solid var(--clr-text);
+  width: var(--board-cell-size);
+  height: var(--board-cell-size);
+}
+
+.cells > *:not(.placeholder-ship) {
   display: grid;
   align-items: center;
   justify-items: center;

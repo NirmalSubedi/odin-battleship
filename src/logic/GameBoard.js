@@ -97,8 +97,27 @@ class GameBoard {
     return this.peak[row]?.[col] === this.water;
   }
 
-  #canDraw(coordinates, length, direction) {
-    const [dr, dc] = this.#validateDirection(direction);
+  #decodeDirection(direction = "") {
+    switch (direction) {
+      case "R":
+        return [0, 1];
+
+      case "L":
+        return [0, -1];
+
+      case "U":
+        return [-1, 0];
+
+      default:
+        return [1, 0];
+    }
+  }
+
+  canDraw(coordinates, length, direction) {
+    const [dr, dc] =
+      typeof direction === "string"
+        ? this.#decodeDirection(direction)
+        : this.#validateDirection(direction);
     let [currRow, currCol] = coordinates;
 
     for (let i = 0; i < length; ++i) {
@@ -132,7 +151,7 @@ class GameBoard {
     let positionDirection = null;
 
     for (const direction of randomDirections) {
-      if (this.#canDraw(coordinates, ship.length, direction)) {
+      if (this.canDraw(coordinates, ship.length, direction)) {
         positionDirection = direction;
         break;
       }
@@ -218,22 +237,6 @@ class GameBoard {
     return this;
   }
 
-  #decodeDirection(direction = "") {
-    switch (direction) {
-      case "R":
-        return [0, 1];
-
-      case "L":
-        return [0, -1];
-
-      case "U":
-        return [-1, 0];
-
-      default:
-        return [1, 0];
-    }
-  }
-
   placeShip(coordinates, length = 1, direction = "", name = "") {
     this.#validateCoordinates(coordinates);
 
@@ -242,7 +245,7 @@ class GameBoard {
 
     let placed = false;
 
-    if (this.#canDraw(coordinates, length, placementDirection)) {
+    if (this.canDraw(coordinates, length, placementDirection)) {
       this.#draw(coordinates, shipId, placementDirection, length);
       this.#addShipToFleet(length, name);
       this.#storePlacement(coordinates, shipId, placementDirection);
@@ -346,7 +349,7 @@ class GameBoard {
     const drawFrom = [pivotRow, pivotCol];
     const drawTowards = rotatedDirection;
 
-    if (!this.#canDraw(drawFrom, drawLength, drawTowards)) {
+    if (!this.canDraw(drawFrom, drawLength, drawTowards)) {
       return false;
     }
 
@@ -388,7 +391,7 @@ class GameBoard {
     let moved = false;
     if (ship === undefined) return moved;
 
-    if (!this.#canDraw(toCoordinates, ship.length, ship.placementDirection))
+    if (!this.canDraw(toCoordinates, ship.length, ship.placementDirection))
       return moved;
 
     this.#draw(
