@@ -1,4 +1,4 @@
-import { Player, GameBoard, Ship } from "./index.js";
+import { Player, GameBoard, Ship, SUNK } from "./index.js";
 
 const config = {
   mode: {
@@ -279,8 +279,131 @@ class Match {
     return [row, col];
   }
 
+  #tryAttack(coordinates) {
+    let attackStatus;
+
+    try {
+      attackStatus = this.attack(coordinates);
+    } catch (error) {
+      if (error.name === "RangeError") {
+        attackStatus = null;
+      } else throw error;
+    }
+
+    return attackStatus;
+  }
+
+  #findDirectionIndex(directions, favoredDirection) {
+    return directions.findIndex((direction) => {
+      const [dr, dc] = direction;
+      const [fdr, fdc] = favoredDirection;
+      return dr === fdr && dc === fdc;
+    });
+  }
+
+  #addHitMarks(hits, coordinates, favoredDirection) {
+    const directions = [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ];
+    if (!favoredDirection) return hits.push([coordinates, directions]);
+
+    const favoredDirectionIndex = this.#findDirectionIndex(
+      directions,
+      favoredDirection
+    );
+    const [favoredDir] = directions.splice(favoredDirectionIndex, 1);
+
+    directions.push(favoredDir);
+
+    hits.push([coordinates, directions]);
+  }
+
+  #removeHitMarks(hits, defenderBoard) {
+    while (true) {
+      const lastHit = hits.at(-1);
+      if (!lastHit) break;
+
+      const [coordinates] = lastHit;
+      const [row, col] = coordinates;
+      const status = defenderBoard[row][col];
+
+      if (status === SUNK) {
+        hits.pop();
+      } else break;
+    }
+  }
+
+  #evaluateHits(hits) {
+    let attackStatus = null;
+
+    while (hits.length > 0) {
+      const LAST_INDEX = -1;
+      const lastHit = hits.at(LAST_INDEX);
+      const [lastHitCoordinates, remainingDirections] = lastHit;
+
+      if (remainingDirections.length > 0) {
+        const direction = remainingDirections.at(LAST_INDEX);
+        const [cr, cc] = lastHitCoordinates;
+        const [dr, dc] = direction;
+        const newCoordinates = [cr + dr, cc + dc];
+
+        attackStatus = this.#tryAttack(newCoordinates);
+        if (attackStatus === null) {
+          remainingDirections.pop();
+          return attackStatus;
+        }
+
+        const { hit, sunk } = attackStatus;
+        if (sunk) {
+          this.#removeHitMarks(hits, this.#defender.board.peak);
+        } else if (hit) {
+          this.#addHitMarks(hits, newCoordinates, direction);
+        }
+
+        remainingDirections.pop();
+        return attackStatus;
+      }
+
+      if (remainingDirections.length === 0) hits.pop();
+    }
+
+    return attackStatus;
+  }
+
   randomAttack() {
-    return this.attack(this.#getRandomCoordinate());
+    const player = this.#activePlayer;
+    let attackStatus = null;
+
+    if (player.type === "real") {
+      while (!attackStatus) {
+        attackStatus = this.attack(this.#getRandomCoordinate());
+      }
+      return attackStatus;
+    }
+
+    player.hits ??= [];
+    const { hits } = player;
+
+    if (hits.length === 0) {
+      attackStatus = this.attack(this.#getRandomCoordinate());
+      if (attackStatus === null) return attackStatus;
+
+      const { hit, sunk, coordinates } = attackStatus;
+      if (sunk) {
+        this.#removeHitMarks(hits, this.#defender.board.peak);
+      } else if (hit) {
+        this.#addHitMarks(hits, coordinates);
+      }
+
+      return attackStatus;
+    }
+
+    attackStatus = this.#evaluateHits(hits);
+
+    return attackStatus;
   }
 
   resetBoard() {
