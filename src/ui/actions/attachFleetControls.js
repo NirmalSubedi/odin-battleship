@@ -256,14 +256,17 @@ const attachRandomizeBoardControls = (match, fleetController) => {
     { signal: fleetController.signal }
   );
 
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      if (event.code !== "KeyS") return;
-      placeShipsRandomly(match);
-    },
-    { signal: fleetController.signal }
-  );
+  const handleKey = (event) => {
+    if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey)
+      return;
+    if (!event.code || event.code !== "KeyS") return;
+
+    event.preventDefault();
+    randomizeBoardBtn.click();
+  };
+  document.addEventListener("keydown", handleKey, {
+    signal: fleetController.signal,
+  });
 };
 
 const attachResetBoardControls = (match, fleetController) => {
@@ -276,14 +279,17 @@ const attachResetBoardControls = (match, fleetController) => {
     { signal: fleetController.signal }
   );
 
-  document.addEventListener(
-    "keydown",
-    (event) => {
-      if (event.code !== "KeyR") return;
-      resetShipsPlacements(match);
-    },
-    { signal: fleetController.signal }
-  );
+  const handleKey = (event) => {
+    if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey)
+      return;
+    if (!event.code || event.code !== "KeyR") return;
+
+    event.preventDefault();
+    resetBoardBtn.click();
+  };
+  document.addEventListener("keydown", handleKey, {
+    signal: fleetController.signal,
+  });
 };
 
 const attachShipRotationControl = (match, fleetController) => {

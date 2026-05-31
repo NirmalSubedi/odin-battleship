@@ -128,15 +128,27 @@ const showsStatsBtn = buttons.querySelector(".show-stats");
 showsStatsBtn.addEventListener("click", () =>
   overlay.querySelector("dialog.stats").show()
 );
+const handleShowStatsKey = (event) => {
+  if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) return;
+  if (!event.code || event.code !== "KeyS") return;
+
+  const isVisible = showsStatsBtn.checkVisibility();
+  if (!isVisible) return;
+
+  event.preventDefault();
+  showsStatsBtn.click();
+};
+document.addEventListener("keydown", handleShowStatsKey);
 
 const quitBtn = buttons.querySelector(".home-screen");
 quitBtn.addEventListener("click", () => {
   overlay.dataset.screen = "mode";
+  renderAnnouncement("Select Mode");
   toggleAnnouncementTheme(false);
+  toggleSkipLink(false);
+
   matchController.abort();
   match = new Match();
-  renderAnnouncement("Select Mode");
-  toggleSkipLink(false);
 });
 
 const rematchBtn = buttons.querySelector(".rematch");
@@ -144,3 +156,14 @@ rematchBtn.addEventListener("click", (event) => {
   match.rematch();
   selectMode(event, match);
 });
+const handleRematchKey = (event) => {
+  if (event.ctrlKey || event.shiftKey || event.metaKey || event.altKey) return;
+  if (!event.code || event.code !== "KeyR") return;
+
+  const isVisible = rematchBtn.checkVisibility();
+  if (!isVisible) return;
+
+  event.preventDefault();
+  rematchBtn.click();
+};
+document.addEventListener("keydown", handleRematchKey);
