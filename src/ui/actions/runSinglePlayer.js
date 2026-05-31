@@ -13,7 +13,6 @@ import {
   waitForRandomAttack,
   waitForQuit,
   toggleAnnouncementTheme,
-  focusBoardCell,
 } from "./index.js";
 
 const setComputerBoard = (match) => {
@@ -77,7 +76,6 @@ const runSinglePlayer = async (match, matchController) => {
     toggleAnnouncementTheme();
     renderBoard(match.defender.board.peak);
     renderBoardLabel(`${match.defender.name} Board`);
-    focusBoardCell(match.activePlayer.lastAttackCell);
   }
 };
 

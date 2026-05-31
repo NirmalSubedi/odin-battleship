@@ -14,6 +14,7 @@ import {
   waitForNameInputs,
   waitForContinueButtonPress,
   runDoublePlayer,
+  focusTopOfPage,
 } from "./actions/index.js";
 import { Match } from "../logic/index.js";
 
@@ -23,12 +24,6 @@ const buttons = document.body.querySelector(".buttons");
 let match = new Match();
 let fleetController;
 let matchController;
-
-const focusTopOfPage = () => {
-  const announceElm = overlay.querySelector(".announce");
-  announceElm.tabIndex = "-1";
-  announceElm.focus();
-};
 
 const playSinglePlayer = async (match, mode) => {
   match.setMode(mode).init();
@@ -56,7 +51,9 @@ const playDoublePlayer = async (match, mode) => {
   overlay.querySelector(".name-selection input").focus();
 
   if (match.activePlayer?.name === undefined) {
+    toggleSkipLink(false);
     await waitForNameInputs(match);
+    toggleSkipLink(true);
   }
   match.setMode(mode).init();
   toggleSkipLink(true);
@@ -76,6 +73,7 @@ const playDoublePlayer = async (match, mode) => {
   }
 
   renderAttackScreen(match);
+  focusTopOfPage();
   matchController = new AbortController();
   await runDoublePlayer(match, matchController);
   if (matchController.signal.aborted) return;
@@ -109,7 +107,10 @@ skipLink.addEventListener("click", (event) => {
     .find((child) => child.checkVisibility())
     ?.focus();
 });
-toggleSkipLink();
+
+document.addEventListener("DOMContentLoaded", () => toggleSkipLink(false), {
+  once: true,
+});
 
 const gameModes = overlay.querySelector(".game-modes");
 gameModes.addEventListener("click", (event) => {
@@ -135,6 +136,7 @@ quitBtn.addEventListener("click", () => {
   matchController.abort();
   match = new Match();
   renderAnnouncement("Select Mode");
+  toggleSkipLink(false);
 });
 
 const rematchBtn = buttons.querySelector(".rematch");

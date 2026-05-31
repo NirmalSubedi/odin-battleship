@@ -15,7 +15,6 @@ import {
   waitForQuit,
   waitForContinueButtonPress,
   delay,
-  focusBoardCell,
 } from "./index.js";
 
 const renderPassScreen = () => {
@@ -64,15 +63,15 @@ const runDoublePlayer = async (match, matchController) => {
     if (matchController.signal.aborted) return;
     if (hit) continue;
 
+    attacker.lastFocusedElement = document.activeElement;
     renderPassScreen();
     await waitForContinueButtonPress(match);
-    renderAttackScreen(match);
 
     match.switchTurn();
     toggleAnnouncementTheme();
+    renderAttackScreen(match);
     renderBoard(match.defender.board.peak);
     renderBoardLabel(`${match.defender.name} Board`);
-    focusBoardCell(match.activePlayer.lastAttackCell);
   }
 };
 

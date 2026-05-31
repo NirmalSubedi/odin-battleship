@@ -16,3 +16,4 @@ export * from "./waitForNameInputs.js";
 export * from "./waitForContinueButtonPress.js";
 export * from "./focusBoardCell.js";
 export * from "./runDoublePlayer.js";
+export * from "./focusTopOfPage.js";
