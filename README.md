@@ -1,15 +1,47 @@
-# Template
+# BattleShip
 
-Webpack development environment template.
+Two player strategy guessing game.
 
-### Contains
+## Controls
 
-- webpack config files for development and production.
-- npm for package management.
-- npm scripts in `package.json` for common commands.
-- `src` directory for project source code.
-- `.gitignore` file for removing git tracking.
-- `dist` directory for project deployment files.
-- `node_modules` directory for storing npm packages.
-- eslint for linting.
-- prettier for formatting.
+**Buttons Keybindings**
+
+Each button can be activated by pressing the **first letter** of the text.
+(e.g., Continue->`C`, Quit->`Q`, and etc...)
+
+**Board Movements**
+
+- **Left**: Press `←` Arrow Key
+- **Up**: Press `↑` Arrow Key
+- **Right**: Press `→` Arrow Key
+- **Down**: Press `↓` Arrow Key
+
+> 📝 **Note:** Hold `Ctrl` key to Jump to opposite edge of board
+
+**Fleet Screen**
+
+To Place ships:
+
+- Click any empty square
+
+- Drag ship onto the board
+
+To Rotate ships:
+
+- Click the placed ship
+
+- Press `Space`/`Enter` on the placed ship
+
+> 📝 **Note:** Hold `Ctrl` key to rotate in the opposite direction
+
+## Skills demonstrated
+
+- Scoping the code by assigning screens
+
+- Dynamically manage event listeners with AbortController API
+
+- Using Drag and Drop API to allow dragging ships
+
+## Credits
+
+_Project From TOP(The Odin Project)_
