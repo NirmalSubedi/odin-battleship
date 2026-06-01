@@ -738,20 +738,9 @@ aside {
 
   position: absolute;
   left: calc(50vw + var(--_half-board-width));
-  margin: 0 var(--sp-lg) 0 var(--sp-3xlg);
-}
+  margin: var(--board-cell-size) var(--sp-lg) 0 var(--sp-3xlg);
 
-aside .controls {
-  margin-bottom: var(--sp-sm);
-}
-
-aside .controls .message {
-  font-weight: 400;
-}
-
-aside .controls .control {
-  font-weight: 700;
-  font-size: var(--fs-p);
+  min-width: 20vw;
 }
 
 aside .fleet {

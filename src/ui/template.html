@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Template</title>
+    <title>BattleShip</title>
   </head>
 
   <body>
-    <!-- screens: mode, name, fleet, attack, spectate, pass, lose, win -->
     <div class="screen-overlay" data-screen="mode">
       <header>
         <h1 class="game-name">BattleShip</h1>
@@ -103,7 +102,6 @@
               <span>9</span>
               <span>10</span>
             </div>
-            <!-- Cell state: hit, miss, sunk, hover -->
             <div class="cells"></div>
             <p class="ship-count">Ships Left: <span class="ships"></span></p>
             <p class="board-label"></p>
@@ -111,15 +109,6 @@
         </div>
 
         <aside>
-          <div class="controls">
-            <p class="message" data-hint="place">
-              <span class="control">Place: </span>Click empty square
-            </p>
-            <p class="message" data-hint="rotate">
-              <span class="control">Rotate: </span>Click the placed ship
-            </p>
-          </div>
-
           <div class="fleet">
             <p class="fleet-label">Fleet</p>
             <div class="dock"></div>
