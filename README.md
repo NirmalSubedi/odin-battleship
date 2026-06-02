@@ -2,6 +2,8 @@
 
 Two player strategy guessing game.
 
+[Play!](https://nirmalsubedi.github.io/odin-battleship/)
+
 ## Controls
 
 **Buttons Keybindings**
